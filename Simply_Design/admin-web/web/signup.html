@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="icon" type="image/png" href="../../img/logo.png" />
+    <link rel="stylesheet" href="../style/style.css" />
+    <title>Simply Design | Sign Up</title>
+  </head>
+
+  <body>
+    <div class="login signup-page">
+      <div class="login-container signup-container">
+        <div class="login-header">
+          <i class="fa-regular fa-circle-user"></i>
+          <p class="login-message">Create Account</p>
+          <p class="login-submess">Join us and get started</p>
+        </div>
+
+        <div class="login-body">
+          <p class="form">Full Name</p>
+          <div class="login-email">
+            <i class="fa-regular fa-user"></i>
+            <input
+              class="email"
+              type="text"
+              name="fullname"
+              id="fullname"
+              placeholder="Enter your name"
+              required
+            />
+          </div>
+
+          <p class="form">Email Address</p>
+          <div class="login-email">
+            <i class="fa-regular fa-envelope"></i>
+            <input
+              class="email"
+              type="email"
+              name="email"
+              id="email"
+              placeholder="your.email@example.com"
+              required
+            />
+          </div>
+
+          <div class="password-body">
+            <p class="form">Password</p>
+            <i class="fa-solid fa-lock"></i>
+            <input
+              class="password"
+              type="password"
+              name="password"
+              id="password"
+              placeholder="Enter your password"
+              required
+            />
+            <i
+              class="fa-solid fa-eye-slash"
+              id="show-password"
+              role="button"
+              tabindex="0"
+              aria-label="Show password"
+            ></i>
+            <i
+              class="fa-solid fa-eye"
+              id="hide-password"
+              role="button"
+              tabindex="0"
+              aria-label="Hide password"
+            ></i>
+          </div>
+
+          <div class="password-body">
+            <p class="form">Confirm Password</p>
+            <i class="fa-solid fa-lock"></i>
+            <input
+              class="password"
+              type="password"
+              name="confirm-password"
+              id="confirm-password"
+              placeholder="Confirm your password"
+              required
+            />
+          </div>
+
+          <div class="signin-btn">
+            <i class="fa-solid fa-user-plus"></i>
+            <button class="sign-in" type="submit">Sign up</button>
+          </div>
+
+          <div class="social-divider">
+            <span>or continue with</span>
+          </div>
+
+          <div class="social-login">
+            <button
+              class="social-btn google-btn"
+              type="button"
+              aria-label="Continue with Google"
+              title="Continue with Google"
+            >
+              <i class="fa-brands fa-google"></i>
+            </button>
+            <button
+              class="social-btn facebook-btn"
+              type="button"
+              aria-label="Continue with Facebook"
+              title="Continue with Facebook"
+            >
+              <i class="fa-brands fa-facebook-f"></i>
+            </button>
+          </div>
+
+          <div class="signup">
+            <p class="sign-up-message">
+              Already have an account?
+              <a href="login.html"><span class="signup-link">Sign in</span></a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../javascript/animation.js" defer></script>
+  </body>
+</html>

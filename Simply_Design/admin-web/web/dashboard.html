@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simply Design</title>
+    <link rel="stylesheet" href="../style/dashboard.css">
+</head>
+<body>
+
+<header>
+    <div class="header-profile">
+        <div class="profile-icon" onclick="toggleMenu()">👤</div>
+        <div class="profile-menu" id="profileMenu">
+            <a href="./dashboard.html">Dashboard</a>
+            <a href="./inventory.html">Inventory</a>
+            <a href="#Active Rentals">Active Rentals</a>
+            <a href="#Customers">Customers</a>
+            <a href="#Analysis">Analysis</a>
+            <a href="#Settings">Settings</a>
+        </div>
+    </div>
+
+    <div class="brand">
+        <div class="header-content">
+            <div>RentalTrack</div>
+            <small>james ried</small>
+        </div>
+    </div>
+</header>
+
+<main>
+
+    <section>
+        <h2>Welcome back!</h2>
+        <p>Here’s what’s happening with your rentals todays</p>
+    </section>
+
+    <section>
+        <div>
+            <div>📦</div>
+            <h2>5</h2>
+            <p>Total Items</p>
+        </div>
+
+        <div>
+            <div>📍</div>
+            <h2>2</h2>
+            <p>Active Rentals</p>
+        </div>
+
+        <div>
+            <div>👥</div>
+            <h2>3</h2>
+            <p>Available</p>
+        </div>
+
+        <div>
+            <div>₱</div>
+            <h2>₱8,450</h2>
+            <p>This Week</p>
+        </div>
+    </section>
+
+    <section>
+        <h3>Rental Activity</h3>
+
+        <svg width="100%" height="180" viewBox="0 0 1000 180">
+            <line x1="50" y1="20" x2="50" y2="140" stroke="black"/>
+            <line x1="50" y1="140" x2="970" y2="140" stroke="black"/>
+
+            <text x="30" y="25">10</text>
+            <text x="30" y="49">8</text>
+            <text x="30" y="73">6</text>
+            <text x="30" y="97">4</text>
+            <text x="30" y="121">2</text>
+            <text x="30" y="145">0</text>
+
+            <path
+                d="M50 80
+                   C150 60 200 40 280 45
+                   C360 48 410 55 500 95
+                   C580 125 650 115 720 110
+                   C800 105 880 90 970 65"
+                fill="none"
+                stroke="#159be8"
+                stroke-width="2"
+            />
+
+            <text x="160" y="160">Monday</text>
+            <text x="300" y="160">Tuesday</text>
+            <text x="440" y="160">Wednesday</text>
+            <text x="580" y="160">Thursday</text>
+            <text x="710" y="160">Friday</text>
+            <text x="820" y="160">Saturday</text>
+            <text x="930" y="160">Sunday</text>
+        </svg>
+    </section>
+
+    <section>
+        <h2>Recent Activity</h2>
+
+        <article>
+            <div>👜</div>
+            <h3>New rental</h3>
+            <p>Christine Luna • Evening Gown</p>
+            <small>2 hours ago</small>
+        </article>
+
+        <article>
+            <div>📦</div>
+            <h3>Item returned</h3>
+            <p>Kyle Luna • Black Dress</p>
+            <small>5 hours ago</small>
+        </article>
+
+        <article>
+            <div>👥</div>
+            <h3>New customer</h3>
+            <p>Gian Luis Conception</p>
+            <small>1 day ago</small>
+        </article>
+
+        <article>
+            <div>₱</div>
+            <h3>Payment received</h3>
+            <p>Victor Rubio • Black Dress</p>
+            <small>1 day ago</small>
+        </article>
+
+    </section>
+
+</main>
+
+<script>
+function toggleMenu() {
+    const menu = document.getElementById('profileMenu');
+    const icon = document.querySelector('.profile-icon');
+    
+    menu.classList.toggle('show');
+    icon.classList.toggle('active');
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function(event) {
+    const profileMenu = document.getElementById('profileMenu');
+    const profileIcon = document.querySelector('.profile-icon');
+    
+    if (!profileMenu.contains(event.target) && !profileIcon.contains(event.target)) {
+        profileMenu.classList.remove('show');
+        profileIcon.classList.remove('active');
+    }
+});
+</script>
+
+</body>
+</html>

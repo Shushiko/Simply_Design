@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simply Design - Inventory</title>
+    <link rel="stylesheet" href="../style/inventory.css">
+    <link rel="icon" href="../../img/logo.png" type="image/png">
+</head>
+<body>
+
+<header>
+    <div class="header-profile">
+        <div class="profile-icon" onclick="toggleMenu()">👤</div>
+        <div class="profile-menu" id="profileMenu">
+            <a href="./dashboard.html">Dashboard</a>
+            <a href="./inventory.html">Inventory</a>
+            <a href="#Active Rentals">Active Rentals</a>
+            <a href="#Customers">Customers</a>
+            <a href="#Analysis">Analysis</a>
+            <a href="#Settings">Settings</a>
+        </div>
+    </div>
+
+    <div class="brand">
+        <div class="header-content">
+            <div>Rental Track</div>
+            <small>Admin</small>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="catalog-header">
+        <div>
+            <h1>Inventory</h1>
+        </div>
+        <button class="add-item-btn" onclick="openModal()">＋ Add Item</button>
+    </div>
+
+    <section class="statistics">
+
+        <div class="stat-card total">
+            <span>Total Items</span>
+            <strong>5</strong>
+        </div>
+
+        <div class="stat-card available">
+            <span>Available</span>
+            <strong>3</strong>
+        </div>
+
+        <div class="stat-card rented">
+            <span>Rented</span>
+            <strong>2</strong>
+        </div>
+
+    </section>
+
+    <div class="search">
+        🔍
+        <input type="text" placeholder="Search items...">
+    </div>
+
+    <div class="filters">
+        <button class="selected">All</button>
+        <button>Available</button>
+        <button>Rented</button>
+    </div>
+
+    <section class="inventory-list">
+
+        <article class="item">
+
+            <img src="evening-dress-1.jpg" alt="Evening Dress 1">
+
+            <div class="item-info">
+                <h2>Evening Dress 1</h2>
+                <p>Evening Dress</p>
+                <p>M | Dark Red Patch</p>
+                <strong>₱120.00</strong>
+            </div>
+
+            <span class="status rented-status">Rented</span>
+
+            <button class="delete">🗑</button>
+
+        </article>
+
+        <article class="item">
+
+            <img src="evening-dress-2.jpg" alt="Evening Dress 2">
+
+            <div class="item-info">
+                <h2>Evening Dress 2</h2>
+                <p>Evening Dress</p>
+                <p>M | Brown Plane</p>
+                <strong>₱120.00</strong>
+            </div>
+
+            <span class="status available-status">Available</span>
+
+            <button class="delete">🗑</button>
+
+        </article>
+
+        <article class="item">
+
+            <img src="casual-dress-1.jpg" alt="Casual Dress 1">
+
+            <div class="item-info">
+                <h2>Casual Dress 1</h2>
+                <p>Casual Dress</p>
+                <p>M | Light Red</p>
+                <strong>₱120.00</strong>
+            </div>
+
+            <span class="status available-status">Available</span>
+
+            <button class="delete">🗑</button>
+
+        </article>
+
+        <article class="item">
+
+            <img src="casual-dress-2.jpg" alt="Casual Dress 2">
+
+            <div class="item-info">
+                <h2>Casual Dress 2</h2>
+                <p>Casual Dress</p>
+                <p>M | Dark Red</p>
+                <strong>₱120.00</strong>
+            </div>
+
+            <span class="status rented-status">Rented</span>
+
+            <button class="delete">🗑</button>
+
+        </article>
+
+        <article class="item">
+
+            <img src="cocktail-dress-1.jpg" alt="Cocktail Dress 1">
+
+            <div class="item-info">
+                <h2>Cocktail Dress 1</h2>
+                <p>Cocktail Dress</p>
+                <p>M | Red</p>
+                <strong>₱120.00</strong>
+            </div>
+
+            <span class="status available-status">Available</span>
+
+            <button class="delete">🗑</button>
+
+        </article>
+
+    </section>
+
+    <div class="modal" id="addItemModal">
+        <span class="close" onclick="closeModal()">&times;</span>
+
+        <form>
+            <label>Item Name</label>
+            <input type="text" placeholder="Enter your item name">
+
+            <label>Category</label>
+            <select>
+                <option>Evening Dress</option>
+                <option>Wedding Dress</option>
+                <option>Formal Wear</option>
+            </select>
+
+            <label>Size</label>
+            <select>
+                <option>S</option>
+                <option>M</option>
+                <option>L</option>
+                <option>XL</option>
+            </select>
+
+            <label>Color</label>
+            <input type="text">
+
+            <label>Price (per day)</label>
+            <input type="number" value="0">
+
+            <label>Upload Image</label>
+            <div class="upload-area">
+                <input type="file" accept=".png,.jpg,.jpeg" id="fileInput">
+                <p class="upload-icon">⇧</p>
+                <p class="upload-text">Click to upload</p>
+                <p class="upload-hint">PNG, JPG up to 10MB</p>
+            </div>
+
+            <button type="button" onclick="closeModal()">Cancel</button>
+            <button type="submit">Add Item</button>
+        </form>
+    </div>
+
+</main>
+
+<script>
+function toggleMenu() {
+    const menu = document.getElementById('profileMenu');
+    const icon = document.querySelector('.profile-icon');
+    
+    menu.classList.toggle('show');
+    icon.classList.toggle('active');
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function(event) {
+    const profileMenu = document.getElementById('profileMenu');
+    const profileIcon = document.querySelector('.profile-icon');
+    
+    if (!profileMenu.contains(event.target) && !profileIcon.contains(event.target)) {
+        profileMenu.classList.remove('show');
+        profileIcon.classList.remove('active');
+    }
+});
+
+// Modal functions
+function openModal() {
+    const modal = document.getElementById('addItemModal');
+    modal.classList.add('show');
+}
+
+function closeModal() {
+    const modal = document.getElementById('addItemModal');
+    modal.classList.remove('show');
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('addItemModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+});
+</script>
+
+</body>
+</html>

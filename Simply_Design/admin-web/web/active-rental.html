@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Track - Active Rentals</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style/active-rental.css">
+</head>
+<body>
+
+    <!-- Overlay Backdrop -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Animated Sidebar Drawer -->
+    <aside class="sidebar" id="sidebarDrawer">
+        <div class="sidebar-header">
+            <div class="header-left">
+                <div class="menu-icon-box">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div class="brand-info">
+                    <span class="brand-title">RentalTrack</span>
+                    <span class="brand-subtitle">Admin Panel</span>
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fa-solid fa-table-cells-large nav-icon"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="inventory.html" class="nav-item">
+                <i class="fa-solid fa-box nav-icon"></i>
+                <span>Inventory</span>
+            </a>
+            <a href="active-rental.html" class="nav-item active">
+                <i class="fa-solid fa-basket-shopping nav-icon"></i>
+                <span>Active Rental</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-users nav-icon"></i>
+                <span>Customers</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-location-dot nav-icon"></i>
+                <span>Location</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-chart-line nav-icon"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="setting.html" class="nav-item">
+                <i class="fa-solid fa-gear nav-icon"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="header-left">
+            <div class="avatar-box" onclick="openSidebar()" title="Click to open menu"></div>
+            <div class="header-text">
+                <div class="header-title">RentalTrack</div>
+                <div class="header-subtitle">james ried</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Title & Subtitle -->
+        <div class="page-header">
+            <h1 class="page-title">Active Rentals</h1>
+            <p class="page-subtitle">Track and manage all rentals orders</p>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Total</div>
+                <div class="metric-value">2</div>
+            </div>
+            <div class="metric-card status-active-bg">
+                <div class="metric-label text-green">Active</div>
+                <div class="metric-value text-green">2</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Returned</div>
+                <div class="metric-value">0</div>
+            </div>
+        </div>
+
+        <!-- Search Input -->
+        <div class="search-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" placeholder="Search items..." class="search-input">
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="tab-btn active">All</button>
+            <button class="tab-btn">Active</button>
+            <button class="tab-btn">Returned</button>
+        </div>
+
+        <!-- Rentals Card List -->
+        <div class="rentals-list">
+
+            <!-- Card 1 -->
+            <div class="rental-card">
+                <div class="card-header">
+                    <h2 class="item-title">Evening Dress 1</h2>
+                    <span class="badge badge-active"><i class="fa-solid fa-rotate-right"></i> Active</span>
+                </div>
+                <div class="customer-info">
+                    <p class="info-line"><i class="fa-solid fa-phone"></i> Christene Luna</p>
+                    <p class="info-line"><i class="fa-solid fa-location-dot"></i> Wakas st, Tayabas City, 4327</p>
+                </div>
+
+                <div class="dates-grid">
+                    <div class="date-box">
+                        <span class="date-label">Rental Date</span>
+                        <div class="date-value"><i class="fa-regular fa-calendar"></i> 11/18/25</div>
+                    </div>
+                    <div class="date-box">
+                        <span class="date-label">Return Date</span>
+                        <div class="date-value"><i class="fa-regular fa-calendar"></i> 11/25/25</div>
+                    </div>
+                </div>
+
+                <div class="alert-banner">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Overdue by days 20 days
+                </div>
+
+                <button class="btn-action">Contact Customer</button>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="rental-card">
+                <div class="card-header">
+                    <h2 class="item-title">Evening Dress 2</h2>
+                    <span class="badge badge-active"><i class="fa-solid fa-rotate-right"></i> Active</span>
+                </div>
+                <div class="customer-info">
+                    <p class="info-line"><i class="fa-solid fa-phone"></i> Gian Luis Conception</p>
+                    <p class="info-line"><i class="fa-solid fa-location-dot"></i> Iuad st, Tayabas City, 4327</p>
+                </div>
+
+                <div class="dates-grid">
+                    <div class="date-box">
+                        <span class="date-label">Rental Date</span>
+                        <div class="date-value"><i class="fa-regular fa-calendar"></i> 11/20/25</div>
+                    </div>
+                    <div class="date-box">
+                        <span class="date-label">Return Date</span>
+                        <div class="date-value"><i class="fa-regular fa-calendar"></i> 11/22/25</div>
+                    </div>
+                </div>
+
+                <div class="alert-banner">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Overdue by days 20 days
+                </div>
+
+                <button class="btn-action">Contact Customer</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function openSidebar() {
+            document.getElementById('sidebarDrawer').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebarDrawer').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        }
+    </script>
+
+</body>
+</html>

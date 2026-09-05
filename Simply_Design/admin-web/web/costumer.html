@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Track - Customers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style/costumer.css">
+</head>
+<body>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <aside class="sidebar" id="sidebarDrawer">
+        <div class="sidebar-header">
+            <div class="header-left">
+                <div class="menu-icon-box">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div class="brand-info">
+                    <span class="brand-title">RentalTrack</span>
+                    <span class="brand-subtitle">Admin Panel</span>
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fa-solid fa-table-cells-large nav-icon"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="inventory.html" class="nav-item">
+                <i class="fa-solid fa-box nav-icon"></i>
+                <span>Inventory</span>
+            </a>
+            <a href="active-rental.html" class="nav-item">
+                <i class="fa-solid fa-basket-shopping nav-icon"></i>
+                <span>Active Rental</span>
+            </a>
+            <a href="costumer.html" class="nav-item active">
+                <i class="fa-solid fa-users nav-icon"></i>
+                <span>Customers</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-location-dot nav-icon"></i>
+                <span>Location</span>
+            </a>
+            <a href="analytics.html" class="nav-item">
+                <i class="fa-solid fa-chart-line nav-icon"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="setting.html" class="nav-item">
+                <i class="fa-solid fa-gear nav-icon"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+
+    <header>
+        <div class="header-left">
+            <div class="avatar-box" onclick="openSidebar()" title="Click to open menu"></div>
+            <div class="header-text">
+                <div class="header-title">RentalTrack</div>
+                <div class="header-subtitle">james ried</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Customers</h1>
+            <p class="page-subtitle">Manage your customer base</p>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Total</div>
+                <div class="metric-value">3</div>
+            </div>
+            <div class="metric-card status-active-bg">
+                <div class="metric-label text-green">Active</div>
+                <div class="metric-value text-green">2</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Revenue</div>
+                <div class="metric-value">₱960</div>
+            </div>
+        </div>
+
+        <div class="search-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" placeholder="Search items..." class="search-input">
+        </div>
+
+        <div class="filter-tabs">
+            <button class="tab-btn active">All</button>
+            <button class="tab-btn">Active</button>
+            <button class="tab-btn">Inactive</button>
+        </div>
+
+        <div class="customers-list">
+
+            <div class="customer-card">
+                <div class="customer-header">
+                    <h2 class="customer-name">Christene Luna</h2>
+                    <span class="badge badge-active">Active</span>
+                </div>
+
+                <div class="customer-contact-info">
+                    <p class="info-line"><i class="fa-regular fa-envelope"></i> Christene.L@gmail.com</p>
+                    <p class="info-line"><i class="fa-solid fa-phone"></i> +63 956-120-7425</p>
+                    <p class="info-line"><i class="fa-solid fa-location-dot"></i> Wakas st, Tayabas City</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <i class="fa-solid fa-bag-shopping stat-icon icon-brown"></i>
+                        <div class="stat-value">5</div>
+                        <span class="stat-label">Rentals</span>
+                    </div>
+                    <div class="stat-box bg-green-soft">
+                        <i class="fa-solid fa-arrow-trend-up stat-icon icon-green"></i>
+                        <div class="stat-value text-green">₱600</div>
+                        <span class="stat-label text-green">Spent</span>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fa-regular fa-calendar stat-icon icon-gray"></i>
+                        <div class="stat-value text-small">Last Rental</div>
+                        <span class="stat-label">November 25</span>
+                    </div>
+                </div>
+
+                <div class="action-btn-group">
+                    <button class="btn-action btn-brown">Call</button>
+                    <button class="btn-action btn-gray">Gmail</button>
+                </div>
+            </div>
+
+            <div class="customer-card">
+                <div class="customer-header">
+                    <h2 class="customer-name">Gian Luis Conception</h2>
+                    <span class="badge badge-active">Active</span>
+                </div>
+
+                <div class="customer-contact-info">
+                    <p class="info-line"><i class="fa-regular fa-envelope"></i> GianL@gmail.com</p>
+                    <p class="info-line"><i class="fa-solid fa-phone"></i> +63 910-150-7702</p>
+                    <p class="info-line"><i class="fa-solid fa-location-dot"></i> Iuad st, Tayabas City</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <i class="fa-solid fa-bag-shopping stat-icon icon-brown"></i>
+                        <div class="stat-value">2</div>
+                        <span class="stat-label">Rentals</span>
+                    </div>
+                    <div class="stat-box bg-green-soft">
+                        <i class="fa-solid fa-arrow-trend-up stat-icon icon-green"></i>
+                        <div class="stat-value text-green">₱240</div>
+                        <span class="stat-label text-green">Spent</span>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fa-regular fa-calendar stat-icon icon-gray"></i>
+                        <div class="stat-value text-small">Last Rental</div>
+                        <span class="stat-label">November 22</span>
+                    </div>
+                </div>
+
+                <div class="action-btn-group">
+                    <button class="btn-action btn-brown">Call</button>
+                    <button class="btn-action btn-gray">Gmail</button>
+                </div>
+            </div>
+
+            <div class="customer-card">
+                <div class="customer-header">
+                    <h2 class="customer-name">James Reid</h2>
+                    <span class="badge badge-inactive">Inactive</span>
+                </div>
+
+                <div class="customer-contact-info">
+                    <p class="info-line"><i class="fa-regular fa-envelope"></i> jamesreid@gmail.com</p>
+                    <p class="info-line"><i class="fa-solid fa-phone"></i> +63 910-150-7702</p>
+                    <p class="info-line"><i class="fa-solid fa-location-dot"></i> Luad st, Tayabas City</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <i class="fa-solid fa-bag-shopping stat-icon icon-brown"></i>
+                        <div class="stat-value">1</div>
+                        <span class="stat-label">Rentals</span>
+                    </div>
+                    <div class="stat-box bg-green-soft">
+                        <i class="fa-solid fa-arrow-trend-up stat-icon icon-green"></i>
+                        <div class="stat-value text-green">₱120</div>
+                        <span class="stat-label text-green">Spent</span>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fa-regular fa-calendar stat-icon icon-gray"></i>
+                        <div class="stat-value text-small">Last Rental</div>
+                        <span class="stat-label">November 22</span>
+                    </div>
+                </div>
+
+                <div class="action-btn-group">
+                    <button class="btn-action btn-brown">Call</button>
+                    <button class="btn-action btn-gray">Gmail</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function openSidebar() {
+            document.getElementById('sidebarDrawer').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebarDrawer').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        }
+    </script>
+
+</body>
+</html>

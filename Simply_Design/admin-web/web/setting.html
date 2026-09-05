@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentalTrack - Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style/setting.css">
+    <script src="../javascript/setting.js"></script>
+</head>
+<body>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <aside class="sidebar" id="sidebarDrawer">
+        <div class="sidebar-header">
+            <div class="header-left">
+                <div class="menu-icon-box">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div class="brand-info">
+                    <span class="brand-title">RentalTrack</span>
+                    <span class="brand-subtitle">Admin Panel</span>
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fa-solid fa-table-cells-large nav-icon"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="inventory.html" class="nav-item">
+                <i class="fa-solid fa-box nav-icon"></i>
+                <span>Inventory</span>
+            </a>
+            <a href="active-rental.html" class="nav-item">
+                <i class="fa-solid fa-basket-shopping nav-icon"></i>
+                <span>Active Rental</span>
+            </a>
+            <a href="costumer.html" class="nav-item">
+                <i class="fa-solid fa-users nav-icon"></i>
+                <span>Customers</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-location-dot nav-icon"></i>
+                <span>Location</span>
+            </a>
+            <a href="analytics.html" class="nav-item">
+                <i class="fa-solid fa-chart-line nav-icon"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="setting.html" class="nav-item active">
+                <i class="fa-solid fa-gear nav-icon"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+
+    <header>
+        <div class="header-left">
+            <div class="avatar-box" id="avatarBtn" title="Click to open menu"></div>
+            <div class="header-text">
+                <div class="header-title">Rental Track</div>
+                <div class="header-subtitle">Admin</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Settings</h1>
+            <p class="page-subtitle">Manage your account and preferences</p>
+        </div>
+
+        <div class="settings-card">
+            <h2 class="card-title">Business Information</h2>
+            
+            <div class="form-group">
+                <label>Business Name</label>
+                <input type="text" class="form-control" value="Simply Design by Jun Tabi">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-regular fa-envelope icon-label"></i> Email</label>
+                <input type="email" class="form-control" value="admin@rentaltrack.com">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-solid fa-phone icon-label"></i> Phone</label>
+                <input type="text" class="form-control" value="+63 980-108-5346">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-solid fa-location-dot icon-label"></i> Address</label>
+                <input type="text" class="form-control" value="Juan Street, Tayabas City">
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2 class="card-title"><i class="fa-regular fa-bell icon-title"></i> Notification Preferences</h2>
+
+            <div class="toggle-row">
+                <div class="toggle-info">
+                    <span class="toggle-label">New Rentals</span>
+                    <span class="toggle-desc">Get notified when new rentals are made</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-row">
+                <div class="toggle-info">
+                    <span class="toggle-label">Item Returns</span>
+                    <span class="toggle-desc">Get notified when items are returned</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-row">
+                <div class="toggle-info">
+                    <span class="toggle-label">Payment Received</span>
+                    <span class="toggle-desc">Get notified when payments are received</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-row">
+                <div class="toggle-info">
+                    <span class="toggle-label">Violations</span>
+                    <span class="toggle-desc">Get notified about late returns and damages</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2 class="card-title"><i class="fa-regular fa-credit-card icon-title"></i> Payment Settings</h2>
+
+            <div class="form-group">
+                <label>GCash Number</label>
+                <input type="text" class="form-control" value="09171234567">
+            </div>
+
+            <div class="form-group">
+                <label>Late Return Fee (per day)</label>
+                <input type="text" class="form-control" value="₱ 15">
+            </div>
+
+            <div class="form-group">
+                <label>Damage Fee (minimum)</label>
+                <input type="text" class="form-control" value="₱ 50">
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2 class="card-title">App Preferences</h2>
+
+            <div class="toggle-row">
+                <div class="toggle-info">
+                    <span class="toggle-label"><i class="fa-regular fa-sun icon-label"></i> Dark Mode</span>
+                    <span class="toggle-desc">Toggle dark mode theme</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Language</label>
+                <div class="select-wrapper">
+                    <select class="form-control">
+                        <option value="en" selected>English</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down select-arrow"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Currency</label>
+                <div class="select-wrapper">
+                    <select class="form-control">
+                        <option value="PHP" selected>Philippine Peso (₱)</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down select-arrow"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2 class="card-title"><i class="fa-solid fa-lock icon-title"></i> Security</h2>
+
+            <button class="btn-action btn-brown">Change Password</button>
+            <button class="btn-action btn-gray">Enable Two-Factor Authentication</button>
+        </div>
+
+        <div class="action-footer">
+            <button class="btn-action btn-brown-large">Save Changes</button>
+            <button class="btn-action btn-red-large" id="logoutBtn" onclick="handleLogout()">Log Out</button>
+        </div>
+
+    </div>
+
+    <!-- <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const avatarBtn = document.getElementById("avatarBtn");
+            if (avatarBtn) {
+                avatarBtn.addEventListener("click", openSidebar);
+            }
+        });
+
+        function openSidebar() {
+            document.getElementById('sidebarDrawer').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebarDrawer').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        }
+
+        function handleLogout() {
+            window.location.href = "login.html";
+        }
+    </script> -->
+
+</body>
+</html>

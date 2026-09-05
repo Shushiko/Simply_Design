@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Track - Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../style/analytics.css">
+</head>
+<body>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <aside class="sidebar" id="sidebarDrawer">
+        <div class="sidebar-header">
+            <div class="header-left">
+                <div class="menu-icon-box">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div class="brand-info">
+                    <span class="brand-title">RentalTrack</span>
+                    <span class="brand-subtitle">Admin Panel</span>
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fa-solid fa-table-cells-large nav-icon"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="inventory.html" class="nav-item">
+                <i class="fa-solid fa-box nav-icon"></i>
+                <span>Inventory</span>
+            </a>
+            <a href="active-rental.html" class="nav-item">
+                <i class="fa-solid fa-basket-shopping nav-icon"></i>
+                <span>Active Rental</span>
+            </a>
+            <a href="costumer.html" class="nav-item">
+                <i class="fa-solid fa-users nav-icon"></i>
+                <span>Customers</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-location-dot nav-icon"></i>
+                <span>Location</span>
+            </a>
+            <a href="analytic.html" class="nav-item active">
+                <i class="fa-solid fa-chart-line nav-icon"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="setting.html" class="nav-item">
+                <i class="fa-solid fa-gear nav-icon"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+
+    <header>
+        <div class="header-left">
+            <div class="avatar-box" onclick="openSidebar()" title="Click to open menu"></div>
+            <div class="header-text">
+                <div class="header-title">RentalTrack</div>
+                <div class="header-subtitle">james ried</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-top">
+                    <i class="fa-solid fa-box-archive metric-icon"></i>
+                    <i class="fa-solid fa-arrow-trend-up trend-icon"></i>
+                </div>
+                <div class="metric-value">30</div>
+                <div class="metric-label">Total Rentals</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-top">
+                    <i class="fa-solid fa-triangle-exclamation metric-icon icon-red"></i>
+                    <i class="fa-regular fa-calendar trend-icon"></i>
+                </div>
+                <div class="metric-value">2</div>
+                <div class="metric-label">Violation</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-top">
+                    <i class="fa-solid fa-users metric-icon"></i>
+                    <i class="fa-solid fa-arrow-trend-up trend-icon"></i>
+                </div>
+                <div class="metric-value">15</div>
+                <div class="metric-label">Total Customers</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-top">
+                    <i class="fa-solid fa-peso-sign metric-icon icon-brown"></i>
+                    <i class="fa-solid fa-arrow-trend-up trend-icon"></i>
+                </div>
+                <div class="metric-value">₱8,450</div>
+                <div class="metric-label">Total Revenue</div>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3 class="chart-title">Rental Trends</h3>
+            <div class="chart-container">
+                <canvas id="rentalTrendsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3 class="chart-title">Revenue Overview</h3>
+            <div class="chart-container">
+                <canvas id="revenueOverviewChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3 class="chart-title">Popular Categories</h3>
+            <div class="donut-wrapper">
+                <div class="donut-chart-box">
+                    <canvas id="popularCategoriesChart"></canvas>
+                </div>
+                <div class="donut-legend">
+                    <div class="legend-item">
+                        <span class="legend-color color-dark-brown"></span>
+                        <span class="legend-text">Evening Dress <strong>70%</strong></span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color color-light-brown"></span>
+                        <span class="legend-text">Casual Dress <strong>20%</strong></span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color color-gold"></span>
+                        <span class="legend-text">Cocktail Dress <strong>10%</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="violations-card">
+            <div class="violations-header">
+                <h3 class="chart-title">Recent Violations</h3>
+                <span class="badge-pending-count">2 Pending</span>
+            </div>
+
+            <div class="violations-list">
+                <div class="violation-item">
+                    <div class="violation-info">
+                        <div class="user-row">
+                            <span class="user-name">Kris Jolly</span>
+                            <span class="v-badge badge-warning">Late Return</span>
+                        </div>
+                        <p class="sub-text">Evening Gown</p>
+                        <p class="sub-text">Item returned 3 days late</p>
+                        <span class="v-status badge-success"><i class="fa-solid fa-check"></i> Resolved</span>
+                    </div>
+                    <div class="violation-meta">
+                        <span class="v-price">₱45</span>
+                        <span class="v-date">3/1/2026</span>
+                    </div>
+                </div>
+
+                <div class="violation-item">
+                    <div class="violation-info">
+                        <div class="user-row">
+                            <span class="user-name">Jhon Nilla</span>
+                            <span class="v-badge badge-danger">Damage</span>
+                        </div>
+                        <p class="sub-text">Black Dress</p>
+                        <p class="sub-text">Minor stain on hem</p>
+                        <span class="v-status badge-pending-status"><i class="fa-solid fa-clock"></i> Pending</span>
+                    </div>
+                    <div class="violation-meta">
+                        <span class="v-price">₱75</span>
+                        <span class="v-date">2/28/2026</span>
+                    </div>
+                </div>
+
+                <div class="violation-item">
+                    <div class="violation-info">
+                        <div class="user-row">
+                            <span class="user-name">Jim Santos</span>
+                            <span class="v-badge badge-warning">Late Return</span>
+                        </div>
+                        <p class="sub-text">Casual Gown</p>
+                        <p class="sub-text">Item returned 1 day late</p>
+                        <span class="v-status badge-success"><i class="fa-solid fa-check"></i> Resolved</span>
+                    </div>
+                    <div class="violation-meta">
+                        <span class="v-price">₱45</span>
+                        <span class="v-date">2/25/2026</span>
+                    </div>
+                </div>
+
+                <div class="violation-item">
+                    <div class="violation-info">
+                        <div class="user-row">
+                            <span class="user-name">Lisa Lacreo</span>
+                            <span class="v-badge badge-danger">Damage</span>
+                        </div>
+                        <p class="sub-text">Black Dress</p>
+                        <p class="sub-text">Torn fabric on shoulder</p>
+                        <span class="v-status badge-pending-status"><i class="fa-solid fa-clock"></i> Pending</span>
+                    </div>
+                    <div class="violation-meta">
+                        <span class="v-price">₱45</span>
+                        <span class="v-date">2/20/2026</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openSidebar() {
+            document.getElementById('sidebarDrawer').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebarDrawer').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        }
+
+        // Render Rental Trends Line Chart
+        const ctxTrends = document.getElementById('rentalTrendsChart').getContext('2d');
+        new Chart(ctxTrends, {
+            type: 'line',
+            data: {
+                labels: ['October', 'November', 'December', 'January', 'February', 'March', 'April'],
+                datasets: [{
+                    data: [5, 3, 4, 6, 16, 13, 9],
+                    borderColor: '#38bdf8',
+                    backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#38bdf8'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f0f0f0' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Render Revenue Overview Bar Chart
+        const ctxRevenue = document.getElementById('revenueOverviewChart').getContext('2d');
+        new Chart(ctxRevenue, {
+            type: 'bar',
+            data: {
+                labels: ['October', 'November', 'December', 'January', 'February', 'March', 'April'],
+                datasets: [{
+                    data: [700, 1050, 1350, 1850, 2900, 2500, 2100],
+                    backgroundColor: '#d97706',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f0f0f0' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Render Popular Categories Donut Chart
+        const ctxCategories = document.getElementById('popularCategoriesChart').getContext('2d');
+        new Chart(ctxCategories, {
+            type: 'doughnut',
+            data: {
+                labels: ['Evening Dress', 'Casual Dress', 'Cocktail Dress'],
+                datasets: [{
+                    data: [70, 20, 10],
+                    backgroundColor: ['#a35319', '#d99b68', '#f59e0b'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                cutout: '65%'
+            }
+        });
+    </script>
+
+</body>
+</html>

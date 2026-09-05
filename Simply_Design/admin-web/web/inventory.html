@@ -3,242 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simply Design - Inventory</title>
+    <title>Rental Track - Inventory</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../style/inventory.css">
-    <link rel="icon" href="../../img/logo.png" type="image/png">
 </head>
 <body>
 
-<header>
-    <div class="header-profile">
-        <div class="profile-icon" onclick="toggleMenu()">👤</div>
-        <div class="profile-menu" id="profileMenu">
-            <a href="./dashboard.html">Dashboard</a>
-            <a href="./inventory.html">Inventory</a>
-            <a href="#Active Rentals">Active Rentals</a>
-            <a href="#Customers">Customers</a>
-            <a href="#Analysis">Analysis</a>
-            <a href="#Settings">Settings</a>
-        </div>
-    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-    <div class="brand">
-        <div class="header-content">
-            <div>Rental Track</div>
-            <small>Admin</small>
-        </div>
-    </div>
-</header>
-
-<main>
-    <div class="catalog-header">
-        <div>
-            <h1>Inventory</h1>
-        </div>
-        <button class="add-item-btn" onclick="openModal()">＋ Add Item</button>
-    </div>
-
-    <section class="statistics">
-
-        <div class="stat-card total">
-            <span>Total Items</span>
-            <strong>5</strong>
+    <aside class="sidebar" id="sidebarDrawer">
+        <div class="sidebar-header">
+            <div class="header-left">
+                <div class="menu-icon-box">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div class="brand-info">
+                    <span class="brand-title">Rental Track</span>
+                    <span class="brand-subtitle">Admin Panel</span>
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
-        <div class="stat-card available">
-            <span>Available</span>
-            <strong>3</strong>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fa-solid fa-table-cells-large nav-icon"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="inventory.html" class="nav-item active">
+                <i class="fa-solid fa-box nav-icon"></i>
+                <span>Inventory</span>
+            </a>
+            <a href="active-rental.html" class="nav-item">
+                <i class="fa-solid fa-basket-shopping nav-icon"></i>
+                <span>Active Rental</span>
+            </a>
+            <a href="costumer.html" class="nav-item">
+                <i class="fa-solid fa-users nav-icon"></i>
+                <span>Costumers</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-location-dot nav-icon"></i>
+                <span>Location</span>
+            </a>
+            <a href="analytics.html" class="nav-item">
+                <i class="fa-solid fa-chart-line nav-icon"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="setting.html" class="nav-item">
+                <i class="fa-solid fa-gear nav-icon"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+
+    <header>
+        <div class="header-left">
+            <div class="avatar-box" onclick="openSidebar()" title="Click to open menu"></div>
+            <div class="header-text">
+                <div class="header-title">RentalTrack</div>
+                <div class="header-subtitle">james ried</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="inventory-top-bar">
+            <h1 class="page-title">Inventory</h1>
+            <button class="btn-add-item"><i class="fa-solid fa-plus"></i> add item</button>
         </div>
 
-        <div class="stat-card rented">
-            <span>Rented</span>
-            <strong>2</strong>
+        <div class="inventory-metrics-grid">
+            <div class="inv-metric-card">
+                <div class="inv-metric-label">Total Items</div>
+                <div class="inv-metric-value">5</div>
+            </div>
+            <div class="inv-metric-card status-available-bg">
+                <div class="inv-metric-label text-green">Available</div>
+                <div class="inv-metric-value text-green">3</div>
+            </div>
+            <div class="inv-metric-card">
+                <div class="inv-metric-label">Rented</div>
+                <div class="inv-metric-value">2</div>
+            </div>
         </div>
 
-    </section>
+        <div class="search-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" placeholder="Search items..." class="search-input">
+        </div>
 
-    <div class="search">
-        🔍
-        <input type="text" placeholder="Search items...">
-    </div>
+        <div class="filter-tabs">
+            <button class="tab-btn active">All</button>
+            <button class="tab-btn">Available</button>
+            <button class="tab-btn">Rented</button>
+        </div>
 
-    <div class="filters">
-        <button class="selected">All</button>
-        <button>Available</button>
-        <button>Rented</button>
-    </div>
-
-    <section class="inventory-list">
-
-        <article class="item">
-
-            <img src="evening-dress-1.jpg" alt="Evening Dress 1">
-
-            <div class="item-info">
-                <h2>Evening Dress 1</h2>
-                <p>Evening Dress</p>
-                <p>M | Dark Red Patch</p>
-                <strong>₱120.00</strong>
+        <div class="inventory-card-container">
+            <div class="inventory-item-row">
+                <div class="item-media">
+                    <img src="https://via.placeholder.com/60x80" alt="Evening Dress 1">
+                </div>
+                <div class="item-details">
+                    <div class="item-title">Evening Dress 1</div>
+                    <div class="item-sub">Evening Dress</div>
+                    <div class="item-spec">M | Dark Red Patch</div>
+                    <div class="item-price">₱120.00</div>
+                </div>
+                <div class="item-right-content">
+                    <span class="badge badge-rented">Rented</span>
+                    <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                </div>
             </div>
 
-            <span class="status rented-status">Rented</span>
-
-            <button class="delete">🗑</button>
-
-        </article>
-
-        <article class="item">
-
-            <img src="evening-dress-2.jpg" alt="Evening Dress 2">
-
-            <div class="item-info">
-                <h2>Evening Dress 2</h2>
-                <p>Evening Dress</p>
-                <p>M | Brown Plane</p>
-                <strong>₱120.00</strong>
+            <div class="inventory-item-row">
+                <div class="item-media">
+                    <img src="https://via.placeholder.com/60x80" alt="Evening Dress 2">
+                </div>
+                <div class="item-details">
+                    <div class="item-title">Evening Dress 2</div>
+                    <div class="item-sub">Evening Dress</div>
+                    <div class="item-spec">M | Brown Plane</div>
+                    <div class="item-price">₱120.00</div>
+                </div>
+                <div class="item-right-content">
+                    <span class="badge badge-available">Available</span>
+                    <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                </div>
             </div>
 
-            <span class="status available-status">Available</span>
-
-            <button class="delete">🗑</button>
-
-        </article>
-
-        <article class="item">
-
-            <img src="casual-dress-1.jpg" alt="Casual Dress 1">
-
-            <div class="item-info">
-                <h2>Casual Dress 1</h2>
-                <p>Casual Dress</p>
-                <p>M | Light Red</p>
-                <strong>₱120.00</strong>
+            <div class="inventory-item-row">
+                <div class="item-media">
+                    <img src="https://via.placeholder.com/60x80" alt="Casual Dress 1">
+                </div>
+                <div class="item-details">
+                    <div class="item-title">Casual Dress 1</div>
+                    <div class="item-sub">Casual Dress</div>
+                    <div class="item-spec">M | Light Red</div>
+                    <div class="item-price">₱120.00</div>
+                </div>
+                <div class="item-right-content">
+                    <span class="badge badge-available">Available</span>
+                    <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                </div>
             </div>
 
-            <span class="status available-status">Available</span>
-
-            <button class="delete">🗑</button>
-
-        </article>
-
-        <article class="item">
-
-            <img src="casual-dress-2.jpg" alt="Casual Dress 2">
-
-            <div class="item-info">
-                <h2>Casual Dress 2</h2>
-                <p>Casual Dress</p>
-                <p>M | Dark Red</p>
-                <strong>₱120.00</strong>
+            <div class="inventory-item-row">
+                <div class="item-media">
+                    <img src="https://via.placeholder.com/60x80" alt="Casual Dress 2">
+                </div>
+                <div class="item-details">
+                    <div class="item-title">Casual Dress 2</div>
+                    <div class="item-sub">Casual Dress</div>
+                    <div class="item-spec">M | Dark Red</div>
+                    <div class="item-price">₱120.00</div>
+                </div>
+                <div class="item-right-content">
+                    <span class="badge badge-rented">Rented</span>
+                    <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                </div>
             </div>
 
-            <span class="status rented-status">Rented</span>
-
-            <button class="delete">🗑</button>
-
-        </article>
-
-        <article class="item">
-
-            <img src="cocktail-dress-1.jpg" alt="Cocktail Dress 1">
-
-            <div class="item-info">
-                <h2>Cocktail Dress 1</h2>
-                <p>Cocktail Dress</p>
-                <p>M | Red</p>
-                <strong>₱120.00</strong>
+            <div class="inventory-item-row">
+                <div class="item-media">
+                    <img src="https://via.placeholder.com/60x80" alt="Cocktail Dress 1">
+                </div>
+                <div class="item-details">
+                    <div class="item-title">Cocktail Dress 1</div>
+                    <div class="item-sub">Cocktail Dress</div>
+                    <div class="item-spec">M | Red</div>
+                    <div class="item-price">₱120.00</div>
+                </div>
+                <div class="item-right-content">
+                    <span class="badge badge-available">Available</span>
+                    <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                </div>
             </div>
+        </div>
 
-            <span class="status available-status">Available</span>
+    <script>
+        function openSidebar() {
+            document.getElementById('sidebarDrawer').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+        }
 
-            <button class="delete">🗑</button>
-
-        </article>
-
-    </section>
-
-    <div class="modal" id="addItemModal">
-        <span class="close" onclick="closeModal()">&times;</span>
-
-        <form>
-            <label>Item Name</label>
-            <input type="text" placeholder="Enter your item name">
-
-            <label>Category</label>
-            <select>
-                <option>Evening Dress</option>
-                <option>Wedding Dress</option>
-                <option>Formal Wear</option>
-            </select>
-
-            <label>Size</label>
-            <select>
-                <option>S</option>
-                <option>M</option>
-                <option>L</option>
-                <option>XL</option>
-            </select>
-
-            <label>Color</label>
-            <input type="text">
-
-            <label>Price (per day)</label>
-            <input type="number" value="0">
-
-            <label>Upload Image</label>
-            <div class="upload-area">
-                <input type="file" accept=".png,.jpg,.jpeg" id="fileInput">
-                <p class="upload-icon">⇧</p>
-                <p class="upload-text">Click to upload</p>
-                <p class="upload-hint">PNG, JPG up to 10MB</p>
-            </div>
-
-            <button type="button" onclick="closeModal()">Cancel</button>
-            <button type="submit">Add Item</button>
-        </form>
-    </div>
-
-</main>
-
-<script>
-function toggleMenu() {
-    const menu = document.getElementById('profileMenu');
-    const icon = document.querySelector('.profile-icon');
-    
-    menu.classList.toggle('show');
-    icon.classList.toggle('active');
-}
-
-// Close menu when clicking outside
-document.addEventListener('click', function(event) {
-    const profileMenu = document.getElementById('profileMenu');
-    const profileIcon = document.querySelector('.profile-icon');
-    
-    if (!profileMenu.contains(event.target) && !profileIcon.contains(event.target)) {
-        profileMenu.classList.remove('show');
-        profileIcon.classList.remove('active');
-    }
-});
-
-// Modal functions
-function openModal() {
-    const modal = document.getElementById('addItemModal');
-    modal.classList.add('show');
-}
-
-function closeModal() {
-    const modal = document.getElementById('addItemModal');
-    modal.classList.remove('show');
-}
-
-// Close modal when clicking outside
-window.addEventListener('click', function(event) {
-    const modal = document.getElementById('addItemModal');
-    if (event.target === modal) {
-        closeModal();
-    }
-});
-</script>
+        function closeSidebar() {
+            document.getElementById('sidebarDrawer').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        }
+    </script>
 
 </body>
 </html>

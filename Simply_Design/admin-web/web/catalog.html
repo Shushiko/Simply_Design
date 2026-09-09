@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Track</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style/catalog.css">
+</head>
+<body>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <aside class="sidebar" id="sidebarDrawer">
+        <div class="sidebar-header">
+            <div class="header-left">
+                <div class="menu-icon-box">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div class="brand-info">
+                    <span class="brand-title">Rental Track</span>
+                    <span class="brand-subtitle">Admin Panel</span>
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fa-solid fa-table-cells-large nav-icon"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="inventory.html" class="nav-item active">
+                <i class="fa-solid fa-box nav-icon"></i>
+                <span>Inventory</span>
+            </a>
+            <a href="active-rental.html" class="nav-item">
+                <i class="fa-solid fa-basket-shopping nav-icon"></i>
+                <span>Active Rental</span>
+            </a>
+            <a href="costumer.html" class="nav-item">
+                <i class="fa-solid fa-users nav-icon"></i>
+                <span>Costumers</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-location-dot nav-icon"></i>
+                <span>Location</span>
+            </a>
+            <a href="analytics.html" class="nav-item">
+                <i class="fa-solid fa-chart-line nav-icon"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="setting.html" class="nav-item">
+                <i class="fa-solid fa-gear nav-icon"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Top Header Navbar -->
+    <header class="navbar">
+        <div class="nav-left">
+            <div class="logo-icon"></div>
+            <div class="brand-text">
+                <span class="brand-title">Rental Track</span>
+                <span class="brand-subtitle">Admin</span>
+            </div>
+        </div>
+        <div class="nav-tabs">
+            <button class="tab-btn active" id="tabAdmin" onclick="switchView('admin')">
+                <i class="fa-regular fa-user"></i> Admin
+            </button>
+            <button class="tab-btn" id="tabCatalog" onclick="switchView('catalog')">
+                <i class="fa-solid fa-box-archive"></i> Catalog
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- ================= ADMIN / INVENTORY VIEW ================= -->
+        <section id="adminView" class="view-section active-view">
+            <div class="admin-header">
+                <h1 class="admin-title">Inventory</h1>
+                <button class="btn-add-item"><i class="fa-solid fa-plus"></i> add Item</button>
+            </div>
+
+            <!-- Stats Overview Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Total Items</span>
+                    <span class="stat-value">5</span>
+                </div>
+                <div class="stat-card available">
+                    <span class="stat-label">Available</span>
+                    <span class="stat-value">3</span>
+                </div>
+                <div class="stat-card rented">
+                    <span class="stat-label">Rented</span>
+                    <span class="stat-value">2</span>
+                </div>
+            </div>
+
+            <!-- Search Field -->
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" placeholder="Search items...">
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="filter-pills">
+                <button class="pill active">All</button>
+                <button class="pill">Available</button>
+                <button class="pill">Rented</button>
+            </div>
+
+            <!-- Inventory List -->
+            <div class="inventory-card-container">
+
+                <!-- Item 1 -->
+                <div class="inventory-item">
+                    <div class="item-left">
+                        <img src="https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=200&auto=format&fit=crop&q=60" alt="Evening Dress 1" class="item-thumb">
+                        <div class="item-details">
+                            <span class="item-name">Evening Dress 1</span>
+                            <span class="item-subtext">Evening Dress</span>
+                            <span class="item-meta">M | Dark Red Patch</span>
+                            <span class="item-price">&#8369;120.00</span>
+                        </div>
+                    </div>
+                    <div class="item-right">
+                        <span class="badge badge-rented">Rented</span>
+                        <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="inventory-item">
+                    <div class="item-left">
+                        <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&auto=format&fit=crop&q=60" alt="Evening Dress 2" class="item-thumb">
+                        <div class="item-details">
+                            <span class="item-name">Evening Dress 2</span>
+                            <span class="item-subtext">Evening Dress</span>
+                            <span class="item-meta">M | Brown Plane</span>
+                            <span class="item-price">&#8369;120.00</span>
+                        </div>
+                    </div>
+                    <div class="item-right">
+                        <span class="badge badge-available">Available</span>
+                        <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="inventory-item">
+                    <div class="item-left">
+                        <img src="https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=200&auto=format&fit=crop&q=60" alt="Casual Dress 1" class="item-thumb">
+                        <div class="item-details">
+                            <span class="item-name">Casual Dress 1</span>
+                            <span class="item-subtext">Casual Dress</span>
+                            <span class="item-meta">M | Light Red</span>
+                            <span class="item-price">&#8369;120.00</span>
+                        </div>
+                    </div>
+                    <div class="item-right">
+                        <span class="badge badge-available">Available</span>
+                        <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="inventory-item">
+                    <div class="item-left">
+                        <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=200&auto=format&fit=crop&q=60" alt="Casual Dress 2" class="item-thumb">
+                        <div class="item-details">
+                            <span class="item-name">Casual Dress 2</span>
+                            <span class="item-subtext">Casual Dress</span>
+                            <span class="item-meta">M | Dark Red</span>
+                            <span class="item-price">&#8369;120.00</span>
+                        </div>
+                    </div>
+                    <div class="item-right">
+                        <span class="badge badge-rented">Rented</span>
+                        <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="inventory-item">
+                    <div class="item-left">
+                        <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=200&auto=format&fit=crop&q=60" alt="Cocktail Dress 1" class="item-thumb">
+                        <div class="item-details">
+                            <span class="item-name">Cocktail Dress 1</span>
+                            <span class="item-subtext">Cocktail Dress</span>
+                            <span class="item-meta">M | Red</span>
+                            <span class="item-price">&#8369;120.00</span>
+                        </div>
+                    </div>
+                    <div class="item-right">
+                        <span class="badge badge-available">Available</span>
+                        <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ================= CATALOG VIEW ================= -->
+        <section id="catalogView" class="view-section">
+            
+            <!-- Search Bar -->
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" placeholder="Search Dresses....">
+            </div>
+
+            <!-- Filter Pills -->
+            <div class="filter-pills">
+                <button class="pill active">All</button>
+                <button class="pill">Evening Dress</button>
+                <button class="pill">Casual Dress</button>
+                <button class="pill">Cocktail Dress</button>
+            </div>
+
+            <!-- Product Grid (3 Columns) -->
+            <div class="product-grid">
+
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500&auto=format&fit=crop&q=60" alt="Casual Dress 1">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="product-title">Casual Dress 1</h3>
+                        <span class="product-category">Casual Dress</span>
+                        <span class="product-price">$120</span>
+                    </div>
+                    <button class="rent-btn"><i class="fa-solid fa-calendar-check"></i> Rent</button>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500&auto=format&fit=crop&q=60" alt="Casual Dress 2">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="product-title">Casual Dress 2</h3>
+                        <span class="product-category">Casual Dress</span>
+                        <span class="product-price">$120</span>
+                    </div>
+                    <button class="rent-btn"><i class="fa-solid fa-calendar-check"></i> Rent</button>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=500&auto=format&fit=crop&q=60" alt="Evening Dress 1">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="product-title">Evening Dress 1</h3>
+                        <span class="product-category">Evening Dress</span>
+                        <span class="product-price">$120</span>
+                    </div>
+                    <button class="rent-btn"><i class="fa-solid fa-calendar-check"></i> Rent</button>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=500&auto=format&fit=crop&q=60" alt="Evening Dress 2">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="product-title">Evening Dress 2</h3>
+                        <span class="product-category">Evening Dress</span>
+                        <span class="product-price">$120</span>
+                    </div>
+                    <button class="rent-btn"><i class="fa-solid fa-calendar-check"></i> Rent</button>
+                </div>
+
+                <!-- Product 5 -->
+                <div class="product-card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=500&auto=format&fit=crop&q=60" alt="Cocktail Dress 1">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="product-title">Cocktail Dress 1</h3>
+                        <span class="product-category">Cocktail Dress</span>
+                        <span class="product-price">$120</span>
+                    </div>
+                    <button class="rent-btn"><i class="fa-solid fa-calendar-check"></i> Rent</button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function switchView(viewName) {
+            const adminView = document.getElementById('adminView');
+            const catalogView = document.getElementById('catalogView');
+            const tabAdmin = document.getElementById('tabAdmin');
+            const tabCatalog = document.getElementById('tabCatalog');
+
+            if (viewName === 'admin') {
+                adminView.classList.add('active-view');
+                catalogView.classList.remove('active-view');
+                tabAdmin.classList.add('active');
+                tabCatalog.classList.remove('active');
+            } else {
+                catalogView.classList.add('active-view');
+                adminView.classList.remove('active-view');
+                tabCatalog.classList.add('active');
+                tabAdmin.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>

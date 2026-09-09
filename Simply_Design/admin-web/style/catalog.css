@@ -1,0 +1,431 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+}
+
+body {
+  background-color: #f7f7f7;
+  color: #333333;
+  padding-bottom: 50px;
+}
+
+/* Top Header Navbar */
+.navbar {
+  background-color: #a35319;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 28px;
+  height: 28px;
+  background-color: #ffffff;
+  border-radius: 6px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  color: #ffffff;
+}
+
+.brand-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.brand-subtitle {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+/* Top Segmented Tab Switcher */
+.nav-tabs {
+  display: flex;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 3px;
+  width: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  background-color: #e2e8f0;
+  color: #111111;
+  font-weight: 600;
+}
+
+/* Main Container */
+.container {
+  padding: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* View Toggle Visibility */
+.view-section {
+  display: none;
+}
+
+.view-section.active-view {
+  display: block;
+}
+
+/* Common Search Box */
+.search-box {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.search-box input {
+  width: 100%;
+  height: 42px;
+  padding: 8px 14px 8px 38px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  background-color: #ffffff;
+}
+
+.search-box input:focus {
+  border-color: #a35319;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888888;
+  font-size: 14px;
+}
+
+/* Horizontal Filter Pills / Buttons */
+.filter-pills {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.pill {
+  flex: 1;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
+  background-color: #f1f2f4;
+  color: #555555;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.pill.active {
+  background-color: #a35319;
+  color: #ffffff;
+  border-color: #a35319;
+}
+
+/* ================= CATALOG VIEW STYLES ================= */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.product-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.card-image {
+  background-color: #f0f0f0;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-body {
+  background-color: #fbd685;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.product-category {
+  font-size: 11px;
+  color: #555555;
+  margin-top: 2px;
+}
+
+.product-price {
+  font-size: 12px;
+  font-weight: 600;
+  color: #222222;
+  margin-top: 4px;
+}
+
+.rent-btn {
+  background-color: #a35319;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color 0.2s;
+}
+
+.rent-btn:hover {
+  background-color: #834011;
+}
+
+/* ================= ADMIN / INVENTORY VIEW STYLES ================= */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.admin-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.btn-add-item {
+  background-color: #a35319;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-add-item:hover {
+  background-color: #834011;
+}
+
+/* Summary Stat Cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background-color: #fff9f5;
+  border: 1px solid #f2d2be;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-card.available {
+  background-color: #eaf8ed;
+  border-color: #bbf0c5;
+}
+
+.stat-card.rented {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666666;
+}
+
+.stat-card.available .stat-label {
+  color: #2e7d32;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111111;
+}
+
+/* Inventory List Container */
+.inventory-card-container {
+  background-color: #f1f2f4;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inventory-item {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.item-thumb {
+  width: 50px;
+  height: 60px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid #e2e8f0;
+}
+
+.item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.item-subtext {
+  font-size: 12px;
+  color: #666666;
+}
+
+.item-meta {
+  font-size: 12px;
+  color: #666666;
+}
+
+.item-price {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111111;
+  margin-top: 2px;
+}
+
+.item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 60px;
+}
+
+/* Status Badges */
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.badge-rented {
+  background-color: #fbcfe8;
+  color: #9d174d;
+}
+
+.badge-available {
+  background-color: #bbf7d0;
+  color: #166534;
+}
+
+.btn-delete {
+  background: transparent;
+  border: none;
+  color: #a35319;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.btn-delete:hover {
+  color: #b91c1c;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+}

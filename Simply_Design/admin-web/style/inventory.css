@@ -1,3 +1,6 @@
+/* ==========================================================================
+   RESET & BASE STYLES
+   ========================================================================== */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,195 +9,257 @@
 }
 
 body {
-    background-color: #f8f8f8;
-    color: #333;
+    background-color: #f7f7f7;
+    color: #333333;
     padding-bottom: 40px;
 }
 
-/* Header Container */
-header {
-    background-color: #a35319;
-    color: white;
-    padding: 12px 16px;
-    height: 64px;
+/* ==========================================================================
+   TOP HEADER NAVBAR & NAVIGATION TABS
+   ========================================================================== */
+header,
+.navbar {
+    background-color: #9f5413;
+    padding: 12px 16px 14px 16px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 12px;
 }
 
-/* Header Flex Layout */
-.header-left {
+.header-left,
+.nav-left {
     display: flex;
-    flex-direction: row;
     align-items: center;
     gap: 12px;
 }
 
-/* Avatar Box */
 .avatar-box {
-    width: 38px;
-    height: 38px;
-    background-color: #e0e0e0;
+    width: 36px;
+    height: 36px;
+    background-color: #ffffff;
     border-radius: 8px;
     cursor: pointer;
     flex-shrink: 0;
-    transition: transform 0.15s ease, background-color 0.2s ease;
 }
 
-.avatar-box:hover {
-    background-color: #ffffff;
-    transform: scale(1.05);
-}
-
-.avatar-box:active {
-    transform: scale(0.95);
-}
-
-.header-text {
+.header-text,
+.brand-text {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    color: #ffffff;
 }
 
-.header-title {
+.header-title,
+.brand-title {
     font-size: 16px;
     font-weight: 700;
-    line-height: 1.2;
-    color: #ffffff;
+    line-height: 1.1;
 }
 
-.header-subtitle {
-    font-size: 12px;
-    opacity: 0.9;
-    color: #ffffff;
-    font-weight: 400;
+.header-subtitle,
+.brand-subtitle {
+    font-size: 11px;
+    opacity: 0.85;
 }
 
-/* Page Container */
+/* White Pill Container for Top Navigation Tabs */
+.nav-tabs {
+    display: flex;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 4px;
+    width: 100%;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 600;
+    color: #666666;
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+    background-color: #eaeaea;
+    color: #111111;
+}
+
+/* ==========================================================================
+   MAIN LAYOUT CONTAINER & VIEWS
+   ========================================================================== */
 .container {
     max-width: 1700px;
-    margin: 16px auto;
-    padding: 0 12px;
+    margin: 0 auto;
+    padding: 20px 16px;
 }
 
-/* Top Bar */
-.inventory-top-bar {
+.view-section {
+    display: none;
+}
+
+.view-section.active-view {
+    display: block;
+}
+
+/* ==========================================================================
+   ADMIN / INVENTORY VIEW STYLES
+   ========================================================================== */
+.inventory-top-bar,
+.admin-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
 }
 
-.page-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: #111;
+.page-title,
+.admin-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #111111;
 }
 
 .btn-add-item {
-    background-color: #a35319;
-    color: white;
+    background-color: #9f5413;
+    color: #ffffff;
     border: none;
-    padding: 10px 16px;
+    padding: 10px 18px;
     border-radius: 8px;
-    font-weight: 600;
     font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
-/* Inventory Metrics */
-.inventory-metrics-grid {
+/* Metrics Cards */
+.inventory-metrics-grid,
+.stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: 12px;
     margin-bottom: 16px;
 }
 
-.inv-metric-card {
-    background: white;
-    border: 1px solid #dcdcdc;
+.inv-metric-card,
+.stat-card {
+    background-color: #fcf8f2;
+    border: 1px solid #d8a070;
     border-radius: 8px;
-    padding: 12px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
 }
 
-.status-available-bg {
-    background-color: #eefbe8;
-    border-color: #c6f0b8;
+.status-available-bg,
+.stat-card.available {
+    background-color: #eaf6ea;
+    border-color: #b3e2b3;
 }
 
-.inv-metric-label {
+.stat-card.rented {
+    background-color: #ffffff;
+    border-color: #cccccc;
+}
+
+.inv-metric-label,
+.stat-label {
     font-size: 12px;
-    color: #666;
-    margin-bottom: 4px;
+    font-weight: 600;
+    color: #a05010;
+    margin-bottom: 6px;
 }
 
-.inv-metric-value {
-    font-size: 20px;
-    font-weight: 700;
-    color: #111;
+.status-available-bg .inv-metric-label,
+.stat-card.available .stat-label {
+    color: #2e7d32;
+}
+
+.stat-card.rented .stat-label {
+    color: #333333;
+}
+
+.inv-metric-value,
+.stat-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111111;
 }
 
 .text-green {
     color: #2e7d32 !important;
 }
 
-/* Search Wrapper */
-.search-wrapper {
+/* Search Box */
+.search-wrapper,
+.search-box {
     position: relative;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
 .search-icon {
     position: absolute;
-    left: 12px;
+    left: 14px;
     top: 50%;
     transform: translateY(-50%);
-    color: #888;
+    color: #888888;
     font-size: 14px;
 }
 
-.search-input {
+.search-input,
+.search-box input {
     width: 100%;
-    padding: 10px 12px 10px 36px;
-    border: 1px solid #dcdcdc;
+    padding: 12px 12px 12px 38px;
+    border: 1px solid #d0d0d0;
     border-radius: 8px;
     font-size: 14px;
     outline: none;
     background-color: #ffffff;
 }
 
-/* Filter Tabs */
-.filter-tabs {
+/* Filter Buttons (All, Available, Rented) */
+.filter-tabs,
+.filter-pills {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 16px;
 }
 
-.tab-btn {
+.filter-tabs .tab-btn,
+.pill {
     flex: 1;
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     background-color: #f1f1f1;
-    color: #555;
+    color: #333333;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-
+    text-align: center;
 }
 
-.tab-btn.active {
-    background-color: #a35319;
-    color: white;
-    border-color: #a35319;
+.filter-tabs .tab-btn.active,
+.pill.active {
+    background-color: #9f5413;
+    color: #ffffff;
+    border-color: #9f5413;
 }
 
-/* Inventory Card Container */
+/* Inventory List Container */
 .inventory-card-container {
-    background: white;
-    border: 1px solid #dcdcdc;
+    background-color: #e5e5e5;
     border-radius: 12px;
     padding: 12px;
     display: flex;
@@ -202,93 +267,170 @@ header {
     gap: 12px;
 }
 
-/* Item Row Layout */
-.inventory-item-row {
-    display: flex;
-    align-items: center;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    padding: 12px;
-    gap: 14px;
+.inventory-item-row,
+.inventory-item {
     background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.item-media img {
-    width: 60px;
-    height: 80px;
+.item-left {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.item-media img,
+.item-thumb {
+    width: 65px;
+    height: 85px;
     object-fit: cover;
-    border-radius: 6px;
-    background-color: #f0f0f0;
-    display: block;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
 }
 
 .item-details {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
 }
 
-.item-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #111;
+.item-title,
+.item-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111111;
 }
 
-.item-sub, .item-spec {
+.item-sub,
+.item-spec,
+.item-subtext,
+.item-meta {
     font-size: 13px;
-    color: #666;
+    color: #666666;
 }
 
 .item-price {
     font-size: 14px;
     font-weight: 700;
-    color: #111;
+    color: #111111;
     margin-top: 4px;
 }
 
-/* Right Side Layout (Badge Top, Delete Bottom) */
-.item-right-content {
+.item-right-content,
+.item-right {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     justify-content: space-between;
-    align-self: stretch;
+    height: 85px;
 }
 
+/* Status Badges */
 .badge {
+    padding: 6px 16px;
+    border-radius: 14px;
     font-size: 12px;
-    font-weight: 600;
-    padding: 4px 12px;
-    border-radius: 12px;
-    display: inline-block;
+    font-weight: 700;
 }
 
 .badge-rented {
-    background-color: #fde8e8;
-    color: #e02424;
+    background-color: #f9c9c1;
+    color: #b03a2e;
 }
 
 .badge-available {
-    background-color: #def7ec;
-    color: #03543f;
+    background-color: #a3f1b4;
+    color: #1e7e34;
 }
 
 .btn-delete {
     background: transparent;
     border: none;
-    color: #c81e1e;
+    color: #a05010;
     font-size: 16px;
     cursor: pointer;
-    padding: 2px 4px;
-    line-height: 1;
-    transition: color 0.15s ease;
 }
 
-.btn-delete:hover {
-    color: #9b1c1c;
+/* ==========================================================================
+   CATALOG VIEW PRODUCT GRID
+   ========================================================================== */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
 }
-/* Sidebar Drawer Overlay */
+
+.product-card {
+    background-color: #ebebeb;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.card-image {
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background-color: #ebebeb;
+}
+
+.card-image img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.card-body {
+    background-color: #f3c87a;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #111111;
+}
+
+.product-category {
+    font-size: 11px;
+    color: #444444;
+}
+
+.product-price {
+    font-size: 11px;
+    font-weight: 700;
+    color: #111111;
+    margin-top: 2px;
+}
+
+.rent-btn {
+    background-color: #9f5413;
+    color: #ffffff;
+    border: none;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* ==========================================================================
+   SIDEBAR DRAWER STYLES
+   ========================================================================== */
 .sidebar-overlay {
     position: fixed;
     top: 0;
@@ -299,7 +441,7 @@ header {
     backdrop-filter: blur(2px);
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     z-index: 99;
 }
 
@@ -308,7 +450,6 @@ header {
     visibility: visible;
 }
 
-/* Sidebar Drawer Slide Animation */
 .sidebar {
     position: fixed;
     top: 0;
@@ -317,68 +458,44 @@ header {
     height: 100vh;
     background-color: #ffffff;
     box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.35s ease;
     transform: translateX(0);
     z-index: 100;
     display: flex;
     flex-direction: column;
 }
 
-.sidebar.open {
+.sidebar.open,
+.sidebar.active {
     transform: translateX(280px);
 }
 
 .sidebar-header {
-    background-color: #a35319;
-    color: white;
+    background-color: #9f5413;
+    color: #ffffff;
     padding: 14px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.sidebar-header .header-left {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
-}
-
 .menu-icon-box {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     background-color: #ffffff;
-    border-radius: 8px;
+    border-radius: 6px;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #a35319;
-    font-size: 16px;
-}
-
-.brand-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.brand-title {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.1;
-}
-
-.brand-subtitle {
-    font-size: 11px;
-    opacity: 0.85;
+    color: #9f5413;
 }
 
 .close-btn {
     background: transparent;
     border: none;
-    color: white;
+    color: #ffffff;
     font-size: 18px;
     cursor: pointer;
-    padding: 4px;
 }
 
 .sidebar-nav {
@@ -396,41 +513,15 @@ header {
     border: 1px solid #d0d0d0;
     border-radius: 10px;
     text-decoration: none;
-    color: #a35319;
+    color: #9f5413;
     font-size: 15px;
     font-weight: 500;
     background-color: #ffffff;
     transition: all 0.2s ease;
 }
 
-.nav-icon {
-    font-size: 16px;
-    width: 20px;
-    text-align: center;
-}
-
 .nav-item.active {
-    background-color: #a35319;
+    background-color: #9f5413;
     color: #ffffff;
-    border-color: #a35319;
+    border-color: #9f5413;
 }
-
-/* Nav Item Animations */
-.sidebar-nav .nav-item {
-    opacity: 0;
-    transform: translateX(-15px);
-    transition: opacity 0.25s ease, transform 0.25s ease, background-color 0.2s ease;
-}
-
-.sidebar.open .sidebar-nav .nav-item {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.sidebar.open .sidebar-nav .nav-item:nth-child(1) { transition-delay: 0.05s; }
-.sidebar.open .sidebar-nav .nav-item:nth-child(2) { transition-delay: 0.10s; }
-.sidebar.open .sidebar-nav .nav-item:nth-child(3) { transition-delay: 0.15s; }
-.sidebar.open .sidebar-nav .nav-item:nth-child(4) { transition-delay: 0.20s; }
-.sidebar.open .sidebar-nav .nav-item:nth-child(5) { transition-delay: 0.25s; }
-.sidebar.open .sidebar-nav .nav-item:nth-child(6) { transition-delay: 0.30s; }
-.sidebar.open .sidebar-nav .nav-item:nth-child(7) { transition-delay: 0.35s; }

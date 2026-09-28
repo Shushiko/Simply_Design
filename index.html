@@ -23,7 +23,11 @@
           <p class="login-submess">Sign in to continue</p>
         </div>
         <div class="login-body">
-          <form id="loginForm">
+          <form
+            id="loginForm"
+            data-admin-url="Simply_Design/admin-web/web/dashboard.html"
+            data-user-url="Simply_Design/flutter-app/user-web/web/user.html"
+          >
             <p class="form">Email Address</p>
             <div class="login-email">
               <i class="fa-regular fa-envelope"></i>
@@ -66,6 +70,7 @@
                 aria-label="Hide password"
               ></i>
             </div>
+            <p class="form-error" id="formError" role="alert"></p>
             <div class="signin-btn">
               <i class="fa-solid fa-arrow-right-to-bracket"></i>
               <button type="submit" class="sign-in">Sign in</button>
@@ -95,19 +100,15 @@
           </div>
           <div class="signup">
             <p class="sign-up-message">
-              Don't have an account? <a href="signup.html"><span class="signup-link">Sign up</span></a>
+              Don't have an account?
+              <a href="Simply_Design/admin-web/web/signup.html"><span class="signup-link">Sign up</span></a>
             </p>
           </div>
         </div>
       </div>
     </div>
 
-    <script src="Simply_Design/admin-web/javascript/animation.js" defer></script>
-    <script>
-      document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        window.location.href = 'dashboard.html';
-      });
-    </script>
+    <script src="Simply_Design/admin-web/javascript/loginandsignup.js" defer></script>
+    <script src="Simply_Design/admin-web/javascript/auth.js" defer></script>
   </body>
 </html>

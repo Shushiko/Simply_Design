@@ -1,224 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rental Track - Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../style/dashboard.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simply Design | Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../style/dashboard.css">
+  <script src="../javascript/navigation.js" defer></script>
+  <script src="../javascript/animations.js" defer></script>
 </head>
 <body>
+  <div class="app">
 
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">Simply <span>Design</span></div>
 
-    <aside class="sidebar" id="sidebarDrawer">
-        <div class="sidebar-header">
-            <div class="header-left">
-                <div class="menu-icon-box">
-                    <i class="fa-solid fa-bars"></i>
-                </div>
-                <div class="brand-info">
-                    <span class="brand-title">RentalTrack</span>
-                    <span class="brand-subtitle">Admin Panel</span>
-                </div>
-            </div>
-            <button class="close-btn" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
+      <nav class="nav">
+        <p class="nav-title">Main Menu</p>
+        <a href="dashboard.html" class="nav-link active"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
+        <a href="inventory.html" class="nav-link"><i class="fa-solid fa-box-archive"></i> Inventory</a>
+        <a href="rentals.html" class="nav-link"><i class="fa-solid fa-briefcase"></i> Rentals</a>
+        <a href="customers.html" class="nav-link"><i class="fa-solid fa-user-group"></i> Customers</a>
+        <a href="locations.html" class="nav-link"><i class="fa-solid fa-location-dot"></i> Locations</a>
+        <p class="nav-title">Management</p>
+        <a href="analytics.html" class="nav-link"><i class="fa-solid fa-chart-column"></i> Analystics</a>
+        <a href="settings.html" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a>
+      </nav>
+
+      <div class="profile">
+        <div class="avatar">AD</div>
+        <div>
+          <strong>Admin</strong>
+          <span>Simply Design</span>
         </div>
-
-        <nav class="sidebar-nav">
-            <a href="dashboard.html" class="nav-item active">
-                <i class="fa-solid fa-table-cells-large nav-icon"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="inventory.html" class="nav-item">
-                <i class="fa-solid fa-box nav-icon"></i>
-                <span>Inventory</span>
-            </a>
-            <a href="active-rental.html" class="nav-item">
-                <i class="fa-solid fa-basket-shopping nav-icon"></i>
-                <span>Active Rental</span>
-            </a>
-            <a href="costumer.html" class="nav-item">
-                <i class="fa-solid fa-users nav-icon"></i>
-                <span>Costomers</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-location-dot nav-icon"></i>
-                <span>Location</span>
-            </a>
-            <a href="analytics.html" class="nav-item">
-                <i class="fa-solid fa-chart-line nav-icon"></i>
-                <span>Analytics</span>
-            </a>
-            <a href="setting.html" class="nav-item">
-                <i class="fa-solid fa-gear nav-icon"></i>
-                <span>Settings</span>
-            </a>
-        </nav>
+      </div>
     </aside>
 
-    <header>
-        <div class="header-left">
-            <div class="avatar-box" onclick="openSidebar()" title="Click to open menu"></div>
-            <div class="header-text">
-                <div class="header-title">Rental Track</div>
-                <div class="header-subtitle">Admin Panel</div>
+    <!-- Main -->
+    <div class="main">
+      <header class="topbar">
+        <h1>Dashboard</h1>
+        <div class="date"><i class="fa-regular fa-calendar-days"></i> September 15, 2026</div>
+      </header>
+
+      <main class="content">
+
+        <section class="welcome">
+          <p class="welcome-label">SIMPLY DESIGN &bull; RENTAL MANAGEMENT</p>
+          <h2>Good Morning, Admin.</h2>
+          <p>Manage gowns, customers, rentals, payment, and inventory from one place</p>
+        </section>
+
+        <section class="stats">
+          <article class="card stat">
+            <div class="stat-head"><span>TOTAL EARNINGS</span><i class="fa-solid fa-peso-sign"></i></div>
+            <strong>&#8369;9,200</strong>
+            <small>Recorded payments</small>
+          </article>
+          <article class="card stat">
+            <div class="stat-head"><span>AVAILABLE STOCKS</span><i class="fa-solid fa-box-archive"></i></div>
+            <strong>4</strong>
+            <small>Ready for rental</small>
+          </article>
+          <article class="card stat">
+            <div class="stat-head"><span>TOTAL ITEMS</span><i class="fa-solid fa-briefcase"></i></div>
+            <strong>6</strong>
+            <small>5 gowns + 1 formal</small>
+          </article>
+          <article class="card stat">
+            <div class="stat-head"><span>ACTIVE RENTALS</span><i class="fa-regular fa-clock"></i></div>
+            <strong>2</strong>
+            <small>Current rentals</small>
+          </article>
+        </section>
+
+        <section class="panels">
+          <article class="card chart-card">
+            <div class="card-head">
+              <h3>Weekly Sales Report</h3>
+              <a href="analytics.html">View Report <i class="fa-solid fa-arrow-right"></i></a>
             </div>
-        </div>
-    </header>
-
-    <div class="container">
-        <div class="welcome-banner">
-            <h1>Welcome back!</h1>
-            <p>Here's what's happening with your rentals todays</p>
-        </div>
-
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <div class="card-top">
-                    <div class="icon-box"><i class="fa-solid fa-box"></i></div>
-                    <i class="fa-solid fa-arrow-trend-up trend-icon"></i>
-                </div>
-                <div class="metric-value">5</div>
-                <div class="metric-label">Total Items</div>
+            <div class="chart">
+              <div class="bar-col"><div class="bar" style="height: 11%"></div><span>Mon</span></div>
+              <div class="bar-col"><div class="bar" style="height: 62%"></div><span>Tue</span></div>
+              <div class="bar-col"><div class="bar" style="height: 22%"></div><span>Wed</span></div>
+              <div class="bar-col"><div class="bar" style="height: 88%"></div><span>Thu</span></div>
+              <div class="bar-col"><div class="bar" style="height: 44%"></div><span>Fri</span></div>
+              <div class="bar-col"><div class="bar" style="height: 100%"></div><span>Sat</span></div>
+              <div class="bar-col"><div class="bar" style="height: 66%"></div><span>Sun</span></div>
             </div>
+          </article>
 
-            <div class="metric-card">
-                <div class="card-top">
-                    <div class="icon-box"><i class="fa-solid fa-location-dot"></i></div>
-                    <i class="fa-regular fa-calendar trend-icon"></i>
-                </div>
-                <div class="metric-value">2</div>
-                <div class="metric-label">Active Rentals</div>
+          <article class="card activity-card">
+            <div class="card-head">
+              <h3>Recent Activity</h3>
+              <a href="rentals.html">See All <i class="fa-solid fa-arrow-right"></i></a>
             </div>
-
-            <div class="metric-card">
-                <div class="card-top">
-                    <div class="icon-box"><i class="fa-solid fa-users"></i></div>
-                    <i class="fa-solid fa-arrow-trend-up trend-icon"></i>
+            <ul class="activity">
+              <li>
+                <div>
+                  <p class="who">Ana Reyes &mdash; Blank Men Suit</p>
+                  <p class="meta">SD-2026-0008 &bull; Return 2026-09-12</p>
                 </div>
-                <div class="metric-value">3</div>
-                <div class="metric-label">Available</div>
-            </div>
-
-            <div class="metric-card">
-                <div class="card-top">
-                    <div class="icon-box"><i class="fa-solid fa-peso-sign"></i></div>
-                    <i class="fa-solid fa-arrow-trend-up trend-icon"></i>
+                <span class="badge overdue">OVERDUE</span>
+              </li>
+              <li>
+                <div>
+                  <p class="who">Maria Santos &mdash; Black Cocktail Dress</p>
+                  <p class="meta">SD-2026-0012 &bull; Return 2026-09-19</p>
                 </div>
-                <div class="metric-value">₱8, 450</div>
-                <div class="metric-label">This Week</div>
-            </div>
-        </div>
-
-        <div class="chart-card">
-            <div class="chart-container">
-                <svg class="chart-svg" viewBox="0 0 700 150">
-                    <line x1="20" y1="20" x2="680" y2="20" stroke="#f0f0f0" stroke-width="1"/>
-                    <line x1="20" y1="50" x2="680" y2="50" stroke="#f0f0f0" stroke-width="1"/>
-                    <line x1="20" y1="80" x2="680" y2="80" stroke="#f0f0f0" stroke-width="1"/>
-                    <line x1="20" y1="110" x2="680" y2="110" stroke="#f0f0f0" stroke-width="1"/>
-                    <line x1="20" y1="130" x2="680" y2="130" stroke="#333" stroke-width="1"/>
-
-                    <text x="10" y="24" class="chart-axis-text">8</text>
-                    <text x="10" y="54" class="chart-axis-text">6</text>
-                    <text x="10" y="84" class="chart-axis-text">4</text>
-                    <text x="10" y="114" class="chart-axis-text">2</text>
-                    <text x="10" y="134" class="chart-axis-text">0</text>
-
-                    <line x1="120" y1="20" x2="120" y2="130" stroke="#f0f0f0" stroke-width="1"/>
-                    <line x1="210" y1="20" x2="210" y2="130" stroke="#f0f0f0" stroke-width="1"/>
-                    <line x1="300" y1="20" x2="300" y2="130" stroke="#f0f0f0" stroke-width="1"/>
-                    <line x1="390" y1="20" x2="390" y2="130" stroke="#f0f0f0" stroke-width="1"/>
-                    <line x1="480" y1="20" x2="480" y2="130" stroke="#f0f0f0" stroke-width="1"/>
-                    <line x1="570" y1="20" x2="570" y2="130" stroke="#f0f0f0" stroke-width="1"/>
-                    <line x1="660" y1="20" x2="660" y2="130" stroke="#f0f0f0" stroke-width="1"/>
-
-                    <path d="M 30 80 Q 120 40, 210 50 T 300 80 T 390 110 T 480 120 T 570 110 T 660 90" 
-                          fill="none" stroke="#38bdf8" stroke-width="2"/>
-
-                    <circle cx="30" cy="80" r="3" fill="#0ea5e9"/>
-                    <circle cx="120" cy="50" r="3" fill="#0ea5e9"/>
-                    <circle cx="210" cy="52" r="3" fill="#0ea5e9"/>
-                    <circle cx="300" cy="80" r="3" fill="#0ea5e9"/>
-                    <circle cx="390" cy="110" r="3" fill="#0ea5e9"/>
-                    <circle cx="480" cy="120" r="3" fill="#0ea5e9"/>
-                    <circle cx="570" cy="110" r="3" fill="#0ea5e9"/>
-                    <circle cx="660" cy="90" r="3" fill="#0ea5e9"/>
-                </svg>
-
-                <div class="chart-tooltip">
-                    <div class="tooltip-title">Wed</div>
-                    <div class="tooltip-value">rentals : 2</div>
+                <span class="badge active">ACTIVE</span>
+              </li>
+              <li>
+                <div>
+                  <p class="who">Christine Luna &mdash; Blue Long Gown</p>
+                  <p class="meta">SD-2026-0010 &bull; Return 2026-09-21</p>
                 </div>
-            </div>
+                <span class="badge returned">RETURNED</span>
+              </li>
+            </ul>
+          </article>
+        </section>
 
-            <div class="chart-x-labels">
-                <span>Monday</span>
-                <span>Tuesday</span>
-                <span>wednesday</span>
-                <span>Thursday</span>
-                <span>Friday</span>
-                <span>Saturday</span>
-                <span>Sunday</span>
-            </div>
-        </div>
-
-        <div class="activity-card">
-            <h2 class="activity-title">Recent Activity</h2>
-            <div class="activity-list">
-                
-                <div class="activity-item">
-                    <div class="icon-box"><i class="fa-solid fa-bag-shopping"></i></div>
-                    <div class="activity-details">
-                        <div class="activity-type">New rental</div>
-                        <div class="activity-meta">Christine Luna • Evening Gown</div>
-                        <div class="activity-time">2 hours ago</div>
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="icon-box"><i class="fa-solid fa-box"></i></div>
-                    <div class="activity-details">
-                        <div class="activity-type">Item returned</div>
-                        <div class="activity-meta">Kyle Luna • Black Dress</div>
-                        <div class="activity-time">5 hours ago</div>
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="icon-box"><i class="fa-solid fa-users"></i></div>
-                    <div class="activity-details">
-                        <div class="activity-type">New customer</div>
-                        <div class="activity-meta">Gian Luis Conception</div>
-                        <div class="activity-time">1 day ago</div>
-                    </div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="icon-box"><i class="fa-solid fa-peso-sign"></i></div>
-                    <div class="activity-details">
-                        <div class="activity-type">Payment received</div>
-                        <div class="activity-meta">Victor Rubio • Black Dress</div>
-                        <div class="activity-time">1 day ago</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+      </main>
     </div>
-
-    <script>
-        function openSidebar() {
-            document.getElementById('sidebarDrawer').classList.add('open');
-            document.getElementById('sidebarOverlay').classList.add('active');
-        }
-
-        function closeSidebar() {
-            document.getElementById('sidebarDrawer').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('active');
-        }
-    </script>
-
+  </div>
 </body>
 </html>

@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simply Design - Settings</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../style/setting.css">
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h1 class="brand-logo">Simply <span>Design</span></h1>
+        </div>
+
+        <nav class="sidebar-menu">
+          <div class="menu-label">MAIN MENU</div>
+          <a href="dashboard.html" class="nav-item">
+            <i class="fa-solid fa-table-cells-large"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="inventory.html" class="nav-item">
+            <i class="fa-solid fa-square-poll-vertical"></i>
+            <span>Inventory</span>
+          </a>
+          <a href="#" class="nav-item">
+            <i class="fa-solid fa-person-dress"></i>
+            <span>Rentals</span>
+          </a>
+          <a href="#" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Customers</span>
+          </a>
+          <a href="#" class="nav-item">
+            <i class="fa-solid fa-peso-sign"></i>
+            <span>Payments</span>
+          </a>
+
+          <div class="menu-label">MANAGEMENT</div>
+          <a href="#" class="nav-item">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Reports</span>
+          </a>
+          <a href="settings.html" class="nav-item active">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+          </a>
+        </nav>
+
+        <div class="user-profile">
+          <div class="avatar-circle">AD</div>
+          <div class="user-info">
+            <div class="user-name">Admin</div>
+            <div class="user-role">Simply Design</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+          <h2 class="page-title">Settings</h2>
+          <div class="date-badge">
+            <i class="fa-solid fa-clover"></i>
+            <span>September 15, 2026</span>
+          </div>
+        </header>
+
+        <!-- Dashboard Body -->
+        <div class="dashboard-body">
+          <div class="settings-container">
+            <!-- Business Info Card -->
+            <div class="panel-card settings-card">
+              <h3 class="panel-title mb-20">Business Information</h3>
+              <div class="form-grid">
+                <div class="form-group full-width">
+                  <label>BUSINESS NAME</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    value="Simply Design by Jun Tabi"
+                  />
+                </div>
+                <div class="form-group">
+                  <label
+                    ><i class="fa-regular fa-envelope icon-label"></i>
+                    EMAIL</label
+                  >
+                  <input
+                    type="email"
+                    class="form-input"
+                    value="admin@simplydesign.com"
+                  />
+                </div>
+                <div class="form-group">
+                  <label
+                    ><i class="fa-solid fa-phone icon-label"></i> PHONE</label
+                  >
+                  <input
+                    type="text"
+                    class="form-input"
+                    value="+63 980-108-5346"
+                  />
+                </div>
+                <div class="form-group full-width">
+                  <label
+                    ><i class="fa-solid fa-location-dot icon-label"></i>
+                    ADDRESS</label
+                  >
+                  <input
+                    type="text"
+                    class="form-input"
+                    value="Juan Street, Tayabas City"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Notification Preferences Card -->
+            <div class="panel-card settings-card">
+              <h3 class="panel-title mb-20">
+                <i class="fa-regular fa-bell icon-title"></i> Notification
+                Preferences
+              </h3>
+
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <span class="toggle-label">New Rentals</span>
+                  <span class="toggle-desc"
+                    >Get notified when new rentals are made</span
+                  >
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <span class="toggle-label">Item Returns</span>
+                  <span class="toggle-desc"
+                    >Get notified when items are returned</span
+                  >
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <span class="toggle-label">Payment Received</span>
+                  <span class="toggle-desc"
+                    >Get notified when payments are received</span
+                  >
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <span class="toggle-label">Violations</span>
+                  <span class="toggle-desc"
+                    >Get notified about late returns and damages</span
+                  >
+                </div>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Payment Settings Card -->
+            <div class="panel-card settings-card">
+              <h3 class="panel-title mb-20">
+                <i class="fa-regular fa-credit-card icon-title"></i> Payment
+                Settings
+              </h3>
+              <div class="form-grid">
+                <div class="form-group full-width">
+                  <label>GCASH NUMBER</label>
+                  <input type="text" class="form-input" value="09171234567" />
+                </div>
+                <div class="form-group">
+                  <label>LATE RETURN FEE (PER DAY)</label>
+                  <input type="text" class="form-input" value="₱ 15" />
+                </div>
+                <div class="form-group">
+                  <label>DAMAGE FEE (MINIMUM)</label>
+                  <input type="text" class="form-input" value="₱ 50" />
+                </div>
+              </div>
+            </div>
+
+            <!-- App Preferences Card -->
+            <div class="panel-card settings-card">
+              <h3 class="panel-title mb-20">App Preferences</h3>
+
+              <div class="toggle-row mb-16">
+                <div class="toggle-info">
+                  <span class="toggle-label"
+                    ><i class="fa-regular fa-sun icon-label"></i> Dark
+                    Mode</span
+                  >
+                  <span class="toggle-desc">Toggle dark mode theme</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>LANGUAGE</label>
+                  <select class="form-select">
+                    <option value="en" selected>English</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>CURRENCY</label>
+                  <select class="form-select">
+                    <option value="PHP" selected>Philippine Peso (₱)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Security Card -->
+            <div class="panel-card settings-card">
+              <h3 class="panel-title mb-20">
+                <i class="fa-solid fa-lock icon-title"></i> Security
+              </h3>
+              <div class="button-group">
+                <button class="btn-action-lg btn-secondary">
+                  Change Password
+                </button>
+                <button class="btn-action-lg btn-outline">
+                  Enable Two-Factor Authentication
+                </button>
+              </div>
+            </div>
+
+            <!-- Bottom Action Buttons -->
+            <div class="action-footer">
+              <button class="btn-save-lg">Save Changes</button>
+              <button
+                class="btn-logout-lg"
+                id="logoutBtn"
+                onclick="handleLogout()"
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      function handleLogout() {
+        window.location.href = "login.html";
+      }
+    </script>
+  </body>
+</html>

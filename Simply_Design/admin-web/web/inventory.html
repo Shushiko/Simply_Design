@@ -1,206 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rental Track - Inventory</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../style/inventory.css">
-    <script src="../javascript/inventory.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simply Design | Inventory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../style/dashboard.css">
+  <script src="../javascript/navigation.js" defer></script>
+  <script src="../javascript/animations.js" defer></script>
 </head>
 <body>
+  <div class="app">
 
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">Simply <span>Design</span></div>
 
-    <aside class="sidebar" id="sidebarDrawer">
-        <div class="sidebar-header">
-            <div class="header-left">
-                <div class="menu-icon-box">
-                    <i class="fa-solid fa-bars"></i>
-                </div>
-                <div class="brand-info">
-                    <span class="brand-title">Rental Track</span>
-                    <span class="brand-subtitle">Admin Panel</span>
-                </div>
-            </div>
-            <button class="close-btn" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
+      <nav class="nav">
+        <p class="nav-title">Main Menu</p>
+        <a href="dashboard.html" class="nav-link"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
+        <a href="inventory.html" class="nav-link active"><i class="fa-solid fa-box-archive"></i> Inventory</a>
+        <a href="rentals.html" class="nav-link"><i class="fa-solid fa-briefcase"></i> Rentals</a>
+        <a href="customers.html" class="nav-link"><i class="fa-solid fa-user-group"></i> Customers</a>
+        <a href="locations.html" class="nav-link"><i class="fa-solid fa-location-dot"></i> Locations</a>
+
+        <p class="nav-title">Management</p>
+        <a href="#" class="nav-link"><i class="fa-solid fa-chart-column"></i> Analystics</a>
+        <a href="#" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a>
+      </nav>
+
+      <div class="profile">
+        <div class="avatar">AD</div>
+        <div>
+          <strong>Admin</strong>
+          <span>Simply Design</span>
         </div>
-
-        <nav class="sidebar-nav">
-            <a href="dashboard.html" class="nav-item">
-                <i class="fa-solid fa-table-cells-large nav-icon"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="inventory.html" class="nav-item active">
-                <i class="fa-solid fa-box nav-icon"></i>
-                <span>Inventory</span>
-            </a>
-            <a href="active-rental.html" class="nav-item">
-                <i class="fa-solid fa-basket-shopping nav-icon"></i>
-                <span>Active Rental</span>
-            </a>
-            <a href="costumer.html" class="nav-item">
-                <i class="fa-solid fa-users nav-icon"></i>
-                <span>Costumers</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-location-dot nav-icon"></i>
-                <span>Location</span>
-            </a>
-            <a href="analytics.html" class="nav-item">
-                <i class="fa-solid fa-chart-line nav-icon"></i>
-                <span>Analytics</span>
-            </a>
-            <a href="setting.html" class="nav-item">
-                <i class="fa-solid fa-gear nav-icon"></i>
-                <span>Settings</span>
-            </a>
-        </nav>
+      </div>
     </aside>
 
-    <header>
-        <div class="header-left">
-            <div class="avatar-box" onclick="openSidebar()" title="Click to open menu"></div>
-            <div class="header-text">
-                <div class="header-title">RentalTrack</div>
-                <div class="header-subtitle">james ried</div>
-            </div>
-            </div>
-        <div class="nav-tabs">
-            <button class="tab-btn active" id="tabAdmin" onclick="switchView('admin')">
-                <i class="fa-regular fa-user"></i> Admin
-            </button>
-            <button class="tab-btn" id="tabCatalog" onclick="switchView('catalog')">
-                <i class="fa-solid fa-box-archive"></i> Catalog
-            </button>
+    <!-- Main -->
+    <div class="main">
+      <header class="topbar">
+        <h1>Inventory</h1>
+        <div class="date"><i class="fa-regular fa-calendar-days"></i> September 15, 2026</div>
+      </header>
+
+      <main class="content plain">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Inventory Management</h2>
+            <button class="btn btn-primary" type="button" id="openAddItem">+ Add Item</button>
+          </div>
+
+          <div class="toolbar">
+            <input class="input" type="search" id="inventorySearch" placeholder="Search item or code..." aria-label="Search item or code">
+            <select class="select" id="inventoryCategory" aria-label="Filter by category">
+              <option>All Categories</option>
+              <option>Long Gown</option>
+              <option>Cocktail Dress</option>
+              <option>Men Suit</option>
+            </select>
+            <select class="select" id="inventoryStatus" aria-label="Filter by status">
+              <option>All Status</option>
+              <option>Available</option>
+              <option>Rented</option>
+              <option>Damaged</option>
+            </select>
+          </div>
+
+          <div class="table-wrap">
+            <table class="inv-table table-compact">
+              <thead>
+                <tr>
+                  <th>Code</th><th>Item</th><th>Category</th><th>Size</th><th>Color</th>
+                  <th>Price</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryBody">
+                <tr>
+                  <td class="code">LGBLUE0001</td><td class="item">Blue Long Gown</td><td>Long Gown</td><td>M</td><td>Blue</td>
+                  <td class="price">&#8369;1,500</td>
+                  <td><span class="badge available">AVAILABLE</span></td>
+                  <td><div class="actions"><button class="btn-sm btn-edit" type="button">Edit</button><button class="btn-sm btn-danger" type="button">Delete</button></div></td>
+                </tr>
+                <tr>
+                  <td class="code">LGBLUE0002</td><td class="item">Blue Long Gown</td><td>Long Gown</td><td>S</td><td>Blue</td>
+                  <td class="price">&#8369;1,500</td>
+                  <td><span class="badge available">AVAILABLE</span></td>
+                  <td><div class="actions"><button class="btn-sm btn-edit" type="button">Edit</button><button class="btn-sm btn-danger" type="button">Delete</button></div></td>
+                </tr>
+                <tr>
+                  <td class="code">CDRED0001</td><td class="item">Red Cocktail Dress</td><td>Cocktail Dress</td><td>M</td><td>Red</td>
+                  <td class="price">&#8369;1,500</td>
+                  <td><span class="badge available">AVAILABLE</span></td>
+                  <td><div class="actions"><button class="btn-sm btn-edit" type="button">Edit</button><button class="btn-sm btn-danger" type="button">Delete</button></div></td>
+                </tr>
+                <tr>
+                  <td class="code">MSBLUE0001</td><td class="item">Blue Men Suit</td><td>Men Suit</td><td>L</td><td>Blue</td>
+                  <td class="price">&#8369;1,500</td>
+                  <td><span class="badge rented">RENTED</span></td>
+                  <td><div class="actions"><button class="btn-sm btn-edit" type="button">Edit</button><button class="btn-sm btn-danger" type="button">Delete</button></div></td>
+                </tr>
+                <tr>
+                  <td class="code">MSBLAC0003</td><td class="item">Black Men Suit</td><td>Men Suit</td><td>XL</td><td>Black</td>
+                  <td class="price">&#8369;1,500</td>
+                  <td><span class="badge damaged">DAMAGED</span></td>
+                  <td><div class="actions"><button class="btn-sm btn-edit" type="button">Edit</button><button class="btn-sm btn-danger" type="button">Delete</button></div></td>
+                </tr>
+                <tr>
+                  <td class="code">LGGREE0001</td><td class="item">Green Long Gown</td><td>Long Gown</td><td>L</td><td>Blue</td>
+                  <td class="price">&#8369;1,500</td>
+                  <td><span class="badge available">AVAILABLE</span></td>
+                  <td><div class="actions"><button class="btn-sm btn-edit" type="button">Edit</button><button class="btn-sm btn-danger" type="button">Delete</button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <!-- Add Item modal -->
+  <div class="modal-overlay" id="addItemModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addItemTitle">
+      <h2 id="addItemTitle">Add New Item</h2>
+      <form id="addItemForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="itemCode">Item Code</label>
+            <input class="input" id="itemCode" name="code" type="text" placeholder="e.g. LGBLUE0003" required>
+          </div>
+          <div class="field">
+            <label for="itemName">Item Name</label>
+            <input class="input" id="itemName" name="name" type="text" placeholder="e.g. Blue Long Gown" required>
+          </div>
+          <div class="field">
+            <label for="itemCategory">Category</label>
+            <select class="select" id="itemCategory" name="category">
+              <option>Long Gown</option>
+              <option>Cocktail Dress</option>
+              <option>Men Suit</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="itemSize">Size</label>
+            <select class="select" id="itemSize" name="size">
+              <option>XS</option><option>S</option><option selected>M</option><option>L</option><option>XL</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="itemColor">Color</label>
+            <input class="input" id="itemColor" name="color" type="text" placeholder="e.g. Blue" required>
+          </div>
+          <div class="field">
+            <label for="itemPrice">Price</label>
+            <input class="input" id="itemPrice" name="price" type="number" min="0" step="1" placeholder="1500" required>
+          </div>
+          <div class="field field-wide">
+            <label for="itemStatus">Status</label>
+            <select class="select" id="itemStatus" name="status">
+              <option>Available</option>
+              <option>Rented</option>
+              <option>Damaged</option>
+            </select>
+          </div>
         </div>
-    </header>
-
-    <div class="container">
-        <div class="inventory-top-bar">
-            <h1 class="page-title">Inventory</h1>
-            <button class="btn-add-item"><i class="fa-solid fa-plus"></i> add item</button>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" data-close>Cancel</button>
+          <button type="submit" class="btn btn-primary" id="itemSubmitBtn">Save Item</button>
         </div>
+      </form>
+    </div>
+  </div>
 
-        <div class="inventory-metrics-grid">
-            <div class="inv-metric-card">
-                <div class="inv-metric-label">Total Items</div>
-                <div class="inv-metric-value">5</div>
-            </div>
-            <div class="inv-metric-card status-available-bg">
-                <div class="inv-metric-label text-green">Available</div>
-                <div class="inv-metric-value text-green">3</div>
-            </div>
-            <div class="inv-metric-card">
-                <div class="inv-metric-label">Rented</div>
-                <div class="inv-metric-value">2</div>
-            </div>
-        </div>
-
-        <div class="search-wrapper">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" placeholder="Search items..." class="search-input">
-        </div>
-
-        <div class="filter-tabs">
-            <button class="tab-btn active">All</button>
-            <button class="tab-btn">Available</button>
-            <button class="tab-btn">Rented</button>
-        </div>
-
-        <div class="inventory-card-container">
-            <div class="inventory-item-row">
-                <div class="item-media">
-                    <img src="https://via.placeholder.com/60x80" alt="Evening Dress 1">
-                </div>
-                <div class="item-details">
-                    <div class="item-title">Evening Dress 1</div>
-                    <div class="item-sub">Evening Dress</div>
-                    <div class="item-spec">M | Dark Red Patch</div>
-                    <div class="item-price">₱120.00</div>
-                </div>
-                <div class="item-right-content">
-                    <span class="badge badge-rented">Rented</span>
-                    <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
-                </div>
-            </div>
-
-            <div class="inventory-item-row">
-                <div class="item-media">
-                    <img src="https://via.placeholder.com/60x80" alt="Evening Dress 2">
-                </div>
-                <div class="item-details">
-                    <div class="item-title">Evening Dress 2</div>
-                    <div class="item-sub">Evening Dress</div>
-                    <div class="item-spec">M | Brown Plane</div>
-                    <div class="item-price">₱120.00</div>
-                </div>
-                <div class="item-right-content">
-                    <span class="badge badge-available">Available</span>
-                    <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
-                </div>
-            </div>
-
-            <div class="inventory-item-row">
-                <div class="item-media">
-                    <img src="https://via.placeholder.com/60x80" alt="Casual Dress 1">
-                </div>
-                <div class="item-details">
-                    <div class="item-title">Casual Dress 1</div>
-                    <div class="item-sub">Casual Dress</div>
-                    <div class="item-spec">M | Light Red</div>
-                    <div class="item-price">₱120.00</div>
-                </div>
-                <div class="item-right-content">
-                    <span class="badge badge-available">Available</span>
-                    <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
-                </div>
-            </div>
-
-            <div class="inventory-item-row">
-                <div class="item-media">
-                    <img src="https://via.placeholder.com/60x80" alt="Casual Dress 2">
-                </div>
-                <div class="item-details">
-                    <div class="item-title">Casual Dress 2</div>
-                    <div class="item-sub">Casual Dress</div>
-                    <div class="item-spec">M | Dark Red</div>
-                    <div class="item-price">₱120.00</div>
-                </div>
-                <div class="item-right-content">
-                    <span class="badge badge-rented">Rented</span>
-                    <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
-                </div>
-            </div>
-
-            <div class="inventory-item-row">
-                <div class="item-media">
-                    <img src="https://via.placeholder.com/60x80" alt="Cocktail Dress 1">
-                </div>
-                <div class="item-details">
-                    <div class="item-title">Cocktail Dress 1</div>
-                    <div class="item-sub">Cocktail Dress</div>
-                    <div class="item-spec">M | Red</div>
-                    <div class="item-price">₱120.00</div>
-                </div>
-                <div class="item-right-content">
-                    <span class="badge badge-available">Available</span>
-                    <button class="btn-delete" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
-                </div>
-            </div>
-        </div>
-
-    <script>
-        function openSidebar() {
-            document.getElementById('sidebarDrawer').classList.add('open');
-            document.getElementById('sidebarOverlay').classList.add('active');
-        }
-
-        function closeSidebar() {
-            document.getElementById('sidebarDrawer').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('active');
-        }
-    </script>
-
+  <script src="nav.js"></script>
 </body>
 </html>

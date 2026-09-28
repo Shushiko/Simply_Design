@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simply Design | Gown &amp; Suit Rentals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../java/script.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="logo" href="user.html">Simply Design</a>
+    <span class="tagline">Gown &amp; Suit Rentals</span>
+    <nav class="auth"><a href="../../../../index.html">Log in</a><i></i><a href="../../../admin-web/web/signup.html">Sign up</a></nav>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">OUR COLLECTION</p>
+    <h1>Welcome To Rental Shop by Jun Barreto Tabi</h1>
+    <p class="sub">Gown Sales, Made to Order and Rentals</p>
+    <a class="btn-contact" href="contact.html">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+      Contact Us
+    </a>
+  </section>
+
+  <form class="filters" id="filters" autocomplete="off">
+    <label>Pickup Date<input type="date" id="pickup"></label>
+    <label>Return Date<input type="date" id="return"></label>
+    <label>Type
+      <select id="type">
+        <option value="">All Types</option>
+        <option>Long Gown</option>
+        <option>Cocktail Dress</option>
+        <option>Men Suit</option>
+      </select>
+    </label>
+    <label>Size
+      <select id="size">
+        <option value="">All Sizes</option>
+        <option>S</option><option>M</option><option>L</option><option>XL</option>
+      </select>
+    </label>
+    <label>Color
+      <select id="color">
+        <option value="">All Colors</option>
+        <option>Blue</option><option>Green</option><option>Red</option><option>Black</option>
+      </select>
+    </label>
+    <label class="grow">Search
+      <input type="search" id="search" placeholder="Search Code, Items, ...">
+    </label>
+    <div class="actions">
+      <button class="btn-search" type="submit">Search</button>
+      <button class="btn-clear" type="reset" id="clear">Clear</button>
+    </div>
+  </form>
+
+  <p class="status" id="status" aria-live="polite"></p>
+
+  <main id="catalog"></main>
+
+  <div class="toast" id="toast" role="status"></div>
+</body>
+</html>

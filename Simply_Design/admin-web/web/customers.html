@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simply Design | Customers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../style/dashboard.css">
+  <script src="../javascript/navigation.js" defer></script>
+  <script src="../javascript/animations.js" defer></script>
+</head>
+<body>
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">Simply <span>Design</span></div>
+
+      <nav class="nav">
+        <p class="nav-title">Main Menu</p>
+        <a href="dashboard.html" class="nav-link"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
+        <a href="inventory.html" class="nav-link"><i class="fa-solid fa-box-archive"></i> Inventory</a>
+        <a href="rentals.html" class="nav-link"><i class="fa-solid fa-briefcase"></i> Rentals</a>
+        <a href="customers.html" class="nav-link active"><i class="fa-solid fa-user-group"></i> Customers</a>
+        <a href="locations.html" class="nav-link"><i class="fa-solid fa-location-dot"></i> Locations</a>
+
+        <p class="nav-title">Management</p>
+        <a href="#" class="nav-link"><i class="fa-solid fa-chart-column"></i> Analystics</a>
+        <a href="#" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a>
+      </nav>
+
+      <div class="profile">
+        <div class="avatar">AD</div>
+        <div>
+          <strong>Admin</strong>
+          <span>Simply Design</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <header class="topbar">
+        <h1>Customers</h1>
+        <div class="date"><i class="fa-regular fa-calendar-days"></i> September 15, 2026</div>
+      </header>
+
+      <main class="content plain">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Customer</h2>
+            <button class="btn btn-primary" type="button" id="openAddCustomer">+ New Customer</button>
+          </div>
+
+          <div class="toolbar single">
+            <input class="input" type="search" id="customersSearch" placeholder="Search name, email, or contact..." aria-label="Search customers">
+          </div>
+
+          <div class="table-wrap">
+            <table class="inv-table">
+              <thead>
+                <tr>
+                  <th>Customer</th><th>Contact</th><th>Email</th><th>Location</th>
+                  <th>Rentals</th><th>Total Spent</th><th>Last Rental</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="customersBody">
+                <tr>
+                  <td class="item">Christine Luna</td><td>09171234567</td><td>christineluna@.com</td><td>Alitao, Tayabas</td>
+                  <td>1</td><td class="price">&#8369;4,500</td><td>2026-09-14</td>
+                  <td><div class="actions"><button class="btn-sm btn-edit" type="button">Edit</button><button class="btn-sm btn-danger" type="button">Delete</button></div></td>
+                </tr>
+                <tr>
+                  <td class="item">Maria Santos</td><td>09181234567</td><td>maria32@.com</td><td>Ilasan Ibaba, Tayabas</td>
+                  <td>2</td><td class="price">&#8369;1,200</td><td>2026-09-12</td>
+                  <td><div class="actions"><button class="btn-sm btn-edit" type="button">Edit</button><button class="btn-sm btn-danger" type="button">Delete</button></div></td>
+                </tr>
+                <tr>
+                  <td class="item">Ana Reyes</td><td>09191234567</td><td>analynmhok01@.com</td><td>Alitao, Tayabas</td>
+                  <td>3</td><td class="price">&#8369;3,500</td><td>2026-09-10</td>
+                  <td><div class="actions"><button class="btn-sm btn-edit" type="button">Edit</button><button class="btn-sm btn-danger" type="button">Delete</button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <!-- Add Customer modal -->
+  <div class="modal-overlay" id="addCustomerModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addCustomerTitle">
+      <h2 id="addCustomerTitle">Add Customer</h2>
+      <form id="addCustomerForm">
+        <div class="form-grid">
+          <div class="field field-wide">
+            <label for="custName">Full Name</label>
+            <input class="input" id="custName" name="name" type="text" placeholder="e.g. Christine Luna" required>
+          </div>
+          <div class="field">
+            <label for="custContact">Contact Number</label>
+            <input class="input" id="custContact" name="contact" type="tel" placeholder="e.g. 09171234567" required>
+          </div>
+          <div class="field">
+            <label for="custEmail">Gmail</label>
+            <input class="input" id="custEmail" name="email" type="email" placeholder="e.g. name@gmail.com" required>
+          </div>
+          <div class="field field-wide">
+            <label for="custLocation">Address / Location</label>
+            <input class="input" id="custLocation" name="location" type="text" value="Tayabas" required>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" data-close>Cancel</button>
+          <button type="submit" class="btn btn-primary" id="customerSubmitBtn">Save Customer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="nav.js"></script>
+</body>
+</html>

@@ -312,3 +312,14 @@ p {
     font-size: 18px;
   }
 }
+
+.form-error {
+  margin-top: 16px;
+  color: #b3261e;
+  font-size: 15px;
+  text-align: center;
+}
+
+.form-error:empty {
+  display: none;
+}

@@ -1,305 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rental Track - Analytics</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../style/analytics.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simply Design | Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../style/dashboard.css">
+  <script src="../javascript/navigation.js" defer></script>
+  <script src="../javascript/animations.js" defer></script>
+  <script src="../javascript/analytics.js" defer></script>
+  <script src="../javascript/chart.min.js" defer></script>
 </head>
 <body>
+  <div class="app">
 
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">Simply <span>Design</span></div>
 
-    <aside class="sidebar" id="sidebarDrawer">
-        <div class="sidebar-header">
-            <div class="header-left">
-                <div class="menu-icon-box">
-                    <i class="fa-solid fa-bars"></i>
-                </div>
-                <div class="brand-info">
-                    <span class="brand-title">RentalTrack</span>
-                    <span class="brand-subtitle">Admin Panel</span>
-                </div>
-            </div>
-            <button class="close-btn" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
+      <nav class="nav">
+        <p class="nav-title">Main Menu</p>
+        <a href="dashboard.html" class="nav-link"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
+        <a href="inventory.html" class="nav-link"><i class="fa-solid fa-box-archive"></i> Inventory</a>
+        <a href="rentals.html" class="nav-link"><i class="fa-solid fa-briefcase"></i> Rentals</a>
+        <a href="customers.html" class="nav-link"><i class="fa-solid fa-user-group"></i> Customers</a>
+        <a href="locations.html" class="nav-link"><i class="fa-solid fa-location-dot"></i> Locations</a>
+
+        <p class="nav-title">Management</p>
+        <a href="analytics.html" class="nav-link active"><i class="fa-solid fa-chart-column"></i> Analytics</a>
+        <a href="#" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a>
+      </nav>
+
+      <div class="profile">
+        <div class="avatar">AD</div>
+        <div>
+          <strong>Admin</strong>
+          <span>Simply Design</span>
         </div>
-
-        <nav class="sidebar-nav">
-            <a href="dashboard.html" class="nav-item">
-                <i class="fa-solid fa-table-cells-large nav-icon"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="inventory.html" class="nav-item">
-                <i class="fa-solid fa-box nav-icon"></i>
-                <span>Inventory</span>
-            </a>
-            <a href="active-rental.html" class="nav-item">
-                <i class="fa-solid fa-basket-shopping nav-icon"></i>
-                <span>Active Rental</span>
-            </a>
-            <a href="costumer.html" class="nav-item">
-                <i class="fa-solid fa-users nav-icon"></i>
-                <span>Customers</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fa-solid fa-location-dot nav-icon"></i>
-                <span>Location</span>
-            </a>
-            <a href="analytics.html" class="nav-item active">
-                <i class="fa-solid fa-chart-line nav-icon"></i>
-                <span>Analytics</span>
-            </a>
-            <a href="setting.html" class="nav-item">
-                <i class="fa-solid fa-gear nav-icon"></i>
-                <span>Settings</span>
-            </a>
-        </nav>
+      </div>
     </aside>
 
-    <header>
-        <div class="header-left">
-            <div class="avatar-box" onclick="openSidebar()" title="Click to open menu"></div>
-            <div class="header-text">
-                <div class="header-title">RentalTrack</div>
-                <div class="header-subtitle">james ried</div>
-            </div>
-        </div>
-    </header>
+    <!-- Main -->
+    <div class="main">
+      <header class="topbar">
+        <h1>Analytics</h1>
+        <div class="date"><i class="fa-regular fa-calendar-days"></i> <span id="topDate">September 15, 2026</span></div>
+      </header>
 
-    <div class="container">
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <div class="metric-top">
-                    <i class="fa-solid fa-box-archive metric-icon"></i>
-                    <i class="fa-solid fa-arrow-trend-up trend-icon"></i>
-                </div>
-                <div class="metric-value">30</div>
-                <div class="metric-label">Total Rentals</div>
-            </div>
+      <main class="content plain">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Analytics</h2>
+          </div>
 
-            <div class="metric-card">
-                <div class="metric-top">
-                    <i class="fa-solid fa-triangle-exclamation metric-icon icon-red"></i>
-                    <i class="fa-regular fa-calendar trend-icon"></i>
-                </div>
-                <div class="metric-value">2</div>
-                <div class="metric-label">Violation</div>
+          <div class="analytics-body">
+            <div class="chart-box">
+              <h3 class="chart-box-title">Revenue Overview</h3>
+              <div class="chart-canvas-wrap">
+                <canvas id="revenueChart"></canvas>
+              </div>
             </div>
 
-            <div class="metric-card">
-                <div class="metric-top">
-                    <i class="fa-solid fa-users metric-icon"></i>
-                    <i class="fa-solid fa-arrow-trend-up trend-icon"></i>
+            <div class="chart-box">
+              <h3 class="chart-box-title align-left">Popular Categories</h3>
+              <div class="categories-row">
+                <div class="donut-wrap">
+                  <canvas id="categoriesChart"></canvas>
                 </div>
-                <div class="metric-value">15</div>
-                <div class="metric-label">Total Customers</div>
+                <ul class="legend-list">
+                  <li><span class="dot dot-primary"></span><span class="legend-text">Long Gown Dress<br><strong>70%</strong></span></li>
+                  <li><span class="dot dot-secondary"></span><span class="legend-text">Men suit<br><strong>20%</strong></span></li>
+                  <li><span class="dot dot-tertiary"></span><span class="legend-text">Cocktail Dress<br><strong>10%</strong></span></li>
+                </ul>
+              </div>
             </div>
 
-            <div class="metric-card">
-                <div class="metric-top">
-                    <i class="fa-solid fa-peso-sign metric-icon icon-brown"></i>
-                    <i class="fa-solid fa-arrow-trend-up trend-icon"></i>
-                </div>
-                <div class="metric-value">₱8,450</div>
-                <div class="metric-label">Total Revenue</div>
+            <!-- Recent Violations -->
+            <div class="chart-box violations-box">
+              <div class="viol-head">
+                <h3>Recent Violations</h3>
+                <span class="viol-count">2 Pending</span>
+              </div>
+
+              <ul class="viol-list">
+                <li class="viol-item">
+                  <div class="viol-main">
+                    <div class="viol-name-row">
+                      <strong class="viol-name">Kris Jolly</strong>
+                      <span class="viol-tag late">Late Return</span>
+                    </div>
+                    <span class="viol-garment">Evening Gown</span>
+                    <p class="viol-note">Item returned 3 days late</p>
+                    <span class="viol-status resolved">✓ Resolved</span>
+                  </div>
+                  <div class="viol-side">
+                    <strong class="viol-fee">₱45</strong>
+                    <span class="viol-date">3/1/2026</span>
+                  </div>
+                </li>
+
+                <li class="viol-item">
+                  <div class="viol-main">
+                    <div class="viol-name-row">
+                      <strong class="viol-name">Jhon Nilla</strong>
+                      <span class="viol-tag damage">Damage</span>
+                    </div>
+                    <span class="viol-garment">Black Dress</span>
+                    <p class="viol-note">Minor stain on hem</p>
+                    <span class="viol-status pending">⌛ Pending</span>
+                  </div>
+                  <div class="viol-side">
+                    <strong class="viol-fee">₱75</strong>
+                    <span class="viol-date">2/28/2026</span>
+                  </div>
+                </li>
+
+                <li class="viol-item">
+                  <div class="viol-main">
+                    <div class="viol-name-row">
+                      <strong class="viol-name">Jim Santos</strong>
+                      <span class="viol-tag late">Late Return</span>
+                    </div>
+                    <span class="viol-garment">Casual Gown</span>
+                    <p class="viol-note">Item returned 1 day late</p>
+                    <span class="viol-status resolved">✓ Resolved</span>
+                  </div>
+                  <div class="viol-side">
+                    <strong class="viol-fee">₱45</strong>
+                    <span class="viol-date">3/25/2026</span>
+                  </div>
+                </li>
+
+                <li class="viol-item">
+                  <div class="viol-main">
+                    <div class="viol-name-row">
+                      <strong class="viol-name">Lisa Lacreo</strong>
+                      <span class="viol-tag damage">Damage</span>
+                    </div>
+                    <span class="viol-garment">Black Dress</span>
+                    <p class="viol-note">torn fabric on shoulder</p>
+                    <span class="viol-status pending">⌛ Pending</span>
+                  </div>
+                  <div class="viol-side">
+                    <strong class="viol-fee">₱45</strong>
+                    <span class="viol-date">2/20/2026</span>
+                  </div>
+                </li>
+              </ul>
             </div>
-        </div>
-
-        <div class="chart-card">
-            <h3 class="chart-title">Rental Trends</h3>
-            <div class="chart-container">
-                <canvas id="rentalTrendsChart"></canvas>
-            </div>
-        </div>
-
-        <div class="chart-card">
-            <h3 class="chart-title">Revenue Overview</h3>
-            <div class="chart-container">
-                <canvas id="revenueOverviewChart"></canvas>
-            </div>
-        </div>
-
-        <div class="chart-card">
-            <h3 class="chart-title">Popular Categories</h3>
-            <div class="donut-wrapper">
-                <div class="donut-chart-box">
-                    <canvas id="popularCategoriesChart"></canvas>
-                </div>
-                <div class="donut-legend">
-                    <div class="legend-item">
-                        <span class="legend-color color-dark-brown"></span>
-                        <span class="legend-text">Evening Dress <strong>70%</strong></span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color color-light-brown"></span>
-                        <span class="legend-text">Casual Dress <strong>20%</strong></span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color color-gold"></span>
-                        <span class="legend-text">Cocktail Dress <strong>10%</strong></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="violations-card">
-            <div class="violations-header">
-                <h3 class="chart-title">Recent Violations</h3>
-                <span class="badge-pending-count">2 Pending</span>
-            </div>
-
-            <div class="violations-list">
-                <div class="violation-item">
-                    <div class="violation-info">
-                        <div class="user-row">
-                            <span class="user-name">Kris Jolly</span>
-                            <span class="v-badge badge-warning">Late Return</span>
-                        </div>
-                        <p class="sub-text">Evening Gown</p>
-                        <p class="sub-text">Item returned 3 days late</p>
-                        <span class="v-status badge-success"><i class="fa-solid fa-check"></i> Resolved</span>
-                    </div>
-                    <div class="violation-meta">
-                        <span class="v-price">₱45</span>
-                        <span class="v-date">3/1/2026</span>
-                    </div>
-                </div>
-
-                <div class="violation-item">
-                    <div class="violation-info">
-                        <div class="user-row">
-                            <span class="user-name">Jhon Nilla</span>
-                            <span class="v-badge badge-danger">Damage</span>
-                        </div>
-                        <p class="sub-text">Black Dress</p>
-                        <p class="sub-text">Minor stain on hem</p>
-                        <span class="v-status badge-pending-status"><i class="fa-solid fa-clock"></i> Pending</span>
-                    </div>
-                    <div class="violation-meta">
-                        <span class="v-price">₱75</span>
-                        <span class="v-date">2/28/2026</span>
-                    </div>
-                </div>
-
-                <div class="violation-item">
-                    <div class="violation-info">
-                        <div class="user-row">
-                            <span class="user-name">Jim Santos</span>
-                            <span class="v-badge badge-warning">Late Return</span>
-                        </div>
-                        <p class="sub-text">Casual Gown</p>
-                        <p class="sub-text">Item returned 1 day late</p>
-                        <span class="v-status badge-success"><i class="fa-solid fa-check"></i> Resolved</span>
-                    </div>
-                    <div class="violation-meta">
-                        <span class="v-price">₱45</span>
-                        <span class="v-date">2/25/2026</span>
-                    </div>
-                </div>
-
-                <div class="violation-item">
-                    <div class="violation-info">
-                        <div class="user-row">
-                            <span class="user-name">Lisa Lacreo</span>
-                            <span class="v-badge badge-danger">Damage</span>
-                        </div>
-                        <p class="sub-text">Black Dress</p>
-                        <p class="sub-text">Torn fabric on shoulder</p>
-                        <span class="v-status badge-pending-status"><i class="fa-solid fa-clock"></i> Pending</span>
-                    </div>
-                    <div class="violation-meta">
-                        <span class="v-price">₱45</span>
-                        <span class="v-date">2/20/2026</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+          </div>
+        </section>
+      </main>
     </div>
-
-    <script>
-        function openSidebar() {
-            document.getElementById('sidebarDrawer').classList.add('open');
-            document.getElementById('sidebarOverlay').classList.add('active');
-        }
-
-        function closeSidebar() {
-            document.getElementById('sidebarDrawer').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('active');
-        }
-
-        // Render Rental Trends Line Chart
-        const ctxTrends = document.getElementById('rentalTrendsChart').getContext('2d');
-        new Chart(ctxTrends, {
-            type: 'line',
-            data: {
-                labels: ['October', 'November', 'December', 'January', 'February', 'March', 'April'],
-                datasets: [{
-                    data: [5, 3, 4, 6, 16, 13, 9],
-                    borderColor: '#38bdf8',
-                    backgroundColor: 'rgba(56, 189, 248, 0.1)',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    pointRadius: 3,
-                    pointBackgroundColor: '#38bdf8'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: '#f0f0f0' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Render Revenue Overview Bar Chart
-        const ctxRevenue = document.getElementById('revenueOverviewChart').getContext('2d');
-        new Chart(ctxRevenue, {
-            type: 'bar',
-            data: {
-                labels: ['October', 'November', 'December', 'January', 'February', 'March', 'April'],
-                datasets: [{
-                    data: [700, 1050, 1350, 1850, 2900, 2500, 2100],
-                    backgroundColor: '#d97706',
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: '#f0f0f0' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Render Popular Categories Donut Chart
-        const ctxCategories = document.getElementById('popularCategoriesChart').getContext('2d');
-        new Chart(ctxCategories, {
-            type: 'doughnut',
-            data: {
-                labels: ['Evening Dress', 'Casual Dress', 'Cocktail Dress'],
-                datasets: [{
-                    data: [70, 20, 10],
-                    backgroundColor: ['#a35319', '#d99b68', '#f59e0b'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                cutout: '65%'
-            }
-        });
-    </script>
-
+  </div>
+  <script src="analytics.js"></script>
+  <script src="nav.js"></script>
 </body>
 </html>
+
+
+
+
+

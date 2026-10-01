@@ -69,7 +69,103 @@
 })();
 
 // ---------------------------------------------------------------
-// Inventory page: "+ Add Item" popup (blurred background) and new rows.
+// Top-bar date: shows today's real date instead of a fixed one.
+// Runs on every page, even with reduced motion, since it isn't an
+// animation. Re-checks a little after midnight in case the page is
+// left open overnight.
+// ---------------------------------------------------------------
+(function () {
+  function showToday() {
+    var el = document.getElementById("topDate");
+    if (!el) return;
+    el.textContent = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+
+  function scheduleMidnightRefresh() {
+    var now = new Date();
+    var midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
+    var timer = setTimeout(function () {
+      showToday();
+      scheduleMidnightRefresh();
+    }, midnight - now);
+    // Node-style timers expose unref(); browsers don't, and don't need it.
+    if (timer && typeof timer.unref === "function") timer.unref();
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    showToday();
+    scheduleMidnightRefresh();
+  });
+})();
+
+// ---------------------------------------------------------------
+// Photo lightbox: click a photo to see it full-size, with a dimmed
+// background. Works for table thumbnails anywhere on the page, and
+// for the modal's own photo preview (wired up where that popup is
+// set up, further down). Images added later are covered too, since
+// the click is delegated on the document.
+// ---------------------------------------------------------------
+(function () {
+  var overlay, img;
+
+  function build() {
+    overlay = document.createElement("div");
+    overlay.className = "lightbox-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-label", "Photo preview");
+
+    img = document.createElement("img");
+    img.className = "lightbox-img";
+    img.alt = "";
+    overlay.appendChild(img);
+
+    var closeBtn = document.createElement("button");
+    closeBtn.type = "button";
+    closeBtn.className = "lightbox-close";
+    closeBtn.setAttribute("aria-label", "Close");
+    closeBtn.innerHTML = "&times;";
+    overlay.appendChild(closeBtn);
+
+    closeBtn.addEventListener("click", closeLightbox);
+    overlay.addEventListener("mousedown", function (e) {
+      if (e.target === overlay) closeLightbox();
+    });
+
+    document.body.appendChild(overlay);
+  }
+
+  function openLightbox(src) {
+    if (!src) return;
+    if (!overlay) build();
+    img.src = src;
+    overlay.classList.add("open");
+    document.documentElement.classList.add("lightbox-open");
+  }
+
+  function closeLightbox() {
+    if (!overlay) return;
+    overlay.classList.remove("open");
+    document.documentElement.classList.remove("lightbox-open");
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && overlay && overlay.classList.contains("open")) closeLightbox();
+  });
+
+  // Any table thumbnail photo opens the lightbox when clicked
+  document.addEventListener("click", function (e) {
+    var thumbImg = e.target.closest(".thumb img");
+    if (thumbImg) openLightbox(thumbImg.src);
+  });
+
+  // Made available to the Inventory popup code further down
+  window.openPhotoLightbox = openLightbox;
+})();
 // Waits for the page to load; does nothing on pages without the popup.
 // ---------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
@@ -83,6 +179,98 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var lastFocused = null;
   var editingRow = null; // the <tr> being edited, or null while adding
+
+  // ----- Item photo (left side of the popup) -----
+  var MAX_PHOTO_BYTES = 5 * 1024 * 1024; // 5 MB
+  var photoInput = document.getElementById("itemPhoto");
+  var photoPreview = document.getElementById("itemPhotoPreview");
+  var photoImg = document.getElementById("itemPhotoImg");
+  var photoBtn = document.getElementById("itemPhotoBtn");
+  var photoBtnText = document.getElementById("itemPhotoBtnText");
+  var photoRemove = document.getElementById("itemPhotoRemove");
+  var photoError = document.getElementById("itemPhotoError");
+  var currentPhoto = ""; // data URL of the photo shown in the popup, or ""
+
+  function showPhotoError(message) {
+    if (!photoError) return;
+    photoError.textContent = message || "";
+    photoError.hidden = !message;
+  }
+
+  function setPhoto(dataUrl) {
+    currentPhoto = dataUrl || "";
+    showPhotoError("");
+    if (photoImg) {
+      if (currentPhoto) photoImg.src = currentPhoto;
+      else photoImg.removeAttribute("src");
+    }
+    if (photoPreview) photoPreview.classList.toggle("has-photo", !!currentPhoto);
+    if (photoRemove) photoRemove.hidden = !currentPhoto;
+    if (photoBtnText) photoBtnText.textContent = currentPhoto ? "Change Photo" : "Upload Photo";
+    if (!currentPhoto && photoInput) photoInput.value = "";
+  }
+
+  if (photoInput) {
+    if (photoBtn) photoBtn.addEventListener("click", function () { photoInput.click(); });
+    if (photoPreview) photoPreview.addEventListener("click", function () {
+      if (photoPreview.classList.contains("has-photo")) window.openPhotoLightbox(photoImg.src);
+      else photoInput.click();
+    });
+    if (photoRemove) photoRemove.addEventListener("click", function () { setPhoto(""); });
+
+    photoInput.addEventListener("change", function () {
+      var file = photoInput.files && photoInput.files[0];
+      if (!file) return;
+
+      if (file.type.indexOf("image/") !== 0) {
+        photoInput.value = "";
+        showPhotoError("Please choose an image file (JPG, PNG, WEBP...).");
+        return;
+      }
+      if (file.size > MAX_PHOTO_BYTES) {
+        photoInput.value = "";
+        showPhotoError("That photo is over 5 MB. Please choose a smaller one.");
+        return;
+      }
+
+      var reader = new FileReader();
+      reader.onload = function () { setPhoto(reader.result); };
+      reader.onerror = function () { showPhotoError("Couldn't read that file. Please try another."); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Item cell = small photo (or a placeholder) + the item name
+  function renderItemCell(td, name, photo) {
+    td.textContent = "";
+    var wrap = document.createElement("span");
+    wrap.className = "item-cell";
+
+    var thumb = document.createElement("span");
+    thumb.className = "thumb";
+    if (photo) {
+      var img = document.createElement("img");
+      img.src = photo;
+      img.alt = "";
+      thumb.appendChild(img);
+    } else {
+      var icon = document.createElement("i");
+      icon.className = "fa-regular fa-image";
+      icon.setAttribute("aria-hidden", "true");
+      thumb.appendChild(icon);
+    }
+
+    var label = document.createElement("span");
+    label.textContent = name;
+    wrap.appendChild(thumb);
+    wrap.appendChild(label);
+    td.appendChild(wrap);
+  }
+
+  // Give the rows that are already on the page their photo/placeholder too
+  Array.prototype.forEach.call(tbody.rows, function (row) {
+    if (row.cells[1]) renderItemCell(row.cells[1], row.cells[1].textContent.trim(), row.dataset.photo || "");
+  });
 
   function setSelectByText(select, text) {
     var target = text.trim().toLowerCase();
@@ -106,6 +294,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (modalTitle) modalTitle.textContent = "Add New Item";
     if (submitBtn) submitBtn.textContent = "Save Item";
     form.reset();
+    setPhoto("");
     showModal();
   }
 
@@ -122,6 +311,7 @@ document.addEventListener("DOMContentLoaded", function () {
     form.elements.color.value = cells[4].textContent.trim();
     form.elements.price.value = cells[5].textContent.replace(/[^\d.]/g, "");
     setSelectByText(form.elements.status, cells[6].textContent.trim());
+    setPhoto(row.dataset.photo || "");
 
     showModal();
   }
@@ -157,7 +347,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (e.key === "Escape") { closeModal(); return; }
     if (e.key !== "Tab") return;
 
-    var focusable = overlay.querySelectorAll("input, select, button");
+    var focusable = Array.prototype.filter.call(
+      overlay.querySelectorAll("input, select, button"),
+      function (el) { return !el.hidden && el.offsetParent !== null; }
+    );
     var first = focusable[0];
     var last = focusable[focusable.length - 1];
     if (e.shiftKey && document.activeElement === first) {
@@ -227,6 +420,9 @@ document.addEventListener("DOMContentLoaded", function () {
         editingRow.cells[i].textContent = v.text;
         editingRow.cells[i].className = v.cls;
       });
+      renderItemCell(editingRow.cells[1], values[1].text, currentPhoto);
+      if (currentPhoto) editingRow.dataset.photo = currentPhoto;
+      else delete editingRow.dataset.photo;
       fillStatusCell(editingRow.cells[6], status);
       closeModal();
       return;
@@ -234,6 +430,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var row = document.createElement("tr");
     values.forEach(function (v) { row.appendChild(cell(v.text, v.cls)); });
+    renderItemCell(row.cells[1], values[1].text, currentPhoto);
+    if (currentPhoto) row.dataset.photo = currentPhoto;
     row.appendChild(buildStatusCell(status));
     row.appendChild(buildActionsCell());
 

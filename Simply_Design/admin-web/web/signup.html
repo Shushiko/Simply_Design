@@ -1,142 +1,106 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <link rel="icon" type="image/png" href="../../img/logo.png" />
-    <link rel="stylesheet" href="../style/style.css" />
-    <title>Simply Design | Sign Up</title>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create Account</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style/loginandsignup.css">
+  <script src="../javascript/loginandsignup.js"></script>
+</head>
+<body>
 
-  <body>
-    <div class="login signup-page">
-      <div class="login-container signup-container">
-        <div class="login-header">
-          <i class="fa-regular fa-circle-user"></i>
-          <p class="login-message">Create Account</p>
-          <p class="login-submess">Join us and get started</p>
-        </div>
+  <main class="card">
+    <header class="card-header">
+      <span class="avatar" aria-hidden="true">
+        <svg viewBox="0 0 48 48" width="34" height="34">
+          <circle cx="24" cy="24" r="23" fill="none" stroke="currentColor" stroke-width="2"/>
+          <circle cx="24" cy="19" r="7" fill="currentColor"/>
+          <path d="M9 38c3-6 8-9 15-9s12 3 15 9" fill="currentColor"/>
+        </svg>
+      </span>
+      <h1>Create Account</h1>
+      <p>Join our rental platform</p>
+    </header>
 
-        <div class="login-body">
-          <form
-            id="signupForm"
-            data-user-url="../../flutter-app/user-web/web/user.html"
-          >
-            <p class="form">Full Name</p>
-            <div class="login-email">
-              <i class="fa-regular fa-user"></i>
-              <input
-                class="email"
-                type="text"
-                name="fullname"
-                id="fullname"
-                placeholder="Enter your name"
-                required
-              />
-            </div>
+    <form class="card-body" id="signupForm" novalidate>
 
-            <p class="form">Email Address</p>
-            <div class="login-email">
-              <i class="fa-regular fa-envelope"></i>
-              <input
-                class="email"
-                type="email"
-                name="email"
-                id="email"
-                placeholder="your.email@example.com"
-                required
-              />
-            </div>
-
-            <div class="password-body">
-              <p class="form">Password</p>
-              <i class="fa-solid fa-lock"></i>
-              <input
-                class="password"
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Enter your password"
-                required
-              />
-              <i
-                class="fa-solid fa-eye-slash"
-                id="show-password"
-                role="button"
-                tabindex="0"
-                aria-label="Show password"
-              ></i>
-              <i
-                class="fa-solid fa-eye"
-                id="hide-password"
-                role="button"
-                tabindex="0"
-                aria-label="Hide password"
-              ></i>
-            </div>
-
-            <div class="password-body">
-              <p class="form">Confirm Password</p>
-              <i class="fa-solid fa-lock"></i>
-              <input
-                class="password"
-                type="password"
-                name="confirm-password"
-                id="confirm-password"
-                placeholder="Confirm your password"
-                required
-              />
-            </div>
-
-            <p class="form-error" id="formError" role="alert"></p>
-
-            <div class="signin-btn">
-              <i class="fa-solid fa-user-plus"></i>
-              <button class="sign-in" type="submit">Sign up</button>
-            </div>
-          </form>
-
-          <div class="social-divider">
-            <span>or continue with</span>
-          </div>
-
-          <div class="social-login">
-            <button
-              class="social-btn google-btn"
-              type="button"
-              aria-label="Continue with Google"
-              title="Continue with Google"
-            >
-              <i class="fa-brands fa-google"></i>
-            </button>
-            <button
-              class="social-btn facebook-btn"
-              type="button"
-              aria-label="Continue with Facebook"
-              title="Continue with Facebook"
-            >
-              <i class="fa-brands fa-facebook-f"></i>
-            </button>
-          </div>
-
-          <div class="signup">
-            <p class="sign-up-message">
-              Already have an account?
-              <a href="../../../index.html"><span class="signup-link">Sign in</span></a>
-            </p>
-          </div>
+      <div class="field">
+        <label for="fullName">Full Name</label>
+        <div class="input-wrap">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4-7 8-7s7 2.500 8 7"/></svg>
+          <input type="text" id="fullName" name="fullName" placeholder="Enter your name" autocomplete="name" required>
         </div>
       </div>
-    </div>
 
-    <script src="../javascript/loginandsignup.js" defer></script>
-    <script src="../javascript/auth.js" defer></script>
-  </body>
+      <div class="field">
+        <label for="email">Email Address</label>
+        <div class="input-wrap">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.500" y="5" width="19" height="14" rx="2"/><path d="M3 7l9 6.500L21 7"/></svg>
+          <input type="email" id="email" name="email" placeholder="your.email@example.com" autocomplete="email" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.500" y="10.500" width="15" height="10" rx="2"/><path d="M8 10.500V8a4 4 0 0 1 8 0v2.500"/></svg>
+          <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="new-password" minlength="8" required>
+          <button type="button" class="toggle" data-target="password" aria-label="Show password">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1.500 12S5.500 5 12 5s10.500 7 10.500 7-4 7-10.500 7S1.500 12 1.500 12z"/><circle cx="12" cy="12" r="3"/><path class="slash" d="M3 3l18 18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="input-wrap">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.500" y="10.500" width="15" height="10" rx="2"/><path d="M8 10.500V8a4 4 0 0 1 8 0v2.500"/></svg>
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" autocomplete="new-password" required>
+          <button type="button" class="toggle" data-target="confirmPassword" aria-label="Show password">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1.500 12S5.500 5 12 5s10.500 7 10.500 7-4 7-10.500 7S1.500 12 1.500 12z"/><circle cx="12" cy="12" r="3"/><path class="slash" d="M3 3l18 18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <p class="form-error" id="formError" role="alert" hidden></p>
+
+      <button type="submit" class="btn-primary">
+        <span class="btn-label">Create Account</span>
+        <span class="spinner" aria-hidden="true"></span>
+      </button>
+
+      <div class="divider"><span>or continue with</span></div>
+
+      <div class="social">
+        <button type="button" class="btn-social" id="googleBtn">
+          <svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true">
+            <path fill="#4285F4" d="M17.640 9.200c0-.640-.060-1.250-.160-1.840H9v3.480h4.840a4.140 4.140 0 0 1-1.800 2.720v2.260h2.920c1.700-1.570 2.680-3.880 2.680-6.620z"/>
+            <path fill="#34A853" d="M9 18c2.430 0 4.470-.800 5.960-2.180l-2.920-2.260c-.800.540-1.840.860-3.040.860-2.340 0-4.330-1.580-5.040-3.700H.960v2.330A9 9 0 0 0 9 18z"/>
+            <path fill="#FBBC05" d="M3.960 10.720A5.400 5.400 0 0 1 3.680 9c0-.600.100-1.180.280-1.720V4.950H.960A9 9 0 0 0 0 9c0 1.450.350 2.820.960 4.050l3-2.330z"/>
+            <path fill="#EA4335" d="M9 3.580c1.320 0 2.500.450 3.440 1.350l2.580-2.580C13.460.890 11.430 0 9 0A9 9 0 0 0 .960 4.950l3 2.330C4.670 5.160 6.660 3.580 9 3.580z"/>
+          </svg>
+          Google
+        </button>
+        <button type="button" class="btn-social" id="facebookBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path fill="#1877F2" d="M24 12.070C24 5.400 18.630 0 12 0S0 5.400 0 12.070C0 18.100 4.390 23.100 10.130 24v-8.440H7.080v-3.490h3.050V9.410c0-3.020 1.800-4.700 4.540-4.700 1.310 0 2.680.240 2.680.240v2.970h-1.510c-1.490 0-1.960.930-1.960 1.880v2.260h3.330l-.530 3.490h-2.800V24C19.610 23.100 24 18.100 24 12.070z"/>
+          </svg>
+          Facebook
+        </button>
+      </div>
+
+      <p class="switch">Already have an account? <a href="../../../index.html">Sign in</a></p>
+    </form>
+
+    <noscript>
+      <p class="noscript-note">JavaScript is turned off or blocked, so the form can't work. Open this page in a normal browser tab.</p>
+    </noscript>
+  </main>
+  <script src="../javascript/loginandsignup.js" onerror="var e=document.getElementById('formError');e.textContent='signup.js could not be loaded. Keep it in the same folder as signup.html.';e.hidden=false;"></script>
+</body>
 </html>
+
+

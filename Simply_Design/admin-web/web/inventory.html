@@ -27,7 +27,7 @@
         <a href="locations.html" class="nav-link"><i class="fa-solid fa-location-dot"></i> Locations</a>
 
         <p class="nav-title">Management</p>
-        <a href="#" class="nav-link"><i class="fa-solid fa-chart-column"></i> Analystics</a>
+        <a href="analytics.html" class="nav-link"><i class="fa-solid fa-chart-column"></i> Analytics</a>
         <a href="#" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a>
       </nav>
 
@@ -44,7 +44,7 @@
     <div class="main">
       <header class="topbar">
         <h1>Inventory</h1>
-        <div class="date"><i class="fa-regular fa-calendar-days"></i> September 15, 2026</div>
+        <div class="date"><i class="fa-regular fa-calendar-days"></i> <span id="topDate">September 15, 2026</span></div>
       </header>
 
       <main class="content plain">
@@ -124,47 +124,63 @@
   </div>
   <!-- Add Item modal -->
   <div class="modal-overlay" id="addItemModal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addItemTitle">
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="addItemTitle">
       <h2 id="addItemTitle">Add New Item</h2>
       <form id="addItemForm">
-        <div class="form-grid">
-          <div class="field">
-            <label for="itemCode">Item Code</label>
-            <input class="input" id="itemCode" name="code" type="text" placeholder="e.g. LGBLUE0003" required>
+        <div class="modal-body">
+          <div class="photo-upload">
+            <span class="photo-label">Item Photo</span>
+            <div class="photo-preview" id="itemPhotoPreview">
+              <i class="fa-regular fa-image" aria-hidden="true"></i>
+              <span>No photo yet</span>
+              <img id="itemPhotoImg" alt="Preview of the uploaded item photo">
+            </div>
+            <input type="file" id="itemPhoto" name="photo" accept="image/*" hidden>
+            <div class="photo-actions">
+              <button type="button" class="btn-upload" id="itemPhotoBtn"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> <span id="itemPhotoBtnText">Upload Photo</span></button>
+              <button type="button" class="btn-remove-photo" id="itemPhotoRemove" hidden>Remove</button>
+            </div>
+            <p class="photo-error" id="itemPhotoError" role="alert" hidden></p>
           </div>
-          <div class="field">
-            <label for="itemName">Item Name</label>
-            <input class="input" id="itemName" name="name" type="text" placeholder="e.g. Blue Long Gown" required>
-          </div>
-          <div class="field">
-            <label for="itemCategory">Category</label>
-            <select class="select" id="itemCategory" name="category">
-              <option>Long Gown</option>
-              <option>Cocktail Dress</option>
-              <option>Men Suit</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="itemSize">Size</label>
-            <select class="select" id="itemSize" name="size">
-              <option>XS</option><option>S</option><option selected>M</option><option>L</option><option>XL</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="itemColor">Color</label>
-            <input class="input" id="itemColor" name="color" type="text" placeholder="e.g. Blue" required>
-          </div>
-          <div class="field">
-            <label for="itemPrice">Price</label>
-            <input class="input" id="itemPrice" name="price" type="number" min="0" step="1" placeholder="1500" required>
-          </div>
-          <div class="field field-wide">
-            <label for="itemStatus">Status</label>
-            <select class="select" id="itemStatus" name="status">
-              <option>Available</option>
-              <option>Rented</option>
-              <option>Damaged</option>
-            </select>
+          <div class="form-grid">
+            <div class="field">
+              <label for="itemCode">Item Code</label>
+              <input class="input" id="itemCode" name="code" type="text" placeholder="e.g. LGBLUE0003" required>
+            </div>
+            <div class="field">
+              <label for="itemName">Item Name</label>
+              <input class="input" id="itemName" name="name" type="text" placeholder="e.g. Blue Long Gown" required>
+            </div>
+            <div class="field">
+              <label for="itemCategory">Category</label>
+              <select class="select" id="itemCategory" name="category">
+                <option>Long Gown</option>
+                <option>Cocktail Dress</option>
+                <option>Men Suit</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="itemSize">Size</label>
+              <select class="select" id="itemSize" name="size">
+                <option>XS</option><option>S</option><option selected>M</option><option>L</option><option>XL</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="itemColor">Color</label>
+              <input class="input" id="itemColor" name="color" type="text" placeholder="e.g. Blue" required>
+            </div>
+            <div class="field">
+              <label for="itemPrice">Price</label>
+              <input class="input" id="itemPrice" name="price" type="number" min="0" step="1" placeholder="1500" required>
+            </div>
+            <div class="field field-wide">
+              <label for="itemStatus">Status</label>
+              <select class="select" id="itemStatus" name="status">
+                <option>Available</option>
+                <option>Rented</option>
+                <option>Damaged</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="modal-actions">

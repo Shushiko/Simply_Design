@@ -1,114 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <link rel="icon" type="png" href="Simply_Design/img/logo.png" />
-    <link rel="stylesheet" href="Simply_Design/admin-web/style/style.css" />
-    <title>Simply Design</title>
-  </head>
-  <body>
-    <div class="login">
-      <div class="login-container">
-        <div class="login-header">
-          <i class="fa-regular fa-circle-user"></i>
-          <p class="login-message">Welcome Back</p>
-          <p class="login-submess">Sign in to continue</p>
-        </div>
-        <div class="login-body">
-          <form
-            id="loginForm"
-            data-admin-url="Simply_Design/admin-web/web/dashboard.html"
-            data-user-url="Simply_Design/flutter-app/user-web/web/user.html"
-          >
-            <p class="form">Email Address</p>
-            <div class="login-email">
-              <i class="fa-regular fa-envelope"></i>
-              <input
-                class="email"
-                type="email"
-                name="email"
-                id="email"
-                placeholder="your.email@example.com"
-                autofocus="1"
-                autocomplete="on"
-                aria-label="your.email@example.com"
-                required
-              />
-            </div>
-            <div class="password-body">
-              <p class="form">Password</p>
-              <i class="fa-solid fa-lock"></i>
-              <input
-                class="password"
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Enter your password"
-                aria-label="Enter your password"
-                required
-              />
-              <i
-                class="fa-solid fa-eye-slash"
-                id="show-password"
-                role="button"
-                tabindex="0"
-                aria-label="Show password"
-              ></i>
-              <i
-                class="fa-solid fa-eye"
-                id="hide-password"
-                role="button"
-                tabindex="0"
-                aria-label="Hide password"
-              ></i>
-            </div>
-            <p class="form-error" id="formError" role="alert"></p>
-            <div class="signin-btn">
-              <i class="fa-solid fa-arrow-right-to-bracket"></i>
-              <button type="submit" class="sign-in">Sign in</button>
-            </div>
-          </form>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log in</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="Simply_Design/admin-web/style/loginandsignup.css">
+</head>
+<body>
 
-          <div class="social-divider">
-            <span>or continue with</span>
-          </div>
-          <div class="social-login">
-            <button
-              class="social-btn google-btn"
-              type="button"
-              aria-label="Continue with Google"
-              title="Continue with Google"
-            >
-              <i class="fa-brands fa-google"></i>
-            </button>
-            <button
-              class="social-btn facebook-btn"
-              type="button"
-              aria-label="Continue with Facebook"
-              title="Continue with Facebook"
-            >
-              <i class="fa-brands fa-facebook-f"></i>
-            </button>
-          </div>
-          <div class="signup">
-            <p class="sign-up-message">
-              Don't have an account?
-              <a href="Simply_Design/admin-web/web/signup.html"><span class="signup-link">Sign up</span></a>
-            </p>
-          </div>
+  <main class="card">
+    <header class="card-header">
+      <span class="avatar" aria-hidden="true">
+        <svg viewBox="0 0 48 48" width="34" height="34">
+          <circle cx="24" cy="24" r="23" fill="none" stroke="currentColor" stroke-width="2"/>
+          <circle cx="24" cy="19" r="7" fill="currentColor"/>
+          <path d="M9 38c3-6 8-9 15-9s12 3 15 9" fill="currentColor"/>
+        </svg>
+      </span>
+      <h1>Welcome Back</h1>
+      <p>Sign in to continue</p>
+    </header>
+
+    <form class="card-body" id="loginForm" novalidate>
+
+      <div class="field">
+        <label for="email">Email Address</label>
+        <div class="input-wrap">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M3 7l9 6.5L21 7"/></svg>
+          <input type="email" id="email" name="email" placeholder="your.email@example.com" autocomplete="email" required>
         </div>
       </div>
-    </div>
 
-    <script src="Simply_Design/admin-web/javascript/loginandsignup.js" defer></script>
-    <script src="Simply_Design/admin-web/javascript/auth.js" defer></script>
-  </body>
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
+          <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+          <button type="button" class="toggle" data-target="password" aria-label="Show password">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/><path class="slash" d="M3 3l18 18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="options">
+        <label class="check">
+          <input type="checkbox" id="remember" name="remember">
+          <span class="box" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          </span>
+          <span class="check-label">Remember me</span>
+        </label>
+        <a href="Simply_Design/admin-web/web/forgotpassword.html" class="forgot">Forgot password?</a>
+      </div>
+
+      <p class="form-error" id="formError" role="alert" hidden></p>
+
+      <button type="submit" class="btn-primary">
+        <span class="btn-label">Log in</span>
+        <span class="spinner" aria-hidden="true"></span>
+      </button>
+
+      <div class="divider"><span>or continue with</span></div>
+
+      <div class="social">
+        <button type="button" class="btn-social" id="googleBtn">
+          <svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true">
+            <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/>
+            <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.33-1.58-5.04-3.7H.96v2.33A9 9 0 0 0 9 18z"/>
+            <path fill="#FBBC05" d="M3.96 10.72A5.4 5.4 0 0 1 3.68 9c0-.6.1-1.18.28-1.72V4.95H.96A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.05l3-2.33z"/>
+            <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.95l3 2.33C4.67 5.16 6.66 3.58 9 3.58z"/>
+          </svg>
+          Google
+        </button>
+        <button type="button" class="btn-social" id="facebookBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.88v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/>
+          </svg>
+          Facebook
+        </button>
+      </div>
+
+      <p class="switch">Don't have an account? <a href="Simply_Design/admin-web/web/signup.html">Sign up</a></p>
+    </form>
+
+    <noscript>
+      <p class="noscript-note">JavaScript is turned off or blocked, so the form can't work. Open this page in a normal browser tab.</p>
+    </noscript>
+  </main>
+
+  <script src="Simply_Design/admin-web/javascript/loginandsignup.js" onerror="var e=document.getElementById('formError');e.textContent='login.js could not be loaded. Keep it in the same folder as login.html.';e.hidden=false;"></script>
+</body>
 </html>

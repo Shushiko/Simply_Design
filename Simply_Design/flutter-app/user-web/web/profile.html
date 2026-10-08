@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Profile | Simply Design</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body id="profilePage">
+
+  <header class="topbar">
+    <a class="logo" href="../user.html">Simply Design</a>
+    <span class="tagline">Gown &amp; Suit Rentals</span>
+    <div class="auth"><a href="../../../../index.html">Log in</a><i></i><a href="../../../admin-web/web/signup.html">Sign up</a></div>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">MY ACCOUNT</p>
+    <h1>Hello, <span data-user="firstName">there</span></h1>
+    <p class="sub">View your details, change your display name, or log out.</p>
+  </section>
+
+  <!-- Shown when someone is logged in -->
+  <div class="page" id="signedIn" hidden>
+    <section class="panel">
+      <h2>Account details</h2>
+      <div class="body">
+        <div class="profile-head">
+          <span class="avatar lg" data-user="initials">?</span>
+          <div>
+            <strong data-user="name"></strong>
+            <span data-user="email"></span>
+          </div>
+        </div>
+        <dl class="details">
+          <dt>Member since</dt>
+          <dd data-user="since"></dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Edit profile</h2>
+      <div class="body">
+        <form class="pform" id="profileForm" novalidate>
+          <label>Display name
+            <input type="text" id="nameInput" maxlength="60" autocomplete="name">
+          </label>
+          <p class="form-msg" id="formMsg" role="alert" hidden></p>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="panel wide">
+      <h2>Session</h2>
+      <div class="body session">
+        <p>You are logged in on this device.</p>
+        <button type="button" class="btn btn-ghost" id="logoutBtn">Log out</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Shown when nobody is logged in -->
+  <div class="page" id="signedOut" hidden>
+    <section class="panel wide">
+      <h2>You're not logged in</h2>
+      <div class="body session">
+        <p>Log in or create an account to see your profile.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="../../../../index.html">Log in</a>
+          <a class="btn btn-ghost" href="../../../admin-web/web/signup.html">Sign up</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="../javascript/profile.js"></script>
+</body>
+</html>

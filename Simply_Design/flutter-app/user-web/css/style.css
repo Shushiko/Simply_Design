@@ -7,7 +7,8 @@
   --green: #3a8a1e;
   --line: #d4d4d4;
   --gray: #d9d9d9;
-  --pad: max(32px, calc((100% - 1440px) / 2));
+  --max: 1800px; /* widest the page content can get (was 1440px) */
+  --pad: max(32px, calc((100% - var(--max)) / 2));
 }
 * { box-sizing: border-box; margin: 0; }
 body { font-family: Inter, system-ui, sans-serif; color: #111; background: #fff; padding-top: 64px; }
@@ -286,3 +287,34 @@ main { padding: 4px var(--pad) 48px; }
 .itable tbody tr:not(:last-child) { border-bottom: 1px solid #eee; }
 .itable tbody tr:hover { background: #fbf7f1; }
 .badge.inline { position: static; display: inline-flex; }
+
+/* ===== Profile menu animations + profile page ===== */
+/* keep the closed menu out of the tab order, but still fade it */
+.dropdown:not(.show) { visibility: hidden; transition: opacity .16s ease, transform .16s ease, visibility 0s .16s; }
+.dropdown.show { visibility: visible; }
+.dropdown .who strong { overflow-wrap: anywhere; }
+
+@keyframes avatarPop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
+.avatar.pop { animation: avatarPop .45s cubic-bezier(.34, 1.56, .64, 1) both; }
+.auth.swap { animation: fadeIn .25s ease both; }
+
+.page[hidden] { display: none; }
+.panel.wide { grid-column: 1 / -1; }
+.avatar.lg { width: 72px; height: 72px; flex: none; font-size: 24px; border-color: var(--gold); cursor: default; }
+.avatar.lg:hover { box-shadow: none; }
+.profile-head { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
+.profile-head strong { display: block; font-size: 18px; overflow-wrap: anywhere; }
+.profile-head div span { display: block; margin-top: 2px; font-size: 13px; color: #666; overflow-wrap: anywhere; }
+.details { display: grid; grid-template-columns: auto 1fr; gap: 8px 20px; font-size: 13px; }
+.details dt { align-self: center; font-size: 10px; font-weight: 700; text-transform: uppercase; color: #7a5230; }
+.details dd { margin: 0; }
+
+.pform { display: grid; gap: 14px; }
+.pform label { display: grid; gap: 5px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: #444; }
+.pform input { height: 38px; padding: 0 10px; border: 1px solid #c9c9c9; border-radius: 6px; font-size: 13px; }
+.pform input:focus { border-color: var(--brown-dark); }
+.pform .btn { justify-self: start; padding: 9px 18px; font-size: 13px; }
+.form-msg { font-size: 12px; color: #b3261e; }
+
+.session { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+.session p { font-size: 13px; color: #444; }

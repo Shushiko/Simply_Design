@@ -30,13 +30,13 @@
         <a href="settings.html" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a>
       </nav>
 
-      <div class="profile">
+      <a href="settings.html" class="profile">
         <div class="avatar">AD</div>
         <div>
           <strong>Admin</strong>
           <span>Simply Design</span>
         </div>
-      </div>
+      </a>
     </aside>
 
     <!-- Main -->
@@ -128,13 +128,16 @@
       <form id="addItemForm">
         <div class="modal-body">
           <div class="photo-upload">
-            <span class="photo-label">Item Photo</span>
-            <div class="photo-preview" id="itemPhotoPreview">
-              <i class="fa-regular fa-image" aria-hidden="true"></i>
-              <span>No photo yet</span>
-              <img id="itemPhotoImg" alt="Preview of the uploaded item photo">
+            <span class="photo-label">Item Photos <span class="photo-count" id="itemPhotoCount">0/5</span></span>
+            <div class="photo-gallery">
+              <div class="photo-preview" id="itemPhotoPreview">
+                <i class="fa-regular fa-image" aria-hidden="true"></i>
+                <span>No photo yet</span>
+                <img id="itemPhotoImg" alt="Preview of the uploaded item photo">
+              </div>
+              <div class="photo-thumbs" id="itemPhotoThumbs" aria-label="Item photos (up to 5)"></div>
             </div>
-            <input type="file" id="itemPhoto" name="photo" accept="image/*" hidden>
+            <input type="file" id="itemPhoto" name="photo" accept="image/*" multiple hidden>
             <div class="photo-actions">
               <button type="button" class="btn-upload" id="itemPhotoBtn"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> <span id="itemPhotoBtnText">Upload Photo</span></button>
               <button type="button" class="btn-remove-photo" id="itemPhotoRemove" hidden>Remove</button>
@@ -172,13 +175,21 @@
               <label for="itemPrice">Price</label>
               <input class="input" id="itemPrice" name="price" type="number" min="0" step="1" placeholder="1500" required>
             </div>
-            <div class="field field-wide">
+            <!-- Status: only shown when editing. New items are always saved as Available. -->
+            <div class="field field-wide" id="statusField" hidden>
               <label for="itemStatus">Status</label>
               <select class="select" id="itemStatus" name="status">
                 <option>Available</option>
                 <option>Rented</option>
-
+                <option>Damaged</option>
               </select>
+            </div>
+            <div class="auto-status" id="autoStatusNote">
+              <span class="auto-icon"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>
+              <div class="auto-text">
+                <strong>Status: <span class="badge available">AVAILABLE</span></strong>
+                <span>New items are marked as available automatically, so they're ready to rent right away.</span>
+              </div>
             </div>
           </div>
         </div>
@@ -189,7 +200,5 @@
       </form>
     </div>
   </div>
-
-  <script src="nav.js"></script>
 </body>
 </html>

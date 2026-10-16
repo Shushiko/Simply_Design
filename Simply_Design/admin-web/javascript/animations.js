@@ -110,7 +110,19 @@
 // the click is delegated on the document.
 // ---------------------------------------------------------------
 (function () {
-  var overlay, img;
+  var overlay, img, prevBtn, nextBtn, counter;
+  var list = []; // the photos being browsed
+  var idx = 0;
+
+  function makeNav(cls, label, symbol, dir) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "lightbox-nav " + cls;
+    b.setAttribute("aria-label", label);
+    b.innerHTML = symbol;
+    b.addEventListener("click", function () { step(dir); });
+    return b;
+  }
 
   function build() {
     overlay = document.createElement("div");
@@ -123,6 +135,14 @@
     img.className = "lightbox-img";
     img.alt = "";
     overlay.appendChild(img);
+
+    prevBtn = makeNav("prev", "Previous photo", "&#10094;", -1);
+    nextBtn = makeNav("next", "Next photo", "&#10095;", 1);
+    counter = document.createElement("span");
+    counter.className = "lightbox-count";
+    overlay.appendChild(prevBtn);
+    overlay.appendChild(nextBtn);
+    overlay.appendChild(counter);
 
     var closeBtn = document.createElement("button");
     closeBtn.type = "button";
@@ -139,10 +159,29 @@
     document.body.appendChild(overlay);
   }
 
-  function openLightbox(src) {
+  function show() {
+    img.src = list[idx];
+    var multi = list.length > 1;
+    prevBtn.hidden = !multi;
+    nextBtn.hidden = !multi;
+    counter.hidden = !multi;
+    counter.textContent = (idx + 1) + " / " + list.length;
+  }
+
+  function step(dir) {
+    if (list.length < 2) return;
+    idx = (idx + dir + list.length) % list.length;
+    show();
+  }
+
+  // src = the photo to show; photos (optional) = all photos of that item, so
+  // the arrows can browse through them
+  function openLightbox(src, photos) {
     if (!src) return;
     if (!overlay) build();
-    img.src = src;
+    list = photos && photos.length > 1 ? photos : [src];
+    idx = Math.max(0, list.indexOf(src));
+    show();
     overlay.classList.add("open");
     document.documentElement.classList.add("lightbox-open");
   }
@@ -154,13 +193,22 @@
   }
 
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && overlay && overlay.classList.contains("open")) closeLightbox();
+    if (!overlay || !overlay.classList.contains("open")) return;
+    if (e.key === "Escape") closeLightbox();
+    else if (e.key === "ArrowLeft") step(-1);
+    else if (e.key === "ArrowRight") step(1);
   });
 
   // Any table thumbnail photo opens the lightbox when clicked
   document.addEventListener("click", function (e) {
     var thumbImg = e.target.closest(".thumb img");
-    if (thumbImg) openLightbox(thumbImg.src);
+    if (!thumbImg) return;
+    var all = [];
+    var row = thumbImg.closest("tr");
+    if (row && row.dataset.photos) {
+      try { all = JSON.parse(row.dataset.photos) || []; } catch (err) { all = []; }
+    }
+    openLightbox(thumbImg.src, all);
   });
 
   // Made available to the Inventory popup code further down
@@ -189,7 +237,11 @@ document.addEventListener("DOMContentLoaded", function () {
   var photoBtnText = document.getElementById("itemPhotoBtnText");
   var photoRemove = document.getElementById("itemPhotoRemove");
   var photoError = document.getElementById("itemPhotoError");
-  var currentPhoto = ""; // data URL of the photo shown in the popup, or ""
+  var MAX_PHOTOS = 5;
+  var photos = [];      // data URLs; the first one is the cover shown in the table
+  var activeIdx = 0;    // which photo the big preview is showing
+  var photoThumbs = document.getElementById("itemPhotoThumbs");
+  var photoCount = document.getElementById("itemPhotoCount");
 
   function showPhotoError(message) {
     if (!photoError) return;
@@ -197,46 +249,148 @@ document.addEventListener("DOMContentLoaded", function () {
     photoError.hidden = !message;
   }
 
-  function setPhoto(dataUrl) {
-    currentPhoto = dataUrl || "";
-    showPhotoError("");
+  // Small side strip: one slot per possible photo (filled, "+" for the next one, or empty)
+  function renderThumbs() {
+    if (!photoThumbs) return;
+    photoThumbs.textContent = "";
+    for (var i = 0; i < MAX_PHOTOS; i++) {
+      var slot = document.createElement("button");
+      slot.type = "button";
+      if (i < photos.length) {
+        slot.className = "thumb-slot filled" + (i === activeIdx ? " active" : "");
+        slot.setAttribute("aria-label", "Show photo " + (i + 1) + (i === 0 ? " (cover photo)" : ""));
+        if (i === 0) slot.title = "Cover photo (shown in the table)";
+        var pic = document.createElement("img");
+        pic.src = photos[i];
+        pic.alt = "";
+        slot.appendChild(pic);
+        if (i === 0) {
+          var star = document.createElement("span");
+          star.className = "cover-star";
+          star.innerHTML = '<i class="fa-solid fa-star" aria-hidden="true"></i>';
+          slot.appendChild(star);
+        }
+        slot.addEventListener("click", (function (n) {
+          return function () {
+            activeIdx = n;
+            renderPhotos();
+            if (photoThumbs.children[n]) photoThumbs.children[n].focus();
+          };
+        })(i));
+      } else if (i === photos.length) {
+        slot.className = "thumb-slot add";
+        slot.setAttribute("aria-label", "Add a photo");
+        slot.innerHTML = '<i class="fa-solid fa-plus" aria-hidden="true"></i>';
+        slot.addEventListener("click", function () { if (photoInput) photoInput.click(); });
+      } else {
+        slot.className = "thumb-slot empty";
+        slot.disabled = true;
+        slot.tabIndex = -1;
+        slot.setAttribute("aria-hidden", "true");
+      }
+      photoThumbs.appendChild(slot);
+    }
+  }
+
+  function renderPhotos() {
+    if (activeIdx >= photos.length) activeIdx = Math.max(0, photos.length - 1);
+    var has = photos.length > 0;
+    var full = photos.length >= MAX_PHOTOS;
     if (photoImg) {
-      if (currentPhoto) photoImg.src = currentPhoto;
+      if (has) photoImg.src = photos[activeIdx];
       else photoImg.removeAttribute("src");
     }
-    if (photoPreview) photoPreview.classList.toggle("has-photo", !!currentPhoto);
-    if (photoRemove) photoRemove.hidden = !currentPhoto;
-    if (photoBtnText) photoBtnText.textContent = currentPhoto ? "Change Photo" : "Upload Photo";
-    if (!currentPhoto && photoInput) photoInput.value = "";
+    if (photoPreview) photoPreview.classList.toggle("has-photo", has);
+    if (photoRemove) photoRemove.hidden = !has;
+    if (photoCount) photoCount.textContent = photos.length + "/" + MAX_PHOTOS;
+    if (photoBtn) photoBtn.disabled = full;
+    if (photoBtnText) photoBtnText.textContent = full ? "Maximum 5 photos" : (has ? "Add Photo" : "Upload Photo");
+    renderThumbs();
+  }
+
+  function setPhotos(list) {
+    photos = (list || []).filter(Boolean).slice(0, MAX_PHOTOS);
+    activeIdx = 0;
+    showPhotoError("");
+    renderPhotos();
+  }
+
+  // A table row keeps its photos in data-photos (all of them) and data-photo (the cover)
+  function getRowPhotos(row) {
+    if (row.dataset.photos) {
+      try {
+        var arr = JSON.parse(row.dataset.photos);
+        if (Array.isArray(arr)) return arr;
+      } catch (err) { /* fall through */ }
+    }
+    return row.dataset.photo ? [row.dataset.photo] : [];
+  }
+
+  function saveRowPhotos(row) {
+    if (photos.length) {
+      row.dataset.photo = photos[0];
+      row.dataset.photos = JSON.stringify(photos);
+    } else {
+      delete row.dataset.photo;
+      delete row.dataset.photos;
+    }
   }
 
   if (photoInput) {
     if (photoBtn) photoBtn.addEventListener("click", function () { photoInput.click(); });
     if (photoPreview) photoPreview.addEventListener("click", function () {
-      if (photoPreview.classList.contains("has-photo")) window.openPhotoLightbox(photoImg.src);
+      if (photoPreview.classList.contains("has-photo")) window.openPhotoLightbox(photoImg.src, photos);
       else photoInput.click();
     });
-    if (photoRemove) photoRemove.addEventListener("click", function () { setPhoto(""); });
+    if (photoRemove) photoRemove.addEventListener("click", function () {
+      photos.splice(activeIdx, 1);
+      showPhotoError("");
+      renderPhotos();
+    });
 
     photoInput.addEventListener("change", function () {
-      var file = photoInput.files && photoInput.files[0];
-      if (!file) return;
+      var files = Array.prototype.slice.call(photoInput.files || []);
+      photoInput.value = ""; // so picking the same file again still fires "change"
+      if (!files.length) return;
 
-      if (file.type.indexOf("image/") !== 0) {
-        photoInput.value = "";
-        showPhotoError("Please choose an image file (JPG, PNG, WEBP...).");
-        return;
-      }
-      if (file.size > MAX_PHOTO_BYTES) {
-        photoInput.value = "";
-        showPhotoError("That photo is over 5 MB. Please choose a smaller one.");
-        return;
-      }
+      var room = MAX_PHOTOS - photos.length;
+      if (room <= 0) { showPhotoError("You can add up to " + MAX_PHOTOS + " photos."); return; }
 
-      var reader = new FileReader();
-      reader.onload = function () { setPhoto(reader.result); };
-      reader.onerror = function () { showPhotoError("Couldn't read that file. Please try another."); };
-      reader.readAsDataURL(file);
+      var message = "";
+      var accepted = [];
+      files.forEach(function (file) {
+        if (file.type.indexOf("image/") !== 0) {
+          message = "Please choose image files only (JPG, PNG, WEBP...).";
+        } else if (file.size > MAX_PHOTO_BYTES) {
+          message = "A photo over 5 MB was skipped. Please choose smaller ones.";
+        } else {
+          accepted.push(file);
+        }
+      });
+      if (accepted.length > room) {
+        accepted = accepted.slice(0, room);
+        message = "You can add up to " + MAX_PHOTOS + " photos, so only the first " + room + " were added.";
+      }
+      showPhotoError(message);
+      if (!accepted.length) return;
+
+      var results = new Array(accepted.length);
+      var pending = accepted.length;
+      function done() {
+        pending--;
+        if (pending) return;
+        var added = results.filter(Boolean);
+        if (!added.length) return;
+        photos = photos.concat(added).slice(0, MAX_PHOTOS);
+        activeIdx = Math.max(0, photos.length - added.length); // show the first photo just added
+        renderPhotos();
+      }
+      accepted.forEach(function (file, i) {
+        var reader = new FileReader();
+        reader.onload = function () { results[i] = reader.result; done(); };
+        reader.onerror = function () { showPhotoError("Couldn't read one of the files. Please try again."); done(); };
+        reader.readAsDataURL(file);
+      });
     });
   }
 
@@ -273,6 +427,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function setSelectByText(select, text) {
+    if (!select || !select.options) return;
     var target = text.trim().toLowerCase();
     for (var i = 0; i < select.options.length; i++) {
       if (select.options[i].textContent.trim().toLowerCase() === target) {
@@ -280,6 +435,14 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
     }
+  }
+
+  // Status can only be changed when editing; a new item is always Available.
+  var statusField = document.getElementById("statusField");
+  var statusNote = document.getElementById("autoStatusNote");
+  function setStatusMode(isEdit) {
+    if (statusField) statusField.hidden = !isEdit;
+    if (statusNote) statusNote.hidden = isEdit;
   }
 
   function showModal() {
@@ -294,7 +457,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (modalTitle) modalTitle.textContent = "Add New Item";
     if (submitBtn) submitBtn.textContent = "Save Item";
     form.reset();
-    setPhoto("");
+    setPhotos([]);
+    setStatusMode(false);
     showModal();
   }
 
@@ -302,6 +466,7 @@ document.addEventListener("DOMContentLoaded", function () {
     editingRow = row;
     if (modalTitle) modalTitle.textContent = "Edit Item";
     if (submitBtn) submitBtn.textContent = "Save Changes";
+    setStatusMode(true);
 
     var cells = row.cells;
     form.elements.code.value = cells[0].textContent.trim();
@@ -311,7 +476,7 @@ document.addEventListener("DOMContentLoaded", function () {
     form.elements.color.value = cells[4].textContent.trim();
     form.elements.price.value = cells[5].textContent.replace(/[^\d.]/g, "");
     setSelectByText(form.elements.status, cells[6].textContent.trim());
-    setPhoto(row.dataset.photo || "");
+    setPhotos(getRowPhotos(row));
 
     showModal();
   }
@@ -328,7 +493,15 @@ document.addEventListener("DOMContentLoaded", function () {
   // Delegated on the table body, so rows added later are covered too.
   tbody.addEventListener("click", function (e) {
     var btn = e.target.closest(".btn-edit");
-    if (btn) openModalToEdit(btn.closest("tr"));
+    if (btn) { openModalToEdit(btn.closest("tr")); return; }
+
+    // Clicking anywhere else on an item row also opens the edit popup.
+    // Ignore the Delete button and the photo thumbnail (it opens the lightbox).
+    if (e.target.closest(".btn-sm, .thumb img, a, input, select")) return;
+    var row = e.target.closest("tr");
+    if (!row || row.classList.contains("removing") || row.classList.contains("no-results-row")) return;
+    if (!row.querySelector(".btn-edit")) return;
+    openModalToEdit(row);
   });
 
   // Cancel button
@@ -405,7 +578,8 @@ document.addEventListener("DOMContentLoaded", function () {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var data = new FormData(form);
-    var status = data.get("status");
+    // New items are always Available; only an edit can change the status
+    var status = editingRow ? (data.get("status") || "Available") : "Available";
     var values = [
       { text: data.get("code").trim().toUpperCase(), cls: "code" },
       { text: data.get("name").trim(), cls: "item" },
@@ -420,9 +594,8 @@ document.addEventListener("DOMContentLoaded", function () {
         editingRow.cells[i].textContent = v.text;
         editingRow.cells[i].className = v.cls;
       });
-      renderItemCell(editingRow.cells[1], values[1].text, currentPhoto);
-      if (currentPhoto) editingRow.dataset.photo = currentPhoto;
-      else delete editingRow.dataset.photo;
+      renderItemCell(editingRow.cells[1], values[1].text, photos[0] || "");
+      saveRowPhotos(editingRow);
       fillStatusCell(editingRow.cells[6], status);
       closeModal();
       return;
@@ -430,8 +603,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var row = document.createElement("tr");
     values.forEach(function (v) { row.appendChild(cell(v.text, v.cls)); });
-    renderItemCell(row.cells[1], values[1].text, currentPhoto);
-    if (currentPhoto) row.dataset.photo = currentPhoto;
+    renderItemCell(row.cells[1], values[1].text, photos[0] || "");
+    saveRowPhotos(row);
     row.appendChild(buildStatusCell(status));
     row.appendChild(buildActionsCell());
 
@@ -705,6 +878,100 @@ document.addEventListener("DOMContentLoaded", function () {
 
     closeModal();
   });
+
+  // ----- Return button: marks the rental as Returned -----
+  // ----- Auto-delete: a Returned rental disappears AUTO_DELETE_DAYS after its return date -----
+  var AUTO_DELETE_DAYS = 30; // change this number; 0 turns auto-delete off
+  var RETURN_COL = 4;
+  var STATUS_COL = 7;
+
+  function pad(n) { return String(n).padStart(2, "0"); }
+  function toISO(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function parseISO(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((s || "").trim());
+    return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+  }
+
+  function isReturned(row) {
+    var badge = row.cells[STATUS_COL] && row.cells[STATUS_COL].querySelector(".badge");
+    return !!badge && badge.classList.contains("returned");
+  }
+
+  // The day the countdown starts from: the day it was marked Returned here,
+  // otherwise the rental's Return date
+  function returnedOn(row) {
+    return parseISO(row.dataset.returnedOn || (row.cells[RETURN_COL] ? row.cells[RETURN_COL].textContent : ""));
+  }
+
+  function deleteDate(row) {
+    var d = returnedOn(row);
+    return d ? new Date(d.getFullYear(), d.getMonth(), d.getDate() + AUTO_DELETE_DAYS) : null;
+  }
+
+  function isExpired(row) {
+    if (!(AUTO_DELETE_DAYS > 0) || !isReturned(row)) return false;
+    var due = deleteDate(row);
+    return !!due && new Date() >= due;
+  }
+
+  // Hover tip on the RETURNED badge: when it was returned and when it will be removed
+  function labelReturned(row) {
+    var badge = row.cells[STATUS_COL] && row.cells[STATUS_COL].querySelector(".badge.returned");
+    var d = returnedOn(row);
+    if (!badge || !d) return;
+    var tip = "Returned on " + toISO(d);
+    if (AUTO_DELETE_DAYS > 0) tip += " \u2022 removed automatically on " + toISO(deleteDate(row));
+    badge.title = tip;
+  }
+
+  function markReturned(row) {
+    if (!row || isReturned(row)) return;
+    row.dataset.returnedOn = toISO(new Date());
+
+    var td = row.cells[STATUS_COL];
+    td.textContent = "";
+    var badge = document.createElement("span");
+    badge.className = "badge returned";
+    badge.textContent = "RETURNED";
+    td.appendChild(badge);
+    labelReturned(row);
+
+    var returnBtn = row.querySelector(".btn-return");
+    if (returnBtn) returnBtn.remove();
+
+    if (badge.animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      badge.animate(
+        [{ transform: "scale(0.6)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }],
+        { duration: 260, easing: "ease-out" }
+      );
+    }
+
+    // Let the Status filter re-check this row (e.g. while the list is filtered to "Active")
+    var statusFilter = document.getElementById("rentalsStatus");
+    if (statusFilter) statusFilter.dispatchEvent(new Event("change"));
+  }
+
+  // Works for rows added later too, since the click is handled on the table body
+  tbody.addEventListener("click", function (e) {
+    var btn = e.target.closest(".btn-return");
+    if (btn) markReturned(btn.closest("tr"));
+  });
+
+  // Removes rentals whose time is up. On page load they just vanish; while the
+  // page stays open they slide out like a normal Delete (it reuses the Delete button).
+  function sweepExpired(animated) {
+    if (!(AUTO_DELETE_DAYS > 0)) return;
+    Array.prototype.slice.call(tbody.rows).forEach(function (row) {
+      if (row.classList.contains("removing") || !isExpired(row)) return;
+      var deleteBtn = row.querySelector(".btn-danger");
+      if (animated && deleteBtn) deleteBtn.click();
+      else row.remove();
+    });
+  }
+
+  sweepExpired(false);
+  Array.prototype.forEach.call(tbody.rows, labelReturned);
+  setInterval(function () { sweepExpired(true); }, 60 * 1000);
 });
 
 // ---------------------------------------------------------------

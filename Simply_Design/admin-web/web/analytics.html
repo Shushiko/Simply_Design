@@ -32,13 +32,13 @@
         <a href="settings.html" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a>
       </nav>
 
-      <div class="profile">
+      <a href="settings.html" class="profile">
         <div class="avatar">AD</div>
         <div>
           <strong>Admin</strong>
           <span>Simply Design</span>
         </div>
-      </div>
+      </a>
     </aside>
 
     <!-- Main -->
@@ -52,114 +52,143 @@
         <section class="panel">
           <div class="panel-head">
             <h2>Analytics</h2>
+            <div class="analytics-actions">
+              <button type="button" class="btn-outline" id="printReportBtn"><i class="fa-solid fa-print"></i> Print</button>
+              <button type="button" class="btn-primary" id="downloadReportBtn"><i class="fa-solid fa-download"></i> Download Report</button>
+            </div>
           </div>
 
           <div class="analytics-body">
-            <div class="chart-box">
+
+            <!-- Summary stats -->
+            <div class="stats">
+              <article class="card stat">
+                <div class="stat-head"><span>MONTHLY REVENUE</span></div>
+                <strong>&#8369;9,200</strong>
+                <small>&#9650; 12.4% vs last month</small>
+              </article>
+              <article class="card stat">
+                <div class="stat-head"><span>ACTIVE RENTALS</span></div>
+                <strong>2</strong>
+                <small>1 due this week</small>
+              </article>
+              <article class="card stat">
+                <div class="stat-head"><span>INVENTORY UTILIZATION</span></div>
+                <strong>14%</strong>
+                <small>&#9650; 3.2 pts items rented</small>
+              </article>
+              <article class="card stat">
+                <div class="stat-head"><span>CUSTOMERS</span></div>
+                <strong>3</strong>
+                <small>+2 registered this month</small>
+              </article>
+            </div>
+
+            <!-- Revenue Overview -->
+            <div class="chart-box chart-box-accent">
               <h3 class="chart-box-title">Revenue Overview</h3>
               <div class="chart-canvas-wrap">
                 <canvas id="revenueChart"></canvas>
               </div>
             </div>
 
-            <div class="chart-box">
-              <h3 class="chart-box-title align-left">Popular Categories</h3>
-              <div class="categories-row">
-                <div class="donut-wrap">
-                  <canvas id="categoriesChart"></canvas>
+            <!-- Top Rented Dress -->
+            <div class="top-rented-banner">
+              <div class="top-rented-info">
+                <span class="top-rented-badge"><i class="fa-solid fa-star"></i> TOP RENTED DRESS</span>
+                <h3>Midnight Dress</h3>
+                <p>Highest demand gown category this month with 100% reservation rate.</p>
+                <div class="top-rented-stats">
+                  <div><strong>12 Times</strong><span>Total Rented</span></div>
+                  <div><strong>&#8369;18,000</strong><span>Revenue Generated</span></div>
                 </div>
-                <ul class="legend-list">
-                  <li><span class="dot dot-primary"></span><span class="legend-text">Long Gown Dress<br><strong>70%</strong></span></li>
-                  <li><span class="dot dot-secondary"></span><span class="legend-text">Men suit<br><strong>20%</strong></span></li>
-                  <li><span class="dot dot-tertiary"></span><span class="legend-text">Cocktail Dress<br><strong>10%</strong></span></li>
-                </ul>
+              </div>
+              <div class="top-rented-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="38" height="38" fill="currentColor"><path d="M12 1.5c.6 5.6 4.9 9.9 10.5 10.5-5.6.6-9.9 4.9-10.5 10.5C11.4 16.9 7.1 12.6 1.5 12 7.1 11.4 11.4 7.1 12 1.5z"/></svg>
               </div>
             </div>
 
-            <!-- Recent Violations -->
-            <div class="chart-box violations-box">
-              <div class="viol-head">
-                <h3>Recent Violations</h3>
-                <span class="viol-count">2 Pending</span>
+            <!-- Inventory Performance -->
+            <div class="chart-box">
+              <h3 class="chart-box-title align-left">Inventory Performance</h3>
+              <div class="perf-list">
+                <div class="perf-row">
+                  <div class="perf-top"><strong>Evening Dress (Includes Midnight Dress)</strong><span>30% utilized</span></div>
+                  <div class="perf-bar"><div class="perf-fill" style="width: 30%"></div></div>
+                  <div class="perf-meta">10 total &middot; 7 available &middot; 3 rented</div>
+                </div>
+                <div class="perf-row">
+                  <div class="perf-top"><strong>Long Gown</strong><span>40% utilized</span></div>
+                  <div class="perf-bar"><div class="perf-fill" style="width: 40%"></div></div>
+                  <div class="perf-meta">5 total &middot; 3 available &middot; 2 rented</div>
+                </div>
+                <div class="perf-row">
+                  <div class="perf-top"><strong>Cocktail Dress</strong><span>20% utilized</span></div>
+                  <div class="perf-bar"><div class="perf-fill" style="width: 20%"></div></div>
+                  <div class="perf-meta">5 total &middot; 4 available &middot; 1 rented</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rental Activity History -->
+            <div class="chart-box">
+              <div class="rental-history-head">
+                <h3 class="chart-box-title align-left">Rental Activity History</h3>
+                <div class="rental-history-controls">
+                  <input class="input" type="search" id="rentalHistorySearch" placeholder="Search user or item...">
+                  <select class="select" id="rentalHistoryStatus">
+                    <option>All Status</option>
+                    <option>Active</option>
+                    <option>Returned</option>
+                    <option>Late Return</option>
+                    <option>Damage</option>
+                  </select>
+                </div>
               </div>
 
-              <ul class="viol-list">
-                <li class="viol-item">
-                  <div class="viol-main">
-                    <div class="viol-name-row">
-                      <strong class="viol-name">Kris Jolly</strong>
-                      <span class="viol-tag late">Late Return</span>
-                    </div>
-                    <span class="viol-garment">Evening Gown</span>
-                    <p class="viol-note">Item returned 3 days late</p>
-                    <span class="viol-status resolved">✓ Resolved</span>
-                  </div>
-                  <div class="viol-side">
-                    <strong class="viol-fee">₱45</strong>
-                    <span class="viol-date">3/1/2026</span>
-                  </div>
-                </li>
-
-                <li class="viol-item">
-                  <div class="viol-main">
-                    <div class="viol-name-row">
-                      <strong class="viol-name">Jhon Nilla</strong>
-                      <span class="viol-tag damage">Damage</span>
-                    </div>
-                    <span class="viol-garment">Black Dress</span>
-                    <p class="viol-note">Minor stain on hem</p>
-                    <span class="viol-status pending">⌛ Pending</span>
-                  </div>
-                  <div class="viol-side">
-                    <strong class="viol-fee">₱75</strong>
-                    <span class="viol-date">2/28/2026</span>
-                  </div>
-                </li>
-
-                <li class="viol-item">
-                  <div class="viol-main">
-                    <div class="viol-name-row">
-                      <strong class="viol-name">Jim Santos</strong>
-                      <span class="viol-tag late">Late Return</span>
-                    </div>
-                    <span class="viol-garment">Casual Gown</span>
-                    <p class="viol-note">Item returned 1 day late</p>
-                    <span class="viol-status resolved">✓ Resolved</span>
-                  </div>
-                  <div class="viol-side">
-                    <strong class="viol-fee">₱45</strong>
-                    <span class="viol-date">3/25/2026</span>
-                  </div>
-                </li>
-
-                <li class="viol-item">
-                  <div class="viol-main">
-                    <div class="viol-name-row">
-                      <strong class="viol-name">Lisa Lacreo</strong>
-                      <span class="viol-tag damage">Damage</span>
-                    </div>
-                    <span class="viol-garment">Black Dress</span>
-                    <p class="viol-note">torn fabric on shoulder</p>
-                    <span class="viol-status pending">⌛ Pending</span>
-                  </div>
-                  <div class="viol-side">
-                    <strong class="viol-fee">₱45</strong>
-                    <span class="viol-date">2/20/2026</span>
-                  </div>
-                </li>
-              </ul>
+              <div class="table-wrap">
+                <table class="inv-table" id="rentalHistoryTable">
+                  <thead>
+                    <tr>
+                      <th>Customer Name</th><th>Item</th><th>Category</th>
+                      <th>Rent Date</th><th>Due Date</th><th>Amount</th><th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rentalHistoryBody">
+                    <tr>
+                      <td class="item">Ana Reyes</td><td>Emerald Long Gown</td><td>Long Gown</td>
+                      <td>Oct 8, 2026</td><td>Oct 13, 2026</td><td class="price">&#8369;3,200</td>
+                      <td><span class="rah-badge rah-active">Active</span></td>
+                    </tr>
+                    <tr>
+                      <td class="item">Maria Santos</td><td>Midnight Dress</td><td>Evening Dress</td>
+                      <td>Oct 9, 2026</td><td>Oct 12, 2026</td><td class="price">&#8369;1,500</td>
+                      <td><span class="rah-badge rah-active">Active</span></td>
+                    </tr>
+                    <tr>
+                      <td class="item">Maria Santos</td><td>Midnight Dress</td><td>Evening Dress</td>
+                      <td>Oct 3, 2026</td><td>Oct 6, 2026</td><td class="price">&#8369;1,500</td>
+                      <td><span class="rah-badge rah-returned">Returned</span></td>
+                    </tr>
+                    <tr>
+                      <td class="item">Ana Reyes</td><td>Rose Cocktail Dress</td><td>Cocktail Dress</td>
+                      <td>Sep 28, 2026</td><td>Oct 2, 2026</td><td class="price">&#8369;1,800</td>
+                      <td><span class="rah-badge rah-late">Late Return</span></td>
+                    </tr>
+                    <tr>
+                      <td class="item">Liza Cruz</td><td>Champagne Long Gown</td><td>Long Gown</td>
+                      <td>Oct 1, 2026</td><td>Oct 4, 2026</td><td class="price">&#8369;1,200</td>
+                      <td><span class="rah-badge rah-damage">Damage</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
+
           </div>
         </section>
       </main>
     </div>
   </div>
-  <script src="analytics.js"></script>
-  <script src="nav.js"></script>
 </body>
 </html>
-
-
-
-
-

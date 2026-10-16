@@ -313,6 +313,8 @@
 
 
 
+
+
 (function () {
   'use strict';
 
@@ -385,7 +387,9 @@
   function goTo(account, greeting) {
     try { sessionStorage.setItem(WELCOME_KEY, greeting); } catch (e) { /* ignore */ }
     setTimeout(function () {
-      window.location.href = account.role === 'admin' ? ADMIN_URL : USER_URL;
+      // ADMIN_URL / USER_URL start from the project root; signup.html sits 3 folders deeper
+      var base = signupForm ? '../../../' : '';
+      window.location.href = base + (account.role === 'admin' ? ADMIN_URL : USER_URL);
     }, 500);
   }
 
@@ -532,7 +536,9 @@
         return logIn(emailInput.value.trim(), passwordInput.value);
       }, 'Logged in', function (account) {
         saveRemembered();
-        startSession(account, !!(remember && remember.checked));
+        // Customers stay logged in on this browser until they press Log Out (so the catalog's top bar
+        // changes in every tab). Admins keep the old behavior: tab-only unless "Remember me" is ticked.
+        startSession(account, account.role !== 'admin' || !!(remember && remember.checked));
         goTo(account, 'back');
       });
     });

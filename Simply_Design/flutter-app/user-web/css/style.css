@@ -781,19 +781,36 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .pf-switch input:focus-visible + i { outline: 2px solid var(--brown-dark); outline-offset: 2px; }
 
 /* Security + bottom buttons */
-.pf-sec { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.pf-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 20px 24px; }
-.pf-sec .btn, .pf-actions .btn { justify-content: center; border-radius: 4px; padding: 0; height: 46px; font-size: 15px; }
+.pf-sec { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 7.5vw, 64px); }
+.pf-actions { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 7.5vw, 64px); padding: 20px; }
+.pf-sec .btn, .pf-actions .btn { justify-content: center; border-radius: 8px; padding: 0; height: 40px; font-size: 15px; font-weight: 700; }
 .btn-outline { background: var(--pf-card); color: var(--pf-accent); border: 1.5px solid var(--brown); }
 .btn-outline:hover { background: var(--pf-head); }
-.pf-sec .btn-primary { background: var(--brown); }
-.btn-save { background: #3cb35f; color: #fff; }
+.pf-sec .btn-primary, .pf-sec #pf2fa { background: #99581b; color: #fff; border-color: transparent; }
+.pf-sec .btn-primary:hover, .pf-sec #pf2fa:hover { background: #7f4813; }
+.btn-save { background: #3cb161; color: #fff; }
 .btn-save:hover { background: #2f9b4e; }
-.btn-danger { background: #c70000; color: #fff; }
+.btn-danger { background: #c60001; color: #fff; }
 .btn-danger:hover { background: #a60000; }
+
+/* All cards: lifted look with a soft shadow (same as Security / Save Changes) */
+.pf-card { border: 1px solid #c4c4c4; border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, .22); }
+.pf-card > h2:not(.plain), .pf-head { border-bottom-color: #c4c4c4; }
+.pf-head[aria-expanded="false"] { border-bottom-color: transparent; }
+.pf-security > h2 { padding: 15px 20px; }
+.pf-security > h2 svg { color: #99581b; }
+.pf-security .pf-body { padding: 16px 20px 20px; }
+#profilePage.dark .pf-card { border-color: var(--pf-line); box-shadow: 0 2px 6px rgba(0, 0, 0, .5); }
+#profilePage.dark .pf-card > h2:not(.plain), #profilePage.dark .pf-head { border-bottom-color: var(--pf-line); }
+#profilePage.dark .pf-head[aria-expanded="false"] { border-bottom-color: transparent; }
+#profilePage.dark .pf-security > h2 svg { color: var(--pf-accent); }
+.pf-err:empty { display: none; } /* empty error line no longer adds extra gap between the cards */
 .pf-pw { display: grid; gap: 14px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--pf-line); }
 .pf-pw[hidden] { display: none; }
 .pf-out { display: grid; gap: 14px; font-size: 15px; }
+.pf-body a.btn-primary { color: #fff; } /* Log in button text was being turned brown by ".pf-body a" */
+.pf-body a.btn-primary:hover { color: #fff; }
+.pf-body a.btn-ghost { color: var(--pf-accent); }
 
 @media (max-width: 640px) {
   .pf { padding: 12px 12px 48px; }
@@ -807,5 +824,12 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
   .pf-stats div { flex: 1; min-width: 0; }
   .pf-sec, .pf-actions { grid-template-columns: 1fr; gap: 12px; }
   .pf-actions { padding: 16px; }
+  .pf-security .pf-body { padding: 16px; }
+  .pf-security > h2 { padding: 14px 16px; }
   .pf-sub { display: none; }
 }
+
+/* Must log in to rent */
+.bk-login { margin-top: 16px; padding: 10px 14px; border: 1px solid #e6b8b4; border-radius: 8px; background: #fdecea; color: #b3261e; font-size: 13px; font-weight: 600; }
+.bk-login a { color: inherit; text-decoration: underline; }
+.bk-rent.locked { opacity: .55; cursor: not-allowed; }

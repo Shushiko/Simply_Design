@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Redirect to the login/home page
         setTimeout(function () {
-          window.location.href = "../../../index.html";
+          window.location.href = "../web/login.html";
         }, 100);
       }
     );

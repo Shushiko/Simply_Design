@@ -25,14 +25,14 @@ function toast(msg) {
 if (!item) {
   document.title = 'Item not found | Simply Design';
   root.innerHTML = `
-    <div class="bk-back"><a href="user.html">${ICON_BACK} Back to Catalog</a></div>
+    <div class="bk-back"><a href="../../../../index.html">${ICON_BACK} Back to Catalog</a></div>
     <p class="empty">We couldn't find that item. Please pick one from the catalog.</p>`;
 } else {
   document.title = `${item.code} | Simply Design`;
   const taken = isBooked(item);
 
   root.innerHTML = `
-    <div class="bk-back"><a href="user.html">${ICON_BACK} Back to Catalog</a></div>
+    <div class="bk-back"><a href="../../../../index.html">${ICON_BACK} Back to Catalog</a></div>
 
     <div class="bk-grid">
       <div class="bk-photo" role="img" aria-label="Photo of ${item.code}"></div>
@@ -74,6 +74,10 @@ if (!item) {
         <hr class="bk-rule">
         <p class="bk-notice">${ICON_INFO} This is a browse-only page. To reserve this ${item.type === 'Men Suit' ? 'suit' : 'gown'} or inquire about availability, please contact us directly.</p>
 
+        <p class="bk-login" id="loginNotice" role="alert" hidden>
+          Must log in to rent item. <a href="${LOGIN_URL}">Log in</a> or <a href="${SIGNUP_URL}">Sign up</a>
+        </p>
+
         <div class="bk-actions">
           <a class="bk-msgr" href="${MESSENGER_URL}" target="_blank" rel="noopener">${ICON_MSGR} Chat with us on Messenger</a>
           <button class="bk-rent" id="rent" type="button">Rent Now</button>
@@ -106,7 +110,21 @@ if (!item) {
   ret.addEventListener('change', check);
 
   // Rent Now: needs free dates, then opens the payment popup (defined in booking.html)
+  // Renting needs a login. Guests see "Must log in to rent item" and the button stays locked.
+  const rentBtn = $('#rent'), loginNotice = $('#loginNotice');
+  function syncRentLock() {
+    const guest = !getUser();
+    loginNotice.hidden = !guest;
+    rentBtn.classList.toggle('locked', guest);
+    rentBtn.setAttribute('aria-disabled', guest ? 'true' : 'false');
+    rentBtn.textContent = guest ? 'Log in to Rent' : 'Rent Now';
+  }
+  syncRentLock();
+  window.addEventListener('storage', syncRentLock);
+  window.addEventListener('pageshow', syncRentLock);
+
   $('#rent').addEventListener('click', () => {
+    if (!getUser()) { syncRentLock(); toast('Must log in to rent item.'); return; }
     if (!pickup.value || !ret.value) { toast('Please select your pickup and return dates first.'); return; }
     if (check() === false) { toast(`${item.code} is booked for those dates.`); return; }
     openPayment({ item, from: pickup.value, to: ret.value });
@@ -297,6 +315,7 @@ if (!item) {
   }
 
   $('#pmConfirm').addEventListener('click', () => {
+    if (typeof getUser === 'function' && !getUser()) { setErr('Must log in to rent item.'); return; }
     if (!validate()) return;
     const ref = 'SD-' + Math.random().toString(36).slice(2, 8).toUpperCase();
     const m = method();
@@ -333,7 +352,7 @@ if (!item) {
       </div>
       <div class="pm-actions">
         <button type="button" class="pm-download" id="pmDownload"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>Download Receipt</button>
-        <a class="pm-confirm" href="user.html">Back to Catalog</a>
+        <a class="pm-confirm" href="../../../../index.html">Back to Catalog</a>
       </div>`;
     done.hidden = false;
     $('#pmDownload').addEventListener('click', () => downloadReceipt(receipt));

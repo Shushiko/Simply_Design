@@ -331,7 +331,7 @@
   /* ---------- Settings ---------- */
 
   var ADMIN_URL = 'Simply_Design/admin-web/web/dashboard.html';
-  var USER_URL = 'Simply_Design/flutter-app/user-web/web/user.html';
+  var USER_URL = '../../../index.html';
 
   // Built-in accounts. Demo only: a real site must check passwords on a server.
   var DEMO_ACCOUNTS = [
@@ -387,8 +387,11 @@
   function goTo(account, greeting) {
     try { sessionStorage.setItem(WELCOME_KEY, greeting); } catch (e) { /* ignore */ }
     setTimeout(function () {
-      // ADMIN_URL / USER_URL start from the project root; signup.html sits 3 folders deeper
-      var base = signupForm ? '../../../' : '';
+      // ADMIN_URL / USER_URL start from the project root (the folder that contains Simply_Design),
+      // so find that root from wherever this page is served
+      var href = window.location.href;
+      var cut = href.indexOf('/Simply_Design/');
+      var base = cut >= 0 ? href.slice(0, cut + 1) : new URL('./', href).href;
       window.location.href = base + (account.role === 'admin' ? ADMIN_URL : USER_URL);
     }, 500);
   }

@@ -1568,3 +1568,26 @@ html[data-theme="dark"] .rah-damage   { background: #3a1d1d; color: #ff8585; }
   .top-rented-icon { width: 64px; height: 64px; }
   .top-rented-icon svg { width: 28px; height: 28px; }
 }
+
+/* Item Code: generated automatically, so it is read-only */
+.input-locked { position: relative; }
+.input-locked .input { padding-right: 40px; }
+.input-locked > i {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  color: #9a9a9a;
+  pointer-events: none;
+}
+.input-locked .input[readonly] {
+  background-color: #f3f1ec;
+  color: #555;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: not-allowed;
+}
+.input-locked .input[readonly]:focus { outline: none; }
+html[data-theme="dark"] .input-locked .input[readonly] { background-color: #1d1a12; color: #b7b2a3; }
+html[data-theme="dark"] .input-locked > i { color: #8a8678; }

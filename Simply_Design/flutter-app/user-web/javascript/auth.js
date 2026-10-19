@@ -13,8 +13,11 @@ const ACCOUNTS_KEY = 'simplyAccounts';  // accounts created on the sign-up page
 const ORDERS_KEY = 'simplyOrders';      // rentals booked from booking.html, by email
 const WELCOME_KEY = 'simplyWelcome';    // 'back' or 'new', set by the login / sign-up page
 
-const LOGIN_URL = '../../../../index.html';
-const SIGNUP_URL = '../../../admin-web/web/signup.html';
+// Resolved from THIS file's location (the javascript folder), so the links work from any page.
+const SCRIPT_URL = document.currentScript ? document.currentScript.src : location.href;
+const LOGIN_URL = new URL('../../../admin-web/web/login.html', SCRIPT_URL).href;
+const SIGNUP_URL = new URL('../../../admin-web/web/signup.html', SCRIPT_URL).href;
+const PROFILE_URL = new URL('../web/profile.html', SCRIPT_URL).href;
 
 /* ---------- Storage helpers (never throw) ---------- */
 
@@ -108,11 +111,15 @@ function openAuth(mode) {
 function renderAuthNav() {
   const nav = document.querySelector('.topbar .auth');
   if (!nav) return;
-  if (nav.dataset.guest === undefined) nav.dataset.guest = nav.innerHTML; // remember the original links
+  const guestHtml = `<a href="${LOGIN_URL}">Log in</a><i></i><a href="${SIGNUP_URL}">Sign up</a>`;
 
   const user = getUser();
   if (!user) {
-    if (nav.dataset.shown === 'user') { nav.innerHTML = nav.dataset.guest; nav.dataset.shown = 'guest'; }
+    // default state: nobody logged in -> only "Log in | Sign up", never the profile icon
+    nav.innerHTML = guestHtml;
+    nav.classList.remove('swap');
+    nav.dataset.shown = 'guest';
+    applyTheme(null);
     return;
   }
 
@@ -122,10 +129,17 @@ function renderAuthNav() {
   const firstShow = nav.dataset.shown !== 'user';
 
   nav.innerHTML = `
-    <a class="avatar${user.role === 'admin' ? ' is-admin' : ''}${firstShow ? ' pop' : ''}" href="profile.html"
+    <a class="avatar${user.role === 'admin' ? ' is-admin' : ''}${firstShow ? ' pop' : ''}" href="${PROFILE_URL}"
        aria-label="Open my profile: ${escapeHtml(name)}" title="${escapeHtml(name)}">${photo ? `<img src="${photo}" alt="">` : escapeHtml(initialsFor(name, user.email))}</a>`;
   if (firstShow) nav.classList.add('swap');
   nav.dataset.shown = 'user';
+  applyTheme(profile);
+}
+
+// Dark mode chosen in Settings now applies on every customer page
+function applyTheme(profile) {
+  const dark = Boolean(profile && profile.prefs && profile.prefs.dark);
+  document.body.classList.toggle('dark', dark);
 }
 
 // "Welcome back" / "Welcome" message after the login or sign-up page sends the person here

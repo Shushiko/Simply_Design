@@ -445,11 +445,71 @@ document.addEventListener("DOMContentLoaded", function () {
     if (statusNote) statusNote.hidden = isEdit;
   }
 
+  // ----- Item code: generated automatically, can't be typed in, never repeats -----
+  // Format: category initials + first 4 letters of the color + a 4-digit running number
+  // (Long Gown + Blue -> LGBLUE0001, then LGBLUE0002, ...).
+  var codeInput = form.elements.code;
+  var colorInput = form.elements.color;
+  var issuedCodes = {}; // every code seen or handed out on this page, so a deleted code is never reused
+
+  function rowCode(row) {
+    return row.cells[0] ? row.cells[0].textContent.trim().toUpperCase() : "";
+  }
+
+  Array.prototype.forEach.call(tbody.rows, function (row) {
+    var code = rowCode(row);
+    if (code) issuedCodes[code] = true;
+  });
+
+  function codeExists(code) {
+    if (issuedCodes[code]) return true;
+    return Array.prototype.some.call(tbody.rows, function (row) { return rowCode(row) === code; });
+  }
+
+  function generateCode() {
+    var colorPart = colorInput.value.replace(/[^a-z]/gi, "").slice(0, 4).toUpperCase();
+    if (!colorPart) return ""; // can't build a code until there is a color
+    var categoryPart = form.elements.category.value.trim().split(/\s+/).map(function (w) {
+      return w.charAt(0);
+    }).join("").toUpperCase();
+    var prefix = categoryPart + colorPart;
+
+    // Highest number already used with this prefix (in the table or issued earlier)
+    var pattern = new RegExp("^" + prefix + "(\\d+)$");
+    var highest = 0;
+    function check(code) {
+      var m = pattern.exec(code);
+      if (m) highest = Math.max(highest, parseInt(m[1], 10));
+    }
+    Array.prototype.forEach.call(tbody.rows, function (row) { check(rowCode(row)); });
+    Object.keys(issuedCodes).forEach(check);
+
+    // Safety net: keep counting up until the code is really unused
+    var next = highest + 1;
+    var code;
+    do {
+      code = prefix + String(next++).padStart(4, "0");
+    } while (codeExists(code));
+    return code;
+  }
+
+  // While adding, the code follows the Category and Color. An existing item keeps its code.
+  function updateCode() {
+    if (editingRow) return;
+    codeInput.value = generateCode();
+  }
+
+  form.elements.category.addEventListener("change", updateCode);
+  colorInput.addEventListener("input", function () {
+    colorInput.setCustomValidity("");
+    updateCode();
+  });
+
   function showModal() {
     lastFocused = document.activeElement;
     overlay.classList.add("open");
     document.documentElement.classList.add("modal-open");
-    setTimeout(function () { form.elements.code.focus(); }, 60);
+    setTimeout(function () { form.elements.name.focus(); }, 60);
   }
 
   function openModalToAdd() {
@@ -457,6 +517,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (modalTitle) modalTitle.textContent = "Add New Item";
     if (submitBtn) submitBtn.textContent = "Save Item";
     form.reset();
+    colorInput.setCustomValidity("");
+    updateCode();
     setPhotos([]);
     setStatusMode(false);
     showModal();
@@ -580,8 +642,18 @@ document.addEventListener("DOMContentLoaded", function () {
     var data = new FormData(form);
     // New items are always Available; only an edit can change the status
     var status = editingRow ? (data.get("status") || "Available") : "Available";
+
+    // The code can't be edited: an existing item keeps its own, a new one gets a fresh unique code
+    var code = editingRow ? rowCode(editingRow) : generateCode();
+    if (!code) {
+      colorInput.setCustomValidity("Please enter a color name (letters) so the item code can be generated.");
+      colorInput.reportValidity();
+      return;
+    }
+    issuedCodes[code] = true;
+
     var values = [
-      { text: data.get("code").trim().toUpperCase(), cls: "code" },
+      { text: code, cls: "code" },
       { text: data.get("name").trim(), cls: "item" },
       { text: data.get("category"), cls: "" },
       { text: data.get("size"), cls: "" },

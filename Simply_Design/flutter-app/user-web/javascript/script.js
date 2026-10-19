@@ -1,5 +1,8 @@
 const $ = (s) => document.querySelector(s);
 
+// booking.html lives in user-web/web; build its address from this file's own location so it works from index.html
+const BOOKING_URL = new URL('../web/booking.html', document.currentScript.src).href;
+
 const TYPES = ['Long Gown', 'Cocktail Dress', 'Men Suit'];
 
 const PIN = '<svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg>';
@@ -81,7 +84,7 @@ $('#filters').addEventListener('reset', () => {
 $('#catalog').addEventListener('click', (e) => {
   const card = e.target.closest('.card');
   if (!card) return;
-  location.href = 'booking.html?code=' + encodeURIComponent(card.dataset.code);
+  location.href = BOOKING_URL + '?code=' + encodeURIComponent(card.dataset.code);
 });
 
 render();

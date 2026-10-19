@@ -6,6 +6,8 @@
 //   - when someone is logged in, the top bar's "Log in | Sign up" turns into a profile icon
 //   - clicking that icon opens profile.html (the account / settings page)
 //   - shows a short welcome message right after logging in or signing up
+//   - customers are logged OUT by default: their session only lasts for the current tab, so opening
+//     the catalog (index.html) fresh always shows "Log in | Sign up"
 
 const SESSION_KEY = 'simplyUser';       // who is logged in (localStorage if "Remember me", else sessionStorage)
 const PROFILES_KEY = 'simplyProfiles';  // saved profile details + settings, by email
@@ -151,6 +153,15 @@ function showWelcome() {
   const first = (getProfile(user.email).name || user.name || '').split(' ')[0];
   authToast(kind === 'new' ? `Welcome, ${first}! Your account is ready.` : `Welcome back, ${first}!`);
 }
+
+// Default = logged out. Remove any old "stay logged in" customer session left in localStorage by an
+// earlier version, so it can't log someone in automatically. (A remembered admin session is left alone.)
+(function dropOldCustomerSession() {
+  const saved = readStore('localStorage', SESSION_KEY);
+  if (saved && saved.role !== 'admin') {
+    try { localStorage.removeItem(SESSION_KEY); } catch (e) { /* ignore */ }
+  }
+})();
 
 renderAuthNav();
 showWelcome();

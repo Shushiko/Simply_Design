@@ -370,7 +370,8 @@
       : null;
   }
 
-  // "Remember me" keeps the session after the browser closes; otherwise it ends with the tab.
+  // Everyone starts logged out. A customer session only lives in this tab (sessionStorage), so opening
+  // index.html fresh shows "Log in | Sign up" again. Only an admin who ticks "Remember me" is kept longer.
   function startSession(account, persistent) {
     var profiles = read('localStorage', PROFILES_KEY) || {};
     var profile = profiles[account.email] ||
@@ -539,9 +540,9 @@
         return logIn(emailInput.value.trim(), passwordInput.value);
       }, 'Logged in', function (account) {
         saveRemembered();
-        // Customers stay logged in on this browser until they press Log Out (so the catalog's top bar
-        // changes in every tab). Admins keep the old behavior: tab-only unless "Remember me" is ticked.
-        startSession(account, account.role !== 'admin' || !!(remember && remember.checked));
+        // Customers are logged in for this tab only (closing the tab logs them out).
+        // Admins stay tab-only unless "Remember me" is ticked.
+        startSession(account, account.role === 'admin' && !!(remember && remember.checked));
         goTo(account, 'back');
       });
     });
@@ -596,7 +597,7 @@
       run(function () {
         return createAccount(nameInput.value.trim(), signupEmail.value.trim(), signupPassword.value);
       }, 'Account created', function (account) {
-        startSession(account, true);
+        startSession(account, false);   // new customers are also logged in for this tab only
         goTo(account, 'new');
       });
     });

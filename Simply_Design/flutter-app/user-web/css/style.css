@@ -833,3 +833,219 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .bk-login { margin-top: 16px; padding: 10px 14px; border: 1px solid #e6b8b4; border-radius: 8px; background: #fdecea; color: #b3261e; font-size: 13px; font-weight: 600; }
 .bk-login a { color: inherit; text-decoration: underline; }
 .bk-rent.locked { opacity: .55; cursor: not-allowed; }
+
+/* =====================================================================
+   RESPONSIVE LAYER (added) - same look on phone, tablet and PC
+   Keep this block at the very END of the file so it wins over earlier rules.
+   Breakpoints: <360 tiny phone | <560 phone | <800 tablet | >=1100 desktop
+   ===================================================================== */
+
+/* ---- Global safety: nothing may push the page sideways, no surprise text resizing ---- */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 80px; }
+body { overflow-x: clip; min-width: 320px; }
+img, svg, video { max-width: 100%; }
+.topbar, .hero, .filters, .status, main, .page, .pf, .bk { max-width: 100%; }
+
+/* Side spacing that scales with the screen instead of a fixed 32px */
+@media (max-width: 799px) { :root { --pad: 20px; } }
+@media (max-width: 559px) { :root { --pad: 14px; } }
+
+/* ---- Top bar: never overlaps on narrow screens ---- */
+.topbar { gap: 8px; }
+.logo { font-size: clamp(20px, 5.4vw, 28px); white-space: nowrap; }
+.tagline { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.auth { white-space: nowrap; font-size: clamp(13px, 3.6vw, 16px); }
+@media (max-width: 759px) {
+  .topbar { grid-template-columns: 1fr auto; }
+  .tagline { display: none; }
+}
+
+/* ---- Catalog filters: 2 per row on phones, Search/Clear full width ---- */
+@media (max-width: 559px) {
+  .filters { gap: 10px; }
+  .filters label,
+  .filters label.grow { flex: 1 1 calc(50% - 5px); }
+  .filters label.grow { flex-basis: 100%; }
+  .actions { flex: 1 1 100%; }
+  .actions button { flex: 1; }
+}
+
+/* ---- Catalog grid: cards fill the row at every width (no empty gap on the right) ---- */
+@media (max-width: 559px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; padding-top: 10px; }
+  .photo { aspect-ratio: 4 / 5; }
+  .info { padding: 10px 10px 12px; }
+  .code { font-size: 13.5px; letter-spacing: 0; overflow-wrap: anywhere; }
+  .tags { flex-wrap: wrap; margin: 5px 0 6px; gap: 4px; }
+  .tag { font-size: 9.5px; padding: 2px 6px; }
+  .price { font-size: 17px; }
+  .price small { font-size: 10.5px; }
+  .badge { top: 8px; right: 8px; font-size: 8px; padding: 2px 7px; }
+  .group h2 { font-size: 17px; flex-wrap: wrap; gap: 8px; }
+}
+@media (max-width: 359px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---- Contact page ---- */
+.social { padding-right: 34px; }
+.social > span:nth-child(2) { min-width: 0; }
+.social em { overflow-wrap: anywhere; }
+@media (max-width: 559px) {
+  .page { padding: 18px var(--pad) 40px; }
+  .hero-actions .btn { flex: 1 1 auto; justify-content: center; }
+  .btn-map { width: 100%; justify-content: center; }
+}
+
+/* ---- Booking page ---- */
+.bk-grid > * { min-width: 0; }
+@media (max-width: 800px) {
+  .bk-photo { max-width: 420px; margin-inline: auto; width: 100%; }
+}
+@media (max-width: 559px) {
+  .bk { padding: 14px var(--pad) 40px; }
+  .bk-title h1 { font-size: 24px; }
+  .bk-rental { font-size: 26px; }
+  .bk-row { grid-template-columns: 90px minmax(0, 1fr); }
+  .bk-row select { min-width: 0; width: 100%; max-width: 220px; }
+  .bk-actions > * { flex: 1 1 100%; justify-content: center; text-align: center; }
+  .bk-rent { width: 100%; padding-inline: 16px; }
+}
+
+/* ---- Payment popup: scrolls inside itself on any screen (replaces the old "zoom" shrink) ---- */
+.pm-overlay { overscroll-behavior: contain; }
+.pm-modal {
+  overscroll-behavior: contain;
+}
+@media (max-width: 600px) {
+  .pm-modal { max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); overflow-y: auto; }
+}
+@media (max-width: 600px) {
+  .pm-sum-top, .pm-sum-bot { flex-wrap: wrap; gap: 4px 12px; }
+  .pm-fee { font-size: 18px; }
+  .pm-opt { padding-right: 76px; } /* room for the Instant tag */
+  .pm-recap { max-width: 100%; }
+}
+
+/* ---- Profile / settings page ---- */
+.pf > .pf-card { min-width: 0; }
+@media (max-width: 640px) {
+  .pf-avatar { width: 84px; height: 84px; font-size: 28px; }
+  .pf-who h2 { font-size: 21px; }
+  .pf-row b { font-size: 15px; }
+  .pf-notifs li { flex-wrap: wrap; }
+  .pf-notifs time { margin-left: 21px; width: 100%; }
+  .pf-hero { padding-inline: var(--pad); }
+}
+
+/* ---- Touch screens: comfortable tap size, and 16px inputs so iPhones don't zoom in on focus ---- */
+@media (pointer: coarse) {
+  input, select, textarea,
+  .filters input, .filters select,
+  .filters label select, .filters label input,
+  .bk-dates input, .bk-row select,
+  .pm-field input, .pf-field input, .pf-field select { font-size: 16px !important; }
+
+  .filters input, .filters select,
+  .filters label select, .filters label input,
+  .bk-dates input, .bk-row select, .pm-field input { height: 44px; }
+  .actions button, .btn, .btn-contact, .bk-msgr { min-height: 44px; }
+  .pm-cancel, .pm-confirm, .pm-download { height: 46px; }
+  .pf-switch { width: 58px; height: 32px; }
+  .pf-switch i::after { top: 4px; left: 4px; width: 24px; height: 24px; }
+  .pf-switch input:checked + i::after { transform: translateX(26px); }
+}
+
+/* ---- No hover-jumps on touch screens (they stick after tapping) ---- */
+@media (hover: none) {
+  .card:hover { transform: none; }
+  .social:hover { transform: none; }
+}
+
+/* ---- Toast never wider than the screen ---- */
+.toast { width: max-content; max-width: calc(100vw - 32px); text-align: center; bottom: max(24px, env(safe-area-inset-bottom)); z-index: 400; }
+
+
+/* =====================================================================
+   MOBILE POLISH (added) - phones only (<= 767px). PC/desktop is untouched.
+   Everything stretches to the screen width.
+   ===================================================================== */
+@media (max-width: 767px) {
+  body { padding-top: 60px; }
+  .topbar { height: 60px; }
+
+  /* Hero */
+  .hero { padding: 16px var(--pad) 16px; }
+  .eyebrow { font-size: 12px; letter-spacing: .08em; }
+  .hero h1 { font-size: clamp(22px, 6.4vw, 28px); line-height: 1.2; margin: 4px 0 6px; letter-spacing: -0.02em; }
+  .sub { font-size: 14px; color: #5b4a3a; }
+  .btn-contact { width: 100%; justify-content: center; margin-top: 12px; padding: 10px 12px; font-size: 14px; }
+
+  /* Filters (compact): labels hidden - each dropdown already says "All Types", "All Sizes"...
+     Row 1: Search | Row 2: Type, Size, Color | Row 3: Status, Price, Clear/Search */
+  .filters { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; padding: 10px var(--pad) 12px; align-items: stretch; }
+  .filters label, .filters label.grow {
+    grid-column: span 2; flex: none; min-width: 0; margin: 0;
+    font-size: 0; line-height: 0; gap: 0;            /* hides the small caption text, keeps it for screen readers */
+  }
+  .filters label svg { display: none; }
+  .filters label.grow { grid-column: 1 / -1; order: -1; }               /* Search first, full width */
+  .filters select, .filters input,
+  .filters label select, .filters label input {
+    height: 40px; border-radius: 10px; padding: 0 22px 0 8px; width: 100%;
+    font-size: 16px !important; text-overflow: ellipsis; /* 16px stops iPhones zooming in on tap */
+  }
+  .filters label input { padding: 0 12px; }
+  .actions { grid-column: 1 / -1; display: grid; grid-template-columns: 2fr 1fr; gap: 8px; width: 100%; }
+  .actions button { height: 40px; min-height: 0; border-radius: 10px; font-size: 14px; padding: 0; }
+  .btn-clear { color: #555; }
+
+  .status { padding: 10px var(--pad); font-size: 13px; }
+
+  /* Catalog */
+  main { padding: 4px var(--pad) 36px; }
+  .group { margin-top: 22px; }
+  .group h2 { font-size: 18px; gap: 8px; }
+  .group h2 small { margin-left: 0; font-size: 13px; color: #777; flex-basis: auto; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .card { border-radius: 12px; }
+  .card:active { transform: scale(.98); }
+}
+@media (max-width: 359px) {
+  .filters label { grid-column: span 3; }
+  .filters label.grow { grid-column: 1 / -1; }
+  .grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+
+/* =====================================================================
+   FULL STRETCH (added) - every page fills the whole screen width on phone, tablet and PC.
+   No fixed card widths and no max-width caps. Keep this block LAST.
+   ===================================================================== */
+
+/* One fluid side margin for every page: 14px on phones, growing to 48px on big monitors */
+:root { --max: 100%; --pad: clamp(14px, 2.6vw, 48px); }
+
+/* Catalog: cards stretch to fill each row, as many per row as fit (min 210px each on tablet/PC) */
+@media (min-width: 768px) {
+  .grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); justify-content: stretch; gap: 22px; }
+}
+
+/* Filters: every field stretches to share the row */
+.filters label { flex: 1 1 140px; }
+.filters label.grow { flex: 2 1 220px; }
+@media (min-width: 768px) {
+  .actions { flex: 0 0 auto; }
+}
+
+/* Booking page: no 1100px cap, photo and details share the full width */
+.bk { max-width: none; width: 100%; padding-inline: var(--pad); }
+.bk-grid { grid-template-columns: minmax(0, 42%) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); }
+@media (max-width: 800px) {
+  .bk-grid { grid-template-columns: minmax(0, 1fr); }
+  .bk-photo { max-width: none; }
+}
+
+/* Contact / hero text and profile: use the full width too */
+.hero .lead { max-width: none; }
+.pf, .page { width: 100%; max-width: none; }

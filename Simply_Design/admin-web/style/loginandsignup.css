@@ -569,3 +569,76 @@ input::-ms-clear {
   outline: 3px solid rgba(154, 85, 25, 0.45);
   outline-offset: 2px;
 }
+
+/* ---------- Social login: busy state + demo window ---------- */
+
+.btn-social.busy { opacity: 0.6; cursor: progress; }
+.btn-social:disabled { cursor: progress; }
+
+.so-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(30, 15, 3, 0.55);
+  animation: cardIn 0.15s ease-out backwards;
+}
+
+.so-dialog {
+  width: 100%;
+  max-width: 400px;
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  padding: 24px;
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.so-dialog h2 { margin: 0 0 6px; font-size: 1.2rem; font-weight: 500; }
+.so-note { margin: 0 0 14px; font-size: 0.85rem; line-height: 1.45; color: var(--muted); }
+
+.so-dialog label { display: block; margin-top: 12px; font-size: 0.95rem; font-weight: 500; }
+.so-dialog input {
+  display: block;
+  width: 100%;
+  height: 48px;
+  margin-top: 6px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 16px;               /* 16px stops phones zooming in */
+  color: var(--ink);
+  background: var(--field);
+  border: 1px solid var(--field-border);
+  border-radius: 9px;
+}
+.so-dialog input:focus { outline: none; border-color: var(--brown); box-shadow: 0 0 0 3px rgba(154, 85, 25, 0.25); }
+
+.so-err {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  color: var(--error);
+  background: rgba(143, 42, 28, 0.1);
+  border-left: 3px solid var(--error);
+  border-radius: 8px;
+}
+.so-err[hidden] { display: none; }
+
+.so-actions { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; margin-top: 18px; }
+.so-actions button {
+  height: 48px;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.so-cancel { color: var(--ink); background: #ececec; border: 1px solid var(--field-border); }
+.so-cancel:hover { background: #f6f6f6; }
+.so-go { color: #fff; background: var(--brown); border: 0; }
+.so-go:hover { background: var(--brown-dark); }
+.so-actions button:focus-visible { outline: 3px solid rgba(154, 85, 25, 0.45); outline-offset: 2px; }

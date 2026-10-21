@@ -601,16 +601,225 @@
     });
   }
 
-  /* ---------- Social buttons ---------- */
-  // Hook these up to your Google / Facebook OAuth flow
+  /* ================= SOCIAL LOGIN (Google / Facebook) ================= */
+
+  // To make the buttons send people to the REAL Google / Facebook sign-in page (and come back
+  // logged in), paste your IDs here. While they are empty, a small DEMO window opens instead.
+  var SOCIAL = {
+    GOOGLE_CLIENT_ID: '',     // e.g. '1234567890-abc123.apps.googleusercontent.com'
+    FACEBOOK_APP_ID: ''       // e.g. '123456789012345'
+  };
+
+  var STATE_KEY = 'simplySocialState';
+
+  // Google / Facebook send the person back to this one address (login.html, next to signup.html).
+  // Register exactly this address as the redirect URI in your Google / Facebook app settings.
+  var REDIRECT_URI = new URL('login.html', window.location.href).href.split('#')[0].split('?')[0];
+
+  function randomState() {
+    var a = new Uint32Array(4);
+    (window.crypto || window.msCrypto).getRandomValues(a);
+    return Array.prototype.map.call(a, function (n) { return n.toString(16); }).join('');
+  }
+
+  // Full-page redirect to the provider's own sign-in page
+  function redirectToProvider(provider) {
+    var state = randomState();
+    try {
+      sessionStorage.setItem(STATE_KEY, JSON.stringify({ state: state, provider: provider }));
+    } catch (e) {
+      return Promise.reject({ message: 'Could not start sign-in. Allow this site to store data and try again.' });
+    }
+
+    var url;
+    if (provider === 'Google') {
+      url = 'https://accounts.google.com/o/oauth2/v2/auth' +
+        '?client_id=' + encodeURIComponent(SOCIAL.GOOGLE_CLIENT_ID) +
+        '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
+        '&response_type=token' +
+        '&scope=' + encodeURIComponent('openid email profile') +
+        '&prompt=select_account' +
+        '&state=' + state;
+    } else {
+      url = 'https://www.facebook.com/v19.0/dialog/oauth' +
+        '?client_id=' + encodeURIComponent(SOCIAL.FACEBOOK_APP_ID) +
+        '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
+        '&response_type=token' +
+        '&scope=' + encodeURIComponent('public_profile,email') +
+        '&state=' + state;
+    }
+    window.location.href = url;
+    return new Promise(function () { /* the page is leaving; never resolves */ });
+  }
+
+  // Runs when Google / Facebook send the person back with their result in the address
+  function handleSocialReturn() {
+    var raw = window.location.hash.replace(/^#/, '') || window.location.search.replace(/^\?/, '');
+    if (!raw || !/(access_token|error)=/.test(raw)) return;
+
+    var params = new URLSearchParams(raw);
+    var saved = read('sessionStorage', STATE_KEY);
+    remove('sessionStorage', STATE_KEY);
+    // Remove the token / error from the address bar right away
+    try { history.replaceState(null, '', window.location.pathname); } catch (e) { /* ignore */ }
+
+    if (!saved || !params.get('state') || params.get('state') !== saved.state) {
+      return; // not one of our sign-ins (or it was tampered with)
+    }
+    var provider = saved.provider;
+
+    if (params.get('error') || !params.get('access_token')) {
+      showError(provider + ' sign-in was cancelled.');
+      return;
+    }
+
+    var token = params.get('access_token');
+    var url = provider === 'Google'
+      ? 'https://www.googleapis.com/oauth2/v3/userinfo'
+      : 'https://graph.facebook.com/me?fields=name,email&access_token=' + encodeURIComponent(token);
+    var opts = provider === 'Google' ? { headers: { Authorization: 'Bearer ' + token } } : {};
+
+    clearError();
+    if (googleBtn) googleBtn.disabled = true;
+    if (facebookBtn) facebookBtn.disabled = true;
+
+    fetch(url, opts).then(function (r) { return r.json(); }).then(function (info) {
+      if (!info || info.error) throw new Error('profile');
+      if (provider === 'Google' && info.email_verified === false) {
+        throw { message: 'Google did not share a verified email address.' };
+      }
+      return socialFinish(provider, info, true);
+    }).then(null, function (err) {
+      if (googleBtn) googleBtn.disabled = false;
+      if (facebookBtn) facebookBtn.disabled = false;
+      showError(err && err.message ? err.message : 'Could not read your ' + provider + ' profile. Try again.');
+    });
+  }
+
+  /* ----- Demo window (used while no Google / Facebook ID is set) ----- */
+  function demoDialog(provider) {
+    return new Promise(function (resolve, reject) {
+      var overlay = document.createElement('div');
+      overlay.className = 'so-overlay';
+      overlay.innerHTML =
+        '<form class="so-dialog" role="dialog" aria-modal="true" aria-labelledby="soTitle" novalidate>' +
+          '<h2 id="soTitle">Continue with ' + provider + '</h2>' +
+          '<p class="so-note">Demo mode: this is not the real ' + provider + ' sign-in. Enter any name and email to continue.</p>' +
+          '<label>Name<input type="text" name="soName" autocomplete="name" maxlength="60" placeholder="Your name"></label>' +
+          '<label>Email<input type="email" name="soEmail" autocomplete="email" placeholder="you@example.com"></label>' +
+          '<p class="so-err" role="alert" hidden></p>' +
+          '<div class="so-actions">' +
+            '<button type="button" class="so-cancel">Cancel</button>' +
+            '<button type="submit" class="so-go">Continue</button>' +
+          '</div>' +
+        '</form>';
+      document.body.appendChild(overlay);
+
+      var dlg = overlay.querySelector('.so-dialog');
+      var nameEl = dlg.soName, emailEl = dlg.soEmail, errEl = overlay.querySelector('.so-err');
+      var lastFocus = document.activeElement;
+      nameEl.focus();
+
+      function close() {
+        document.removeEventListener('keydown', onKey);
+        overlay.remove();
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }
+      function cancel() { close(); reject(null); }
+      function onKey(e) { if (e.key === 'Escape') cancel(); }
+      document.addEventListener('keydown', onKey);
+
+      overlay.addEventListener('mousedown', function (e) { if (e.target === overlay) cancel(); });
+      overlay.querySelector('.so-cancel').addEventListener('click', cancel);
+
+      dlg.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!nameEl.value.trim()) { errEl.textContent = 'Please enter your name.'; errEl.hidden = false; nameEl.focus(); return; }
+        if (!emailEl.value.trim() || !emailEl.validity.valid) { errEl.textContent = 'Enter a valid email address.'; errEl.hidden = false; emailEl.focus(); return; }
+        close();
+        resolve({ name: nameEl.value.trim(), email: emailEl.value.trim() });
+      });
+    });
+  }
+
+  /* ----- Turn a Google / Facebook profile into a logged-in customer ----- */
+  function socialFinish(provider, info, verified) {
+    return new Promise(function (resolve, reject) {
+      var email = String((info && info.email) || '').trim().toLowerCase();
+      var name = String((info && info.name) || '').trim() || email.split('@')[0];
+
+      if (!email) {
+        reject({ message: provider + ' did not share an email address. Allow email access, or log in another way.' });
+        return;
+      }
+      // The built-in admin / user accounts can only be used with their password
+      for (var i = 0; i < DEMO_ACCOUNTS.length; i++) {
+        if (DEMO_ACCOUNTS[i].email === email) {
+          reject({ message: 'This email can only log in with its password.' });
+          return;
+        }
+      }
+
+      var accounts = read('localStorage', ACCOUNTS_KEY) || {};
+      var existing = accounts[email];
+
+      // Demo mode cannot prove who owns an email, so it will not open someone's password account
+      if (existing && existing.password && !verified) {
+        reject({ message: 'This email already has a password account. Please log in with your password.' });
+        return;
+      }
+
+      var isNew = !existing;
+      var since = existing ? existing.since : new Date().toISOString();
+      if (isNew) {
+        accounts[email] = { name: name, password: null, provider: provider.toLowerCase(), since: since };
+        if (!write('localStorage', ACCOUNTS_KEY, accounts)) {
+          reject({ message: 'Could not save your account. Allow this site to store data and try again.' });
+          return;
+        }
+      }
+
+      var account = { email: email, name: existing ? existing.name : name, role: 'user', since: since };
+      startSession(account, false);
+      goTo(account, isNew ? 'new' : 'back');
+      resolve(account);
+    });
+  }
+
+  function startSocial(provider, btn) {
+    if (!btn || btn.disabled) return;
+    clearError();
+    btn.disabled = true;
+    btn.classList.add('busy');
+
+    var real = provider === 'Google' ? !!SOCIAL.GOOGLE_CLIENT_ID : !!SOCIAL.FACEBOOK_APP_ID;
+
+    // Real: redirect to Google / Facebook.  Demo: small window.
+    var getInfo = real
+      ? function () { return redirectToProvider(provider); }
+      : function () { return demoDialog(provider); };
+
+    getInfo().then(function (info) {
+      return socialFinish(provider, info, false);
+    }).then(null, function (err) {
+      btn.disabled = false;
+      btn.classList.remove('busy');
+      if (err && err.message) showError(err.message);   // a cancelled demo window stays silent
+    });
+  }
 
   var googleBtn = document.getElementById('googleBtn');
   var facebookBtn = document.getElementById('facebookBtn');
 
-  if (googleBtn) googleBtn.addEventListener('click', function () {
-    console.log('Continue with Google');
+  if (googleBtn) googleBtn.addEventListener('click', function () { startSocial('Google', googleBtn); });
+  if (facebookBtn) facebookBtn.addEventListener('click', function () { startSocial('Facebook', facebookBtn); });
+
+  // Coming back with the browser's Back button from Google / Facebook: unlock the buttons again
+  window.addEventListener('pageshow', function (e) {
+    if (!e.persisted) return;
+    [googleBtn, facebookBtn].forEach(function (b) { if (b) { b.disabled = false; b.classList.remove('busy'); } });
   });
-  if (facebookBtn) facebookBtn.addEventListener('click', function () {
-    console.log('Continue with Facebook');
-  });
+
+  // Google / Facebook just sent the person back here
+  handleSocialReturn();
 })();

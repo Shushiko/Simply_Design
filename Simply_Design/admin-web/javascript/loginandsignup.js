@@ -330,8 +330,11 @@
 
   /* ---------- Settings ---------- */
 
-  var ADMIN_URL = 'Simply_Design/admin-web/web/dashboard.html';
-  var USER_URL = '../../../index.html';
+  // Both are worked out from THIS page's own address (login.html / signup.html sit in
+  // <project root>/Simply_Design/admin-web/web/), so they also work on GitHub Pages, where the
+  // site lives under /<repo-name>/ and an address that climbs too far ends on a 404.
+  var ADMIN_URL = 'dashboard.html';          // same folder as login.html
+  var USER_URL = '../../../index.html';      // the catalog at the project root
 
   // Built-in accounts. Demo only: a real site must check passwords on a server.
   var DEMO_ACCOUNTS = [
@@ -388,12 +391,7 @@
   function goTo(account, greeting) {
     try { sessionStorage.setItem(WELCOME_KEY, greeting); } catch (e) { /* ignore */ }
     setTimeout(function () {
-      // ADMIN_URL / USER_URL start from the project root (the folder that contains Simply_Design),
-      // so find that root from wherever this page is served
-      var href = window.location.href;
-      var cut = href.indexOf('/Simply_Design/');
-      var base = cut >= 0 ? href.slice(0, cut + 1) : new URL('./', href).href;
-      window.location.href = base + (account.role === 'admin' ? ADMIN_URL : USER_URL);
+      window.location.href = new URL(account.role === 'admin' ? ADMIN_URL : USER_URL, window.location.href).href;
     }, 500);
   }
 

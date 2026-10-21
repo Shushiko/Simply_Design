@@ -152,6 +152,59 @@
     </div>
   </div>
 
+  <!-- Customer Details modal (opens when a customer name in the table is clicked) -->
+  <div class="modal-overlay" id="customerModal">
+    <div class="modal modal-customer" role="dialog" aria-modal="true" aria-labelledby="customerName">
+
+      <div class="cust-head">
+        <div class="cust-avatar" id="customerAvatar">--</div>
+        <div>
+          <h2 id="customerName">Customer</h2>
+          <p class="cust-sub">Customer Details</p>
+        </div>
+      </div>
+
+      <div class="cust-stats">
+        <div class="cust-stat"><span>Total Rentals</span><strong id="customerRentals">0</strong></div>
+        <div class="cust-stat"><span>Total Spent</span><strong id="customerSpent">&#8369;0</strong></div>
+        <div class="cust-stat"><span>Last Rental</span><strong class="cust-stat-date" id="customerLast">&mdash;</strong></div>
+      </div>
+
+      <h3 class="cust-section">Contact Information</h3>
+      <div class="cust-info">
+        <div class="cust-row">
+          <i class="fa-solid fa-phone" aria-hidden="true"></i>
+          <div><small>Contact Number</small><span id="customerContact">&mdash;</span></div>
+          <a class="cust-action" id="customerCall"><i class="fa-solid fa-phone" aria-hidden="true"></i> Call</a>
+        </div>
+        <div class="cust-row">
+          <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+          <div><small>Email</small><span id="customerEmail">&mdash;</span></div>
+          <a class="cust-action" id="customerMail"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send Email</a>
+        </div>
+        <div class="cust-row">
+          <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+          <div><small>Location</small><span id="customerLocation">&mdash;</span></div>
+          <a class="cust-action" id="customerMap" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i> View Location</a>
+        </div>
+      </div>
+
+      <h3 class="cust-section">Rental History</h3>
+      <div class="table-wrap">
+        <table class="cust-table">
+          <thead>
+            <tr><th>Rental ID</th><th>Item</th><th>Pickup</th><th>Return</th><th>Total</th><th>Payment</th><th>Status</th></tr>
+          </thead>
+          <tbody id="customerHistoryBody"></tbody>
+        </table>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" data-close>Close</button>
+      </div>
+    </div>
+  </div>
+
   <script src="nav.js"></script>
 </body>
 </html>

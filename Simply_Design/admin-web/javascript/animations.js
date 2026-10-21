@@ -743,12 +743,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
   openBtn.addEventListener("click", openModalToAdd);
 
-  // Edit buttons open this same popup, pre-filled with that row's values.
+  // The Edit button, or a click anywhere else on a customer row, opens this same
+  // popup pre-filled with that row's values. The Delete button keeps doing its own job.
   // Delegated on the table body, so rows added later are covered too.
+  function rowToEdit(target) {
+    if (target.closest(".btn-sm, a, input, select")) return null;
+    var row = target.closest("tr");
+    if (!row || row.parentNode !== tbody) return null;
+    if (row.classList.contains("removing") || row.classList.contains("no-results-row")) return null;
+    return row.querySelector(".btn-edit") ? row : null;
+  }
+
   tbody.addEventListener("click", function (e) {
     var btn = e.target.closest(".btn-edit");
-    if (btn) openModalToEdit(btn.closest("tr"));
+    if (btn) { openModalToEdit(btn.closest("tr")); return; }
+
+    var row = rowToEdit(e.target);
+    if (row) openModalToEdit(row);
   });
+
+  // Keyboard: Tab to a row, then Enter or Space opens it
+  tbody.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    if (e.target.tagName !== "TR") return; // let the buttons handle their own keys
+    var row = rowToEdit(e.target);
+    if (!row) return;
+    e.preventDefault();
+    openModalToEdit(row);
+  });
+
+  // Make the rows focusable (also rows added later)
+  function decorate(row) {
+    if (row.classList.contains("no-results-row") || row.hasAttribute("data-clickable")) return;
+    row.setAttribute("data-clickable", "");
+    row.tabIndex = 0;
+    row.title = "Click to edit customer";
+  }
+  Array.prototype.forEach.call(tbody.rows, decorate);
+  new MutationObserver(function () { Array.prototype.forEach.call(tbody.rows, decorate); })
+    .observe(tbody, { childList: true });
 
   overlay.querySelectorAll("[data-close]").forEach(function (btn) {
     btn.addEventListener("click", closeModal);
@@ -1202,3 +1235,250 @@ document.addEventListener("DOMContentLoaded", function () {
     boxes.forEach(function (box) { box.style.height = "0px"; });
   }
 })();
+
+
+// ---------------------------------------------------------------
+// Rentals page: click anywhere on a rental row (except its Return /
+// Delete buttons) to see that customer's full details (contact info,
+// totals and every rental they have).
+// Does nothing on pages without the popup.
+// ---------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", function () {
+  var tbody = document.getElementById("rentalsBody");
+  var overlay = document.getElementById("customerModal");
+  if (!tbody || !overlay) return;
+
+  // Table columns on the Rentals page
+  var COL = { id: 0, customer: 1, item: 2, pickup: 3, ret: 4, total: 5, payment: 6, status: 7 };
+
+  // ----- Customer contact details -----
+  // Used when the Customers page can't be read (for example when the files are
+  // opened by double-clicking instead of through a web server). Keep these in
+  // step with the Customers page. Key = the name in lower case.
+  var details = {
+    "christine luna": { contact: "0917 123 4567", email: "christine.luna@email.com", location: "Lucena City, Quezon" },
+    "maria santos":   { contact: "0918 234 5678", email: "maria.santos@email.com",   location: "Lucena City, Quezon" },
+    "ana reyes":      { contact: "0919 345 6789", email: "ana.reyes@email.com",      location: "Lucena City, Quezon" }
+  };
+
+  // When the site runs on a web server, read the real details from customers.html
+  // so this popup always matches the Customers page.
+  if (window.fetch && window.DOMParser) {
+    fetch("customers.html")
+      .then(function (res) { return res.ok ? res.text() : Promise.reject(); })
+      .then(function (text) {
+        var doc = new DOMParser().parseFromString(text, "text/html");
+        Array.prototype.forEach.call(doc.querySelectorAll("#customersBody tr"), function (r) {
+          var c = r.cells;
+          if (!c || c.length < 4) return;
+          details[c[0].textContent.trim().toLowerCase()] = {
+            contact: c[1].textContent.trim(),
+            email: c[2].textContent.trim(),
+            location: c[3].textContent.trim()
+          };
+        });
+      })
+      .catch(function () { /* keep the built-in details above */ });
+  }
+
+  var nameEl = document.getElementById("customerName");
+  var avatarEl = document.getElementById("customerAvatar");
+  var rentalsEl = document.getElementById("customerRentals");
+  var spentEl = document.getElementById("customerSpent");
+  var lastEl = document.getElementById("customerLast");
+  var contactEl = document.getElementById("customerContact");
+  var emailEl = document.getElementById("customerEmail");
+  var locationEl = document.getElementById("customerLocation");
+  var callBtn = document.getElementById("customerCall");
+  var mailBtn = document.getElementById("customerMail");
+  var mapBtn = document.getElementById("customerMap");
+  var historyBody = document.getElementById("customerHistoryBody");
+  var lastFocused = null;
+
+  // ----- Make the rows clickable (also for rows added later) -----
+  function decorate(row) {
+    if (row.classList.contains("no-results-row") || row.hasAttribute("data-clickable")) return;
+    row.setAttribute("data-clickable", "");
+    row.tabIndex = 0;
+    row.title = "View customer details";
+  }
+  Array.prototype.forEach.call(tbody.rows, decorate);
+  new MutationObserver(function () { Array.prototype.forEach.call(tbody.rows, decorate); })
+    .observe(tbody, { childList: true });
+
+  // ----- Collect this customer's rentals from the table -----
+  function rentalsFor(name) {
+    var list = [];
+    Array.prototype.forEach.call(tbody.rows, function (row) {
+      if (row.classList.contains("no-results-row") || row.classList.contains("removing")) return;
+      if (!row.cells[COL.customer] || row.cells[COL.customer].textContent.trim() !== name) return;
+      var statusBadge = row.cells[COL.status].querySelector(".badge");
+      var paymentBadge = row.cells[COL.payment].querySelector(".badge");
+      list.push({
+        id: row.cells[COL.id].textContent.trim(),
+        item: row.cells[COL.item].textContent.trim(),
+        pickup: row.cells[COL.pickup].textContent.trim(),
+        ret: row.cells[COL.ret].textContent.trim(),
+        total: row.cells[COL.total].textContent.trim(),
+        amount: parseInt(row.cells[COL.total].textContent.replace(/[^\d]/g, ""), 10) || 0,
+        paymentText: paymentBadge ? paymentBadge.textContent : "",
+        paymentClass: paymentBadge ? paymentBadge.className : "badge",
+        statusText: statusBadge ? statusBadge.textContent : "",
+        statusClass: statusBadge ? statusBadge.className : "badge"
+      });
+    });
+    // newest pick-up date first
+    list.sort(function (a, b) { return b.pickup.localeCompare(a.pickup); });
+    return list;
+  }
+
+  function td(text, className) {
+    var c = document.createElement("td");
+    if (className) c.className = className;
+    c.textContent = text;
+    return c;
+  }
+
+  function badgeTd(text, className) {
+    var c = document.createElement("td");
+    var span = document.createElement("span");
+    span.className = className;
+    span.textContent = text;
+    c.appendChild(span);
+    return c;
+  }
+
+  function setInfo(el, value) {
+    el.textContent = value || "Not on file";
+  }
+
+  // Turns a button on (gives it a link) or off (no link = greyed out, not clickable)
+  function setAction(btn, href, offTitle) {
+    if (href) {
+      btn.setAttribute("href", href);
+      btn.removeAttribute("aria-disabled");
+      btn.removeAttribute("title");
+    } else {
+      btn.removeAttribute("href");
+      btn.setAttribute("aria-disabled", "true");
+      btn.title = offTitle;
+    }
+  }
+
+  function setActions(info) {
+    var phone = (info.contact || "").replace(/[^\d+]/g, "");
+    var email = (info.email || "").trim();
+    var place = (info.location || "").trim();
+
+    // Call: opens the phone / calling app (on a computer, whatever app handles calls)
+    setAction(callBtn, phone.replace(/\D/g, "").length >= 7 ? "tel:" + phone : "", "No valid contact number on file");
+    // Send Email: opens the email app with this address ready
+    setAction(mailBtn, /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(email) ? "mailto:" + email : "", "No valid email address on file");
+    // View Location: opens the place in Google Maps in a new tab
+    setAction(mapBtn, place ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(place) : "", "No location on file");
+  }
+
+  function fill(name) {
+    var info = details[name.toLowerCase()] || {};
+    var list = rentalsFor(name);
+
+    nameEl.textContent = name;
+    avatarEl.textContent = name.split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0); }).join("").toUpperCase();
+
+    var spent = list.reduce(function (sum, r) { return sum + r.amount; }, 0);
+    rentalsEl.textContent = list.length;
+    spentEl.textContent = "\u20B1" + spent.toLocaleString("en-US");
+    lastEl.textContent = list.length ? list[0].pickup : "\u2014";
+
+    setInfo(contactEl, info.contact);
+    setInfo(emailEl, info.email);
+    setInfo(locationEl, info.location);
+    setActions(info);
+
+    historyBody.textContent = "";
+    if (!list.length) {
+      var empty = document.createElement("tr");
+      var emptyCell = td("No rentals yet.", "cust-empty");
+      emptyCell.colSpan = 7;
+      empty.appendChild(emptyCell);
+      historyBody.appendChild(empty);
+      return;
+    }
+    list.forEach(function (r) {
+      var tr = document.createElement("tr");
+      tr.appendChild(td(r.id, "code"));
+      tr.appendChild(td(r.item));
+      tr.appendChild(td(r.pickup));
+      tr.appendChild(td(r.ret));
+      tr.appendChild(td(r.total, "price"));
+      tr.appendChild(badgeTd(r.paymentText, r.paymentClass));
+      tr.appendChild(badgeTd(r.statusText, r.statusClass));
+      historyBody.appendChild(tr);
+    });
+  }
+
+  function openModal(name) {
+    fill(name);
+    lastFocused = document.activeElement;
+    overlay.classList.add("open");
+    document.documentElement.classList.add("modal-open");
+    var closeBtn = overlay.querySelector(".cust-close");
+    setTimeout(function () { if (closeBtn) closeBtn.focus(); }, 60);
+  }
+
+  function closeModal() {
+    overlay.classList.remove("open");
+    document.documentElement.classList.remove("modal-open");
+    if (lastFocused) lastFocused.focus();
+  }
+
+  // Click on a row (or Enter / Space while the row is focused). The Return and
+  // Delete buttons keep doing their own job and don't open the popup.
+  function customerNameFrom(target) {
+    if (target.closest("button, a, input, select")) return "";
+    var row = target.closest("tr");
+    if (!row || row.parentNode !== tbody) return "";
+    if (row.classList.contains("removing") || row.classList.contains("no-results-row")) return "";
+    return row.cells[COL.customer] ? row.cells[COL.customer].textContent.trim() : "";
+  }
+
+  tbody.addEventListener("click", function (e) {
+    var name = customerNameFrom(e.target);
+    if (name) openModal(name);
+  });
+
+  tbody.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    if (e.target.tagName !== "TR") return; // let the buttons handle their own keys
+    var name = customerNameFrom(e.target);
+    if (!name) return;
+    e.preventDefault();
+    openModal(name);
+  });
+
+  // Close buttons, blurred background, Escape
+  overlay.querySelectorAll("[data-close]").forEach(function (btn) {
+    btn.addEventListener("click", closeModal);
+  });
+
+  overlay.addEventListener("mousedown", function (e) {
+    if (e.target === overlay) closeModal();
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (!overlay.classList.contains("open")) return;
+    if (e.key === "Escape") { closeModal(); return; }
+    if (e.key !== "Tab") return;
+
+    var focusable = overlay.querySelectorAll("button, a[href]");
+    var first = focusable[0];
+    var last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+});

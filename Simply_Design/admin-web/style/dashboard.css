@@ -1260,7 +1260,7 @@ html[data-theme="dark"] .settings-head .panel-head { border-bottom-color: #4a453
 html[data-theme="dark"] .settings-section-title { color: #e4e0d2; border-bottom-color: #4a4535; }
 html[data-theme="dark"] .settings-field label { color: #b7b2a3; }
 html[data-theme="dark"] .settings-input {
-  background: #262318;
+  background-color: #262318;
   color: #eee;
   border-color: #433e2e;
 }
@@ -1745,3 +1745,31 @@ html[data-theme="dark"] .cust-table td.price { color: #5fcb6a; }
 #customersBody tr:not(.no-results-row) { cursor: pointer; }
 #customersBody tr:not(.no-results-row):hover td { background: rgba(0, 0, 0, 0.03); }
 #customersBody tr:focus-visible { outline: 2px solid var(--brown); outline-offset: -2px; }
+
+/* ==========================================================
+   Dark mode - additions (pieces the first pass missed)
+   ========================================================== */
+html[data-theme="dark"] .content { background: #1a1812; }
+html[data-theme="dark"] .content.plain { background: transparent; }
+html[data-theme="dark"] .welcome-label { color: #e3a862; }
+html[data-theme="dark"] .profile strong { color: #f1f1f1; }
+html[data-theme="dark"] .stat-head i { background: rgba(168, 98, 31, 0.25); color: #e3a862; }
+html[data-theme="dark"] .topbar { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5); }
+html[data-theme="dark"] .modal-overlay { background: rgba(0, 0, 0, 0.7); }
+html[data-theme="dark"] .legend-text { color: #d9d5c7; }
+
+/* Status badges */
+html[data-theme="dark"] .badge.overdue,
+html[data-theme="dark"] .badge.damaged   { background: #3a1d1d; color: #ff8585; border-color: #6b2f2f; }
+html[data-theme="dark"] .badge.active,
+html[data-theme="dark"] .badge.available,
+html[data-theme="dark"] .badge.paid      { background: #1d2a1e; color: #7ddc86; border-color: #2f4a30; }
+html[data-theme="dark"] .badge.returned  { background: #2a2a2a; color: #c7c3b6; border-color: #4a4a4a; }
+html[data-theme="dark"] .badge.rented,
+html[data-theme="dark"] .badge.unpaid    { background: #33290f; color: #f0b84a; border-color: #5c4a1c; }
+
+html[data-theme="dark"] .btn-remove-photo:hover { background: #3a1d1d; }
+html[data-theme="dark"] .photo-edit-btn:hover { background: #3a3526; }
+html[data-theme="dark"] .settings-footer .btn-save { color: #fff; }
+html[data-theme="dark"] .switch-track::before { background: #f1f1f1; }
+html[data-theme="dark"] select option { background: #1e1c16; color: #eee; }

@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // ----- Dark Mode (applies instantly, independent of Save Changes) -----
   var darkModeToggle = document.getElementById("darkModeToggle");
   if (darkModeToggle) {
-    darkModeToggle.checked = localStorage.getItem(THEME_KEY) === "dark";
+    darkModeToggle.checked = document.documentElement.getAttribute("data-theme") === "dark";
     darkModeToggle.addEventListener("change", function () {
       var dark = darkModeToggle.checked;
       document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
@@ -95,7 +95,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // ----- Two-Factor Authentication (toggle button) -----
   var twoFactorBtn = document.getElementById("twoFactorBtn");
   if (twoFactorBtn) {
-    var twoFactorOn = localStorage.getItem(TWO_FACTOR_KEY) === "on";
+    var twoFactorOn = false;
+    try { twoFactorOn = localStorage.getItem(TWO_FACTOR_KEY) === "on"; } catch (e) {}
 
     function renderTwoFactorButton() {
       twoFactorBtn.textContent = twoFactorOn ? "Disable Two-Factor Authentication" : "Enable Two-Factor Authentication";
@@ -221,63 +222,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // ----- Log Out -----
   var logoutBtn = document.getElementById("logoutBtn");
-
   if (logoutBtn) {
     logoutBtn.addEventListener("click", function (event) {
       event.preventDefault();
-
-      // if (window.confirm("Are you sure you want to log out?")) {
-      //   showToast("You have been logged out.");
-
-        // Redirect to the login/home page
-        setTimeout(function () {
-          window.location.href = "../web/login.html";
-        }, 100);
-      }
-    );
-  };
-})
-
-
-
-
-//   // ----- Log Out -----
-//   var logoutBtn = document.getElementById("logoutBtn");
-
-//   if (logoutBtn) {
-//     logoutBtn.addEventListener("click", function (event) {
-//       event.preventDefault();
-
-//       if (window.confirm("Are you sure you want to log out?")) {
-//         showToast("You have been logged out.");
-
-//         // Redirect to the login/home page
-//         setTimeout(function () {
-//           window.location.href = "../../../index.html";
-//         }, 500);
-//       }
-//     });
-//   }
-// })
-
-
-
-
-//   // ----- Log Out -----
-//   var logoutBtn = document.getElementById("logoutBtn");
-
-//   if (logoutBtn) {
-//     logoutBtn.addEventListener("click", function (event) {
-//       event.preventDefault();
-
-//       if (window.confirm("Are you sure you want to log out?")) {
-//         showToast("You have been logged out.");
-
-//         // Redirect to the login/home page
-//         setTimeout(function () {
-//           window.location.href = "../../../index.html";
-//         }, 500);
-//       }
-//     });
-//   }
-// })
+      window.location.href = "../web/login.html";
+    });
+  }
+});

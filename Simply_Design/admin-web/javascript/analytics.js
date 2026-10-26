@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         var ctx = chart.ctx;
         ctx.save();
-        ctx.fillStyle = "rgba(20, 12, 4, 0.07)";
+        ctx.fillStyle = isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(20, 12, 4, 0.07)";
         ctx.fillRect(centerX - half, area.top, half * 2, area.bottom - area.top);
         ctx.restore();
       },

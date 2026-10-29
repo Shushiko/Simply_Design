@@ -335,6 +335,7 @@
   // site lives under /<repo-name>/ and an address that climbs too far ends on a 404.
   var ADMIN_URL = 'dashboard.html';          // same folder as login.html
   var USER_URL = '../../../index.html';      // the catalog at the project root
+  var LOGIN_URL = 'login.html';              // same folder as signup.html
 
   // Built-in accounts. Demo only: a real site must check passwords on a server.
   var DEMO_ACCOUNTS = [
@@ -594,9 +595,11 @@
 
       run(function () {
         return createAccount(nameInput.value.trim(), signupEmail.value.trim(), signupPassword.value);
-      }, 'Account created', function (account) {
-        startSession(account, false);   // new customers are also logged in for this tab only
-        goTo(account, 'new');
+      }, 'Account created', function () {
+        // Account is saved. Send the new customer to the login page to sign in.
+        setTimeout(function () {
+          window.location.href = new URL(LOGIN_URL, window.location.href).href;
+        }, 800);
       });
     });
   }

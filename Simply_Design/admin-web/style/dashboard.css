@@ -1773,3 +1773,45 @@ html[data-theme="dark"] .photo-edit-btn:hover { background: #3a3526; }
 html[data-theme="dark"] .settings-footer .btn-save { color: #fff; }
 html[data-theme="dark"] .switch-track::before { background: #f1f1f1; }
 html[data-theme="dark"] select option { background: #1e1c16; color: #eee; }
+
+
+/* ---------- Weekly Sales chart: hover highlight + tooltip ---------- */
+.chart .bar-col { cursor: pointer; }
+.chart .bar-col::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.07);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  pointer-events: none;
+}
+.chart .bar-col:hover::before,
+.chart .bar-col.is-hover::before { opacity: 1; }
+.chart .bar { position: relative; z-index: 1; }
+.chart .bar-col:hover .bar,
+.chart .bar-col.is-hover .bar { background: #e09400; }
+
+.chart-tip {
+  position: absolute;
+  z-index: 5;
+  min-width: 110px;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  font-size: 12px;
+  line-height: 1.5;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.chart-tip.show { opacity: 1; }
+.chart-tip strong { display: block; font-size: 13px; color: #111; }
+.chart-tip span { color: #2563eb; }
+
+html[data-theme="dark"] .chart .bar-col::before { background: rgba(255, 255, 255, 0.07); }
+html[data-theme="dark"] .chart-tip { background: #26231b; border-color: #332f23; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); }
+html[data-theme="dark"] .chart-tip strong { color: #e4e0d2; }
+html[data-theme="dark"] .chart-tip span { color: #7aa7ff; }

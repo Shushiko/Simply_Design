@@ -175,10 +175,27 @@ document.addEventListener("DOMContentLoaded", function () {
   var photoInput = document.getElementById("profilePhotoInput");
   var photoEdit = document.getElementById("profilePhotoEdit");
 
+  // Sidebar avatar: shows the photo in place of the "AD" initials
+  function applySidebarAvatar(src) {
+    document.querySelectorAll(".sidebar .avatar").forEach(function (el) {
+      if (!el.dataset.initials) el.dataset.initials = el.textContent.trim();
+      if (src) {
+        el.textContent = "";
+        el.style.backgroundImage = 'url("' + src + '")';
+        el.style.backgroundSize = "cover";
+        el.style.backgroundPosition = "center";
+      } else {
+        el.textContent = el.dataset.initials;
+        el.style.backgroundImage = "";
+      }
+    });
+  }
+
   function showProfilePhoto(src) {
     if (!photoWrap || !photoImg) return;
     photoImg.src = src;
     photoWrap.classList.add("has-photo");
+    applySidebarAvatar(src);
   }
   try {
     var savedPhoto = localStorage.getItem(PHOTO_KEY);

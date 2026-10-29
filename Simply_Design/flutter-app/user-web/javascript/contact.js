@@ -1,7 +1,7 @@
 // Edit these links to point to the shop's real pages
 const SOCIALS = [
   { label: 'Facebook', name: 'Simply by Jun Barreto Tabi', url: 'https://www.facebook.com/Junbarrettotabi', icon: 'facebook' },
-  { label: 'Facebook', name: 'Jun Barreto Tabi', url: 'https://www.facebook.com/messages/t/117627959642970', icon: 'messenger' },
+  { label: 'Messenger', name: 'Jun Barreto Tabi', url: 'https://www.facebook.com/messages/t/117627959642970', icon: 'messenger' },
   { label: 'Email', name: 'junbarretotabi@gmail.com', url: 'mailto:junbarretotabi@gmail.com', icon: 'email' },
   { label: 'Phone', name: '0967 366 1552', url: 'tel:+639673661552', icon: 'phone' },
 ];

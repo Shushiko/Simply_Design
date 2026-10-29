@@ -75,7 +75,7 @@
   function paintAvatar() {
     const box = $('#pfAvatar');
     if (/^data:image\//.test(profile.photo || '')) {
-      box.innerHTML = `<img src="${profile.photo}" alt="">`;
+      box.innerHTML = `<img src="${escapeHtml(profile.photo)}" alt="">`;
     } else {
       box.textContent = initialsFor(profile.name || user.name, user.email);
     }
@@ -85,7 +85,7 @@
     user = getUser();
     $('#signedIn').hidden = !user;
     $('#signedOut').hidden = !!user;
-    if (!user) { document.body.classList.remove('dark'); return; }
+    if (!user) return;
 
     profile = getProfile(user.email);
     const prefs = prefsOf();
@@ -104,10 +104,9 @@
 
     $('#optOrders').checked = prefs.orders;
     $('#optEmail').checked = prefs.email;
-    $('#optDark').checked = prefs.dark;
+    $('#optDark').checked = isDark();   // what is on screen right now (saved profile choice, or this device's)
     $('#optLang').value = prefs.lang;
     $('#optCur').value = prefs.cur;
-    document.body.classList.toggle('dark', prefs.dark);
     $('#pf2fa').textContent = prefs.twofa ? 'Disable Two-Factor Authentication' : 'Enable Two-Factor Authentication';
 
     renderOrders();
@@ -171,7 +170,10 @@
       lang: $('#optLang').value,
       cur: $('#optCur').value,
     });
-    saveProfile(user.email, { name, phone, address: $('#fAddress').value.trim(), gcash, prefs });
+    if (!saveProfile(user.email, { name, phone, address: $('#fAddress').value.trim(), gcash, prefs })) {
+      return showError("Couldn't save your changes. Your browser's storage may be full or blocked.");
+    }
+    setTheme(prefs.dark);
 
     user.name = name;
     setUser(user);
@@ -191,8 +193,15 @@
     authToast('Logged out');
   });
 
-  // Dark mode previews right away; "Save Changes" keeps it
-  $('#optDark').addEventListener('change', (e) => document.body.classList.toggle('dark', e.target.checked));
+  // Dark mode applies AND is remembered right away (it used to only preview, so it switched back
+  // to light on the next page unless "Save Changes" was pressed first)
+  $('#optDark').addEventListener('change', (e) => {
+    if (!user) return;
+    const dark = e.target.checked;
+    setTheme(dark);   // paint + remember on this device
+    saveProfile(user.email, { prefs: Object.assign({}, profile.prefs, { dark }) });
+    profile = getProfile(user.email);
+  });
 
   $('#prefToggle').addEventListener('click', (e) => {
     const open = e.currentTarget.getAttribute('aria-expanded') !== 'true';
@@ -210,7 +219,9 @@
 
   $('#pf2fa').addEventListener('click', () => {
     const on = !prefsOf().twofa;
-    saveProfile(user.email, { prefs: Object.assign(prefsOf(), { twofa: on }) });
+    // only change twofa: merging prefsOf() here would also save the default "dark: false"
+    // and quietly switch dark mode off on the next page
+    saveProfile(user.email, { prefs: Object.assign({}, profile.prefs, { twofa: on }) });
     profile = getProfile(user.email);
     $('#pf2fa').textContent = on ? 'Disable Two-Factor Authentication' : 'Enable Two-Factor Authentication';
     authToast(on ? 'Two-factor authentication turned on (demo)' : 'Two-factor authentication turned off');
@@ -237,11 +248,11 @@
       cv.width = cv.height = size;
       cv.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, size, size);
       URL.revokeObjectURL(url);
-      saveProfile(user.email, { photo: cv.toDataURL('image/jpeg', 0.85) });
+      const saved = saveProfile(user.email, { photo: cv.toDataURL('image/jpeg', 0.85) });
       profile = getProfile(user.email);
       paintAvatar();
       renderAuthNav();
-      authToast('Photo updated');
+      authToast(saved ? 'Photo updated' : "Couldn't save the photo (browser storage is full or blocked).");
     };
     img.onerror = () => { URL.revokeObjectURL(url); authToast('Could not read that image.'); };
     img.src = url;
@@ -264,6 +275,7 @@
     const accounts = getAccounts();
     const account = accounts[(user.email || '').toLowerCase()];
     if (!account) return pwError("This built-in demo account's password can't be changed here.");
+    if (account.password == null) return pwError(`This account signs in with ${account.provider || 'a social login'}, so it has no password to change.`);
     if ($('#pwCur').value !== account.password) return pwError('Your current password is incorrect.');
     if ($('#pwNew').value.length < 8) return pwError('New password must be at least 8 characters.');
     if ($('#pwNew').value !== $('#pwConf').value) return pwError('The new passwords do not match.');

@@ -1,4 +1,4 @@
-// Shared login-session helpers for the customer pages (user, booking, contact, profile).
+// Shared login-session helpers for the customer pages (catalog, booking, contact, profile).
 // Logging in / signing up happens on the other pages (loginandsignup.js), which save the session
 // under the SAME keys used here, so keep these names the same.
 //
@@ -14,6 +14,7 @@ const PROFILES_KEY = 'simplyProfiles';  // saved profile details + settings, by 
 const ACCOUNTS_KEY = 'simplyAccounts';  // accounts created on the sign-up page
 const ORDERS_KEY = 'simplyOrders';      // rentals booked from booking.html, by email
 const WELCOME_KEY = 'simplyWelcome';    // 'back' or 'new', set by the login / sign-up page
+const THEME_KEY = 'simplyTheme';        // 'dark' or 'light' for this device (read early by theme.js)
 
 // Resolved from THIS file's location (the javascript folder), so the links work from any page.
 const SCRIPT_URL = document.currentScript ? document.currentScript.src : location.href;
@@ -72,6 +73,32 @@ function saveOrder(order) {
   return writeStore('localStorage', ORDERS_KEY, all);
 }
 
+/* ---------- Theme (light / dark) ---------- */
+
+function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
+// Paint only (a preview): nothing is remembered
+function paintTheme(dark) { document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light'); }
+// Paint and remember on this device
+function setTheme(dark) {
+  paintTheme(dark);
+  try { localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light'); } catch (e) { /* ignore */ }
+}
+// A logged-in customer's saved Settings > Dark Mode choice wins. Guests keep the device's choice.
+function syncProfileTheme() {
+  const user = getUser();
+  if (!user) return;
+  const prefs = getProfile(user.email).prefs;
+  if (prefs && typeof prefs.dark === 'boolean') setTheme(prefs.dark);
+}
+
+// What the page should look like right now: a logged-in customer's saved choice, else this device's
+function wantsDark() {
+  const user = getUser();
+  const prefs = user && getProfile(user.email).prefs;
+  if (prefs && typeof prefs.dark === 'boolean') return prefs.dark;
+  try { return localStorage.getItem(THEME_KEY) === 'dark'; } catch (e) { return false; }
+}
+
 /* ---------- Small helpers ---------- */
 
 function escapeHtml(t) {
@@ -121,7 +148,6 @@ function renderAuthNav() {
     nav.innerHTML = guestHtml;
     nav.classList.remove('swap');
     nav.dataset.shown = 'guest';
-    applyTheme(null);
     return;
   }
 
@@ -132,16 +158,9 @@ function renderAuthNav() {
 
   nav.innerHTML = `
     <a class="avatar${user.role === 'admin' ? ' is-admin' : ''}${firstShow ? ' pop' : ''}" href="${PROFILE_URL}"
-       aria-label="Open my profile: ${escapeHtml(name)}" title="${escapeHtml(name)}">${photo ? `<img src="${photo}" alt="">` : escapeHtml(initialsFor(name, user.email))}</a>`;
+       aria-label="Open my profile: ${escapeHtml(name)}" title="${escapeHtml(name)}">${photo ? `<img src="${escapeHtml(photo)}" alt="">` : escapeHtml(initialsFor(name, user.email))}</a>`;
   if (firstShow) nav.classList.add('swap');
   nav.dataset.shown = 'user';
-  applyTheme(profile);
-}
-
-// Dark mode chosen in Settings now applies on every customer page
-function applyTheme(profile) {
-  const dark = Boolean(profile && profile.prefs && profile.prefs.dark);
-  document.body.classList.toggle('dark', dark);
 }
 
 // "Welcome back" / "Welcome" message after the login or sign-up page sends the person here
@@ -150,8 +169,9 @@ function showWelcome() {
   try { kind = sessionStorage.getItem(WELCOME_KEY); sessionStorage.removeItem(WELCOME_KEY); } catch (e) { /* ignore */ }
   const user = getUser();
   if (!kind || !user || user.role === 'admin') return;
-  const first = (getProfile(user.email).name || user.name || '').split(' ')[0];
-  authToast(kind === 'new' ? `Welcome, ${first}! Your account is ready.` : `Welcome back, ${first}!`);
+  const first = (getProfile(user.email).name || user.name || '').trim().split(/\s+/)[0];
+  if (kind === 'new') authToast(first ? `Welcome, ${first}! Your account is ready.` : 'Welcome! Your account is ready.');
+  else authToast(first ? `Welcome back, ${first}!` : 'Welcome back!');
 }
 
 // Default = logged out. Remove any old "stay logged in" customer session left in localStorage by an
@@ -163,7 +183,12 @@ function showWelcome() {
   }
 })();
 
+syncProfileTheme();
 renderAuthNav();
 showWelcome();
-// logging in / out in another tab updates this one too
-window.addEventListener('storage', renderAuthNav);
+// logging in / out, or switching theme, in another tab updates this one too
+window.addEventListener('storage', (e) => {
+  // (paint only: this tab's own logged-in choice still wins over another tab's device setting)
+  if (e.key === null || e.key === THEME_KEY || e.key === PROFILES_KEY) paintTheme(wantsDark());
+  renderAuthNav();
+});

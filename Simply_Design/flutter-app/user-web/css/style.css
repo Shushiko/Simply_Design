@@ -598,31 +598,31 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .pm-renter-grid .pm-field span { position: absolute; left: -9999px; }
 
 .pm-error { min-height: 16px; margin-top: 6px; font-size: 12.5px; font-weight: 600; color: #b3261e; }
-.pm-rule { height: 1px; margin: 2px 0 12px; border: 0; background: #222; }
-.pm-actions { display: flex; justify-content: flex-end; gap: 18px; }
+.pm-rule { height: 1px; margin: 10px 0 14px; border: 0; background: #222; }
+.pm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .pm-cancel, .pm-confirm { height: 40px; border-radius: 8px; font: inherit; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; cursor: pointer; }
-.pm-cancel { padding: 0 24px; background: #fff; color: #444; border: 1px solid #ccc; }
-.pm-cancel:hover { background: #f6f6f6; }
-.pm-confirm { flex: 1; max-width: 330px; background: #9a5a1e; color: #fff; border: 0; }
+.pm-cancel { padding: 0 20px; background: #fff; color: #5a3a1c; border: 1.5px solid #c9a27c; transition: background-color .15s ease, border-color .15s ease, color .15s ease; }
+.pm-cancel:hover { background: #fff1e0; border-color: #a8622a; color: #7a3e0c; }
+.pm-cancel:focus-visible { outline: 2px solid #a0520f; outline-offset: 2px; }
+.pm-confirm { background: #9a5a1e; color: #fff; border: 0; }
 .pm-confirm:hover { background: #874410; }
 
 /* Success view */
-.pm-done { text-align: center; padding: 14px 8px 4px; }
+.pm-done { text-align: center; padding: 16px 24px 20px; }
 .pm-done-ico { width: 56px; height: 56px; margin: 0 auto 12px; display: grid; place-items: center; border-radius: 50%; background: #e3f6e3; color: #2e7d32; }
 .pm-done h3 { font-size: 20px; font-weight: 700; }
 .pm-done p { margin-top: 6px; font-size: 14px; color: #555; }
-.pm-recap { margin: 18px auto 0; max-width: 420px; text-align: left; background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 12px 18px; font-size: 13px; }
-.pm-recap div { display: flex; justify-content: space-between; gap: 16px; padding: 6px 0; }
+.pm-recap { margin: 18px 0 0; width: 100%; text-align: left; background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 10px 22px; font-size: 14px; }
+.pm-recap div { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; }
 .pm-recap div + div { border-top: 1px solid #eee; }
 .pm-recap span { color: #777; }
 .pm-recap b { font-weight: 600; text-align: right; }
-.pm-done .pm-actions { justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
-.pm-download { height: 40px; padding: 0 22px; display: inline-flex; align-items: center; gap: 8px; border-radius: 8px; background: #fff; color: #9a5a1e; border: 1.5px solid #9a5a1e; font: inherit; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; cursor: pointer; }
+.pm-done .pm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 20px; }
+.pm-download { height: 40px; padding: 0 22px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; background: #fff; color: #9a5a1e; border: 1.5px solid #9a5a1e; font: inherit; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; cursor: pointer; }
 .pm-download:hover { background: #fff1e0; }
 .pm-download:focus-visible { outline: 2px solid #a0520f; outline-offset: 2px; }
-.pm-done .pm-confirm { flex: none; padding: 0 28px; display: inline-grid; place-items: center; text-decoration: none; }
+.pm-done .pm-confirm { padding: 0 22px; display: grid; place-items: center; text-decoration: none; }
 
-@media (max-height: 640px) and (min-width: 601px) { .pm-modal { zoom: .85; } }
 
 @media (max-width: 600px) {
   .pm-modal { max-height: calc(100vh - 32px); overflow-y: auto; } /* phones: stacked layout is taller, so it may scroll */
@@ -631,8 +631,8 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
   .pm-methods, .pm-renter-grid { grid-template-columns: 1fr; }
   .pm-head { padding: 18px 20px 14px; }
   .pm-body { padding: 14px 16px 18px; }
-  .pm-actions { flex-direction: column-reverse; }
-  .pm-confirm { max-width: none; }
+  .pm-actions, .pm-done .pm-actions { display: flex; flex-direction: column-reverse; gap: 12px; }
+  .pm-cancel, .pm-confirm { flex: none; width: 100%; }
 }
 /* ===== Compact catalog cards (added) =====
    Fixed-size cards instead of stretching to fill the row: easy to read, but not oversized.
@@ -666,7 +666,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
   --pf-line: #f0e1d2; --pf-field: #fff; --pf-field-line: #d9cdbf; --pf-accent: #9a5a1e; --pf-err: #b3261e;
   background: var(--pf-bg); color: var(--pf-text);
 }
-#profilePage.dark {
+html[data-theme="dark"] #profilePage {
   --pf-bg: #1a1410; --pf-card: #261d17; --pf-head: #30251c; --pf-text: #f3ebe3; --pf-muted: #b3a698;
   --pf-line: #40342a; --pf-field: #1f1712; --pf-field-line: #5a493a; --pf-accent: #e3a25f; --pf-err: #ff8f86;
 }
@@ -717,7 +717,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .pf-side { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding-top: 18px; margin-left: auto; }
 .pf-stats { display: flex; gap: 12px; }
 .pf-stats div { min-width: 96px; padding: 8px 14px; border-radius: 6px; text-align: center; background: #fbeadb; border: 1px solid #f0d9c4; }
-#profilePage.dark .pf-stats div { background: var(--pf-head); border-color: var(--pf-line); }
+html[data-theme="dark"] #profilePage .pf-stats div { background: var(--pf-head); border-color: var(--pf-line); }
 .pf-stats b { display: block; font-size: 20px; line-height: 1.2; color: var(--pf-accent); }
 .pf-stats span { font-size: 12px; color: var(--pf-muted); }
 .pf-photo-btn { height: 50px; padding: 0 28px; border-radius: 6px; background: var(--pf-card); color: var(--pf-accent); border: 2px solid var(--brown); font-size: 15px; font-weight: 700; cursor: pointer; }
@@ -800,10 +800,10 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 .pf-security > h2 { padding: 15px 20px; }
 .pf-security > h2 svg { color: #99581b; }
 .pf-security .pf-body { padding: 16px 20px 20px; }
-#profilePage.dark .pf-card { border-color: var(--pf-line); box-shadow: 0 2px 6px rgba(0, 0, 0, .5); }
-#profilePage.dark .pf-card > h2:not(.plain), #profilePage.dark .pf-head { border-bottom-color: var(--pf-line); }
-#profilePage.dark .pf-head[aria-expanded="false"] { border-bottom-color: transparent; }
-#profilePage.dark .pf-security > h2 svg { color: var(--pf-accent); }
+html[data-theme="dark"] #profilePage .pf-card { border-color: var(--pf-line); box-shadow: 0 2px 6px rgba(0, 0, 0, .5); }
+html[data-theme="dark"] #profilePage .pf-card > h2:not(.plain), html[data-theme="dark"] #profilePage .pf-head { border-bottom-color: var(--pf-line); }
+html[data-theme="dark"] #profilePage .pf-head[aria-expanded="false"] { border-bottom-color: transparent; }
+html[data-theme="dark"] #profilePage .pf-security > h2 svg { color: var(--pf-accent); }
 .pf-err:empty { display: none; } /* empty error line no longer adds extra gap between the cards */
 .pf-pw { display: grid; gap: 14px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--pf-line); }
 .pf-pw[hidden] { display: none; }
@@ -1049,3 +1049,165 @@ img, svg, video { max-width: 100%; }
 /* Contact / hero text and profile: use the full width too */
 .hero .lead { max-width: none; }
 .pf, .page { width: 100%; max-width: none; }
+
+
+/* =====================================================================
+   FIXES (added)
+   ===================================================================== */
+
+/* Payment popup: on short desktop/laptop screens it was taller than the window and got cut off.
+   It now scrolls inside itself (this also keeps the square header corners inside the rounded card). */
+@media (min-width: 601px) {
+  .pm-modal { max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto; }
+}
+
+
+/* Phones: the filter captions are hidden with line-height: 0, and the dropdowns inherited it,
+   so "All Types", "All Sizes"... were invisible. Give the fields their own line height. */
+@media (max-width: 767px) {
+  .filters label select, .filters label input { line-height: normal; }
+}
+
+
+/* =====================================================================
+   DARK MODE (added) - every customer page
+   Switched by <html data-theme="dark">, set early by theme.js and changed from Settings.
+   Keep this block LAST so it wins over the rules above.
+   ===================================================================== */
+html[data-theme="dark"] {
+  color-scheme: dark;                       /* dark scrollbars, date pickers, form controls */
+  --d-bg: #1a1410; --d-card: #261d17; --d-head: #30251c; --d-text: #f3ebe3; --d-muted: #b3a698;
+  --d-line: #40342a; --d-field: #1f1712; --d-field-line: #5a493a; --d-accent: #e3a25f;
+  --d-err: #ff8f86; --d-ok: #7ddc86;
+  /* the shared variables the light styles already use */
+  --cream: #241a13; --gray: #3a2e25; --line: #40342a; --price: #e8a561; --green: #7ddc86;
+  background: var(--d-bg);
+}
+html[data-theme="dark"] body { background: var(--d-bg); color: var(--d-text); }
+
+/* Top bar: same brand brown, deeper so it does not glare */
+html[data-theme="dark"] .topbar { background: linear-gradient(90deg, #5e3812, #6b4423); box-shadow: 0 2px 8px rgba(0, 0, 0, .6); }
+
+/* Hero + status strip */
+html[data-theme="dark"] .hero { border-bottom-color: var(--d-line); }
+html[data-theme="dark"] .status { border-block-color: var(--d-line); color: var(--d-muted); }
+html[data-theme="dark"] .eyebrow { color: var(--d-accent); }
+html[data-theme="dark"] .sub { color: var(--d-muted); }
+html[data-theme="dark"] .hero .lead { color: var(--d-text); }
+html[data-theme="dark"] .btn-contact,
+html[data-theme="dark"] .btn-ghost { background: var(--d-card); color: var(--d-text); border-color: var(--d-field-line); }
+html[data-theme="dark"] .btn-contact:hover,
+html[data-theme="dark"] .btn-ghost:hover { border-color: var(--d-accent); color: var(--d-accent); }
+
+/* Filters */
+html[data-theme="dark"] .filters label { color: var(--d-muted); }
+html[data-theme="dark"] .filters label .lbl svg { color: var(--d-muted); }
+html[data-theme="dark"] .filters label select,
+html[data-theme="dark"] .filters label input { background-color: var(--d-field); border-color: #8a5a2c; color: var(--d-text); }
+html[data-theme="dark"] .filters label select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23c7b9a8' stroke-width='1.8'/%3E%3C/svg%3E");
+}
+html[data-theme="dark"] .filters label input::placeholder { color: #8f8174; }
+html[data-theme="dark"] .btn-clear { background: var(--d-card); color: var(--d-muted); border-color: var(--d-field-line); }
+html[data-theme="dark"] .btn-clear:hover { background: var(--d-head); }
+
+/* Catalog */
+html[data-theme="dark"] .group h2,
+html[data-theme="dark"] .group + .group h2 { border-bottom-color: var(--d-line); }
+html[data-theme="dark"] .group h2 small { color: var(--d-muted); }
+html[data-theme="dark"] .empty { color: var(--d-muted); }
+html[data-theme="dark"] .card { background: var(--d-card); box-shadow: 0 2px 6px rgba(0, 0, 0, .55); }
+html[data-theme="dark"] .card:hover { box-shadow: 0 8px 18px rgba(0, 0, 0, .65); }
+html[data-theme="dark"] .code { color: var(--d-text); }
+html[data-theme="dark"] .price small { color: var(--d-muted); }
+html[data-theme="dark"] .tag.loc { background: #223a22; color: #8fd08a; border-color: #3f6b3a; }
+html[data-theme="dark"] .tag.color { background: #33291f; color: var(--d-muted); border-color: var(--d-line); }
+html[data-theme="dark"] .badge { color: var(--d-ok); background: #1d2a1e; border-color: #2f4a30; }
+html[data-theme="dark"] .badge.booked { color: var(--d-err); background: #3a1d1d; border-color: #6b2f2f; }
+
+html[data-theme="dark"] .toast { background: #3a2e25; color: var(--d-text); border: 1px solid var(--d-field-line); }
+
+/* Contact page */
+html[data-theme="dark"] .panel { background: var(--d-card); box-shadow: 0 1px 6px rgba(0, 0, 0, .55); }
+html[data-theme="dark"] .panel h2 { color: var(--d-text); }
+html[data-theme="dark"] .panel h2 svg { color: var(--d-accent); }
+html[data-theme="dark"] .social { color: var(--d-muted); border-color: var(--d-field-line); }
+html[data-theme="dark"] .social:hover { background: var(--d-head); border-color: var(--d-accent); }
+html[data-theme="dark"] .social .ico,
+html[data-theme="dark"] .social .ico.email,
+html[data-theme="dark"] .social .ico.phone { background: #33291f; }
+html[data-theme="dark"] .social em { color: var(--d-text); }
+html[data-theme="dark"] .social .ext { color: var(--d-muted); }
+html[data-theme="dark"] .store p { color: var(--d-muted); }
+html[data-theme="dark"] .note { color: var(--d-muted); }
+html[data-theme="dark"] .note svg { color: var(--d-muted); }
+html[data-theme="dark"] .location h2 strong { color: var(--d-accent); }
+
+/* Booking page */
+html[data-theme="dark"] .bk-back a { color: var(--d-muted); }
+html[data-theme="dark"] .bk-back a:hover { color: var(--d-accent); }
+html[data-theme="dark"] .bk-pid { color: var(--d-muted); }
+html[data-theme="dark"] .bk-dates { border-color: var(--d-line); background: var(--d-card); }
+html[data-theme="dark"] .bk-dates h2,
+html[data-theme="dark"] .bk-dates label,
+html[data-theme="dark"] .bk-label,
+html[data-theme="dark"] .bk-hint { color: var(--d-muted); }
+html[data-theme="dark"] .bk-dates h2 svg { color: var(--d-muted); }
+html[data-theme="dark"] .bk-hint.ok { color: var(--d-ok); }
+html[data-theme="dark"] .bk-hint.bad { color: var(--d-err); }
+html[data-theme="dark"] .bk-dates input,
+html[data-theme="dark"] .bk-row select { background: var(--d-field); border-color: var(--d-field-line); color: var(--d-text); }
+html[data-theme="dark"] .bk-rule { background: var(--d-line); }
+html[data-theme="dark"] .bk-rental small { color: var(--d-muted); }
+html[data-theme="dark"] .bk-desc p { color: var(--d-text); }
+html[data-theme="dark"] .bk-notice { border-color: var(--d-accent); color: var(--d-accent); }
+html[data-theme="dark"] .bk-notice svg { color: var(--d-muted); }
+html[data-theme="dark"] .bk-login { background: #3a1d1d; border-color: #6b2f2f; color: var(--d-err); }
+html[data-theme="dark"] .bk-msgr { background: var(--d-card); color: var(--d-text); }
+html[data-theme="dark"] .bk-msgr:hover { background: var(--d-head); }
+
+/* Payment popup */
+html[data-theme="dark"] .pm-overlay { background: rgba(0, 0, 0, .7); }
+html[data-theme="dark"] .pm-modal { background: var(--d-card); color: var(--d-text); box-shadow: 0 20px 50px rgba(0, 0, 0, .7); }
+html[data-theme="dark"] .pm-head { background: #6b4423; }
+html[data-theme="dark"] .pm-summary,
+html[data-theme="dark"] .pm-recap { background: var(--d-head); border-color: var(--d-line); }
+html[data-theme="dark"] .pm-summary .lbl,
+html[data-theme="dark"] .pm-sum-top span,
+html[data-theme="dark"] .pm-sum-bot,
+html[data-theme="dark"] .pm-txt span,
+html[data-theme="dark"] .pm-done p,
+html[data-theme="dark"] .pm-recap span { color: var(--d-muted); }
+html[data-theme="dark"] .pm-sum-top { border-bottom-color: var(--d-field-line); }
+html[data-theme="dark"] .pm-sum-bot b { color: var(--d-text); }
+html[data-theme="dark"] .pm-fee { color: var(--d-accent); }
+html[data-theme="dark"] .pm-opt { background: var(--d-head); border-color: #8a5a2c; }
+html[data-theme="dark"] .pm-opt:hover { background: #3a2e25; }
+html[data-theme="dark"] .pm-opt input { background: var(--d-field); border-color: var(--d-muted); }
+html[data-theme="dark"] .pm-opt input:checked { border-color: var(--d-accent); }
+html[data-theme="dark"] .pm-opt input:checked::after { background: var(--d-accent); }
+html[data-theme="dark"] .pm-tag.blue { background: #1c2740; color: #7aa6ff; }
+html[data-theme="dark"] .pm-tag.green { background: #1d2a1e; color: var(--d-ok); }
+html[data-theme="dark"] .pm-card,
+html[data-theme="dark"] .pm-notice { background: var(--d-head); border-color: var(--d-line); }
+html[data-theme="dark"] .pm-notice-box { background: var(--d-card); border-color: #8a5a2c; }
+html[data-theme="dark"] .pm-notice-box h3 svg { color: var(--d-muted); }
+html[data-theme="dark"] .pm-notice-box p,
+html[data-theme="dark"] .pm-field { color: var(--d-text); }
+html[data-theme="dark"] .pm-field input { background: var(--d-field); border-color: var(--d-field-line); color: var(--d-text); }
+html[data-theme="dark"] .pm-field input::placeholder { color: #8f8174; }
+html[data-theme="dark"] .pm-field input[aria-invalid="true"] { border-color: var(--d-err); }
+html[data-theme="dark"] .pm-error { color: var(--d-err); }
+html[data-theme="dark"] .pm-rule { background: var(--d-line); }
+html[data-theme="dark"] .pm-cancel { background: transparent; color: var(--d-text); border-color: #8a5a2c; }
+html[data-theme="dark"] .pm-cancel:hover { background: #3a2e25; border-color: var(--d-accent); color: var(--d-accent); }
+html[data-theme="dark"] .pm-done-ico { background: #1d2a1e; color: var(--d-ok); }
+html[data-theme="dark"] .pm-recap div + div { border-top-color: var(--d-line); }
+html[data-theme="dark"] .pm-download { background: var(--d-head); color: var(--d-accent); border-color: var(--d-accent); }
+html[data-theme="dark"] .pm-download:hover { background: #3a2e25; }
+
+/* Profile / Settings page (colours mostly come from the --pf-* variables above) */
+html[data-theme="dark"] .pf-banner { background: #3a2a1c; }
+html[data-theme="dark"] .pf-status.active { background: #1d2a1e; color: var(--d-ok); }
+html[data-theme="dark"] .pf-status.reserved { background: #33290f; color: #f0b84a; }
+html[data-theme="dark"] .pf-status.returned { background: #1c2740; color: #7aa6ff; }

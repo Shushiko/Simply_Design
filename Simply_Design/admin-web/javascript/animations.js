@@ -1482,3 +1482,49 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+
+// ---------------------------------------------------------------
+// Dashboard "Weekly Sales Report": hovering a day highlights its column
+// and shows a small tooltip with that day's sales. Each .bar-col needs a
+// data-value (the amount in pesos). Does nothing on pages without the chart.
+// Runs even with reduced motion, since it isn't an animation.
+// ---------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", function () {
+  var chart = document.querySelector(".dashboard-page .chart");
+  if (!chart) return;
+
+  var tip = document.createElement("div");
+  tip.className = "chart-tip";
+  tip.setAttribute("aria-hidden", "true");
+  chart.appendChild(tip);
+
+  function show(col, e) {
+    var value = Number(col.dataset.value);
+    var label = col.querySelector("span");
+    if (!label || isNaN(value)) return;
+
+    tip.innerHTML = "";
+    var title = document.createElement("strong");
+    title.textContent = label.textContent;
+    var line = document.createElement("span");
+    line.textContent = "Sales : \u20B1" + value.toLocaleString("en-US");
+    tip.appendChild(title);
+    tip.appendChild(line);
+
+    // Follow the pointer; flip to the left side near the right edge
+    var box = chart.getBoundingClientRect();
+    var x = e.clientX - box.left + 14;
+    var y = e.clientY - box.top - tip.offsetHeight - 10;
+    if (x + tip.offsetWidth > chart.clientWidth) x = e.clientX - box.left - tip.offsetWidth - 14;
+    tip.style.left = Math.max(0, x) + "px";
+    tip.style.top = Math.max(0, y) + "px";
+    tip.classList.add("show");
+  }
+
+  chart.querySelectorAll(".bar-col").forEach(function (col) {
+    col.addEventListener("pointerenter", function (e) { col.classList.add("is-hover"); show(col, e); });
+    col.addEventListener("pointermove", function (e) { show(col, e); });
+    col.addEventListener("pointerleave", function () { col.classList.remove("is-hover"); tip.classList.remove("show"); });
+  });
+});

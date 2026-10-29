@@ -13,6 +13,21 @@ const code = new URLSearchParams(location.search).get('code');
 const item = items.find((i) => i.code === code);
 const root = $('#booking');
 
+// Longest rental allowed: pickup day and return day both count (e.g. Oct 29 to Nov 2 = 5 days).
+// Change this one number to raise or lower the limit.
+const MAX_RENTAL_DAYS = 5;
+const HINT_DEFAULT = `Select dates to check availability (maximum ${MAX_RENTAL_DAYS} days)`;
+
+function parseDay(str) { const [y, m, d] = String(str).split('-').map(Number); return new Date(y, m - 1, d); }
+function addDays(str, n) {
+  const d = parseDay(str), p = (x) => String(x).padStart(2, '0');
+  d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+// number of days from pickup to return, counting both days
+function rentalDays(from, to) { return Math.round((parseDay(to) - parseDay(from)) / 86400000) + 1; }
+function fmtDay(str) { return parseDay(str).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+
 let toastTimer;
 function toast(msg) {
   const el = $('#toast');
@@ -50,7 +65,7 @@ if (!item) {
             <label>Pickup Date<input type="date" id="pickup"></label>
             <label>Return Date<input type="date" id="return"></label>
           </div>
-          <p class="bk-hint" id="hint" aria-live="polite">Select dates to check availability</p>
+          <p class="bk-hint" id="hint" aria-live="polite">${HINT_DEFAULT}</p>
         </section>
 
         <div class="bk-specs">
@@ -91,20 +106,34 @@ if (!item) {
   function check() {
     const from = pickup.value, to = ret.value;
     hint.className = 'bk-hint';
-    if (!from && !to) { hint.textContent = 'Select dates to check availability'; return null; }
+    if (!from && !to) { hint.textContent = HINT_DEFAULT; return null; }
+    if (from && to && rentalDays(from, to) > MAX_RENTAL_DAYS) {
+      hint.textContent = `Rentals are limited to ${MAX_RENTAL_DAYS} days. Please return it on or before ${fmtDay(addDays(from, MAX_RENTAL_DAYS - 1))}.`;
+      hint.classList.add('bad');
+      return false;
+    }
     if (isBookedRange(item, from, to)) {
       hint.textContent = 'Sorry, this item is booked for those dates';
       hint.classList.add('bad');
       return false;
     }
-    hint.textContent = 'Great news, this item is available for those dates';
+    const n = from && to ? rentalDays(from, to) : 0;
+    hint.textContent = 'Great news, this item is available for those dates' + (n ? ` (${n} day${n > 1 ? 's' : ''})` : '');
     hint.classList.add('ok');
     return true;
   }
 
   pickup.addEventListener('change', () => {
     ret.min = pickup.value;
+    ret.max = pickup.value ? addDays(pickup.value, MAX_RENTAL_DAYS - 1) : '';   // later days are greyed out
+    const tooLong = pickup.value && ret.value && ret.value > ret.max;
     if (ret.value && ret.value < pickup.value) ret.value = '';
+    if (tooLong) {
+      ret.value = '';
+      hint.className = 'bk-hint bad';
+      hint.textContent = `Rentals are limited to ${MAX_RENTAL_DAYS} days, so your return date was cleared. Please pick it again.`;
+      return;
+    }
     check();
   });
   ret.addEventListener('change', check);
@@ -126,6 +155,9 @@ if (!item) {
   $('#rent').addEventListener('click', () => {
     if (!getUser()) { syncRentLock(); toast('Must log in to rent item.'); return; }
     if (!pickup.value || !ret.value) { toast('Please select your pickup and return dates first.'); return; }
+    if (pickup.value < todayStr()) { toast('Pickup date cannot be in the past.'); return; }
+    if (ret.value < pickup.value) { toast('Return date must be on or after the pickup date.'); return; }
+    if (rentalDays(pickup.value, ret.value) > MAX_RENTAL_DAYS) { toast(`You can rent for up to ${MAX_RENTAL_DAYS} days only.`); check(); return; }
     if (check() === false) { toast(`${item.code} is booked for those dates.`); return; }
     openPayment({ item, from: pickup.value, to: ret.value });
   });
@@ -136,9 +168,10 @@ if (!item) {
 (function () {
   const $ = (s) => document.querySelector(s);
   const overlay = $('#payModal');
-  let ctx = null, lastFocus = null;
+  let ctx = null, lastFocus = null, hideTimer = null;
 
   const show = (on) => {
+    clearTimeout(hideTimer);
     if (on) {
       overlay.hidden = false;
       requestAnimationFrame(() => overlay.classList.add('show'));
@@ -146,7 +179,7 @@ if (!item) {
     } else {
       overlay.classList.remove('show');
       document.body.style.overflow = '';
-      setTimeout(() => { overlay.hidden = true; }, 180);
+      hideTimer = setTimeout(() => { overlay.hidden = true; }, 180);
       if (lastFocus) lastFocus.focus();
     }
   };
@@ -167,7 +200,7 @@ if (!item) {
     lastFocus = document.activeElement;
     $('#pmItem').textContent = info.item.type;
     $('#pmDates').textContent = info.from + ' ~ ' + info.to;
-    $('#pmFee').textContent = '\u20b1' + info.item.price;
+    $('#pmFee').textContent = peso(info.item.price);
     $('#pmNoticeText').textContent = `Please bring exact amount ${peso(info.item.price)} upon picking up your garment at our ${info.item.place} shop location. A valid government ID will be required.`;
     $('#pmForm').hidden = false;
     $('#pmDone').hidden = true;
@@ -326,7 +359,7 @@ if (!item) {
       dates: ctx.from + ' ~ ' + ctx.to,
       method: m,
       phone: $('#renterPhone').value.trim(),
-      fee: '\u20b1' + ctx.item.price,
+      fee: peso(ctx.item.price),
       place: ctx.item.place,
       issued: new Date().toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' }),
     };
@@ -347,7 +380,7 @@ if (!item) {
         <div><span>Item</span><b>${esc(ctx.item.type)} (${esc(ctx.item.code)})</b></div>
         <div><span>Dates</span><b>${ctx.from} ~ ${ctx.to}</b></div>
         <div><span>Payment</span><b>${esc(m)}</b></div>
-        <div><span>Rental fee</span><b>\u20b1${ctx.item.price}</b></div>
+        <div><span>Rental fee</span><b>${peso(ctx.item.price)}</b></div>
         <div><span>Contact</span><b>${esc($('#renterPhone').value.trim())}</b></div>
       </div>
       <div class="pm-actions">

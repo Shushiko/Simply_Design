@@ -59,8 +59,8 @@ function render() {
       <div class="grid">${g.list.map(cardHTML).join('')}</div>
     </section>`).join('') || '<p class="empty">No items match your filters. Try clearing them.</p>';
 
-  const suits = shown.filter((i) => i.type === 'Men Suit').length;
-  $('#status').textContent = `Showing ${shown.length - suits} gown, ${suits} suits`;
+  const suits = shown.filter((i) => i.type === 'Men Suit').length, gowns = shown.length - suits;
+  $('#status').textContent = `Showing ${gowns} gown${gowns === 1 ? '' : 's'}, ${suits} suit${suits === 1 ? '' : 's'}`;
 }
 
 let toastTimer;

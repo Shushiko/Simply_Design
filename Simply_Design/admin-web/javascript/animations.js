@@ -1528,3 +1528,38 @@ document.addEventListener("DOMContentLoaded", function () {
     col.addEventListener("pointerleave", function () { col.classList.remove("is-hover"); tip.classList.remove("show"); });
   });
 });
+
+
+// ---------------------------------------------------------------
+// Sidebar profile photo: shows the photo saved in Settings in place of
+// the "AD" initials, on every page. Runs even with reduced motion, since
+// it isn't an animation. Settings stores the photo under the same key.
+// ---------------------------------------------------------------
+(function () {
+  var PHOTO_KEY = "simplyDesignProfilePhoto";
+
+  function applySidebarAvatar() {
+    var src = "";
+    try { src = localStorage.getItem(PHOTO_KEY) || ""; } catch (e) {}
+
+    document.querySelectorAll(".sidebar .avatar").forEach(function (el) {
+      if (!el.dataset.initials) el.dataset.initials = el.textContent.trim();
+      if (src) {
+        el.textContent = "";
+        el.style.backgroundImage = 'url("' + src + '")';
+        el.style.backgroundSize = "cover";
+        el.style.backgroundPosition = "center";
+      } else {
+        el.textContent = el.dataset.initials;
+        el.style.backgroundImage = "";
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", applySidebarAvatar);
+
+  // If the photo is changed in another open tab, update this one too
+  window.addEventListener("storage", function (e) {
+    if (e.key === PHOTO_KEY) applySidebarAvatar();
+  });
+})();

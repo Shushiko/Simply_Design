@@ -603,96 +603,109 @@
 
   /* ================= SOCIAL LOGIN (Google / Facebook) ================= */
 
-  // To make the buttons send people to the REAL Google / Facebook sign-in page (and come back
-  // logged in), paste your IDs here. While they are empty, a small DEMO window opens instead.
+  // Paste your IDs here to get the REAL Google / Facebook sign-in popup (the account chooser
+  // you see on other websites). While an ID is empty, a small DEMO window opens instead.
+  //
+  // Google:   Google Cloud Console > APIs & Services > Credentials > Create OAuth client ID
+  //           (type "Web application"). Add your site address under "Authorized JavaScript origins",
+  //           e.g. http://localhost:5500 and https://<your-name>.github.io
+  // Facebook: developers.facebook.com > Create App > Facebook Login > Settings.
+  //           Add your site address under "Allowed Domains for the JavaScript SDK". Needs https
+  //           (http://localhost is fine while testing).
   var SOCIAL = {
-    GOOGLE_CLIENT_ID: '',     // e.g. '1234567890-abc123.apps.googleusercontent.com'
-    FACEBOOK_APP_ID: ''       // e.g. '123456789012345'
+    GOOGLE_CLIENT_ID: '581925785874-56hna5nkhkl7al40cm8u4v66jismjhhd.apps.googleusercontent.com',
+    FACEBOOK_APP_ID: '1654147319348313' 
   };
 
-  var STATE_KEY = 'simplySocialState';
+  var googleBtn = document.getElementById('googleBtn');
+  var facebookBtn = document.getElementById('facebookBtn');
 
-  // Google / Facebook send the person back to this one address (login.html, next to signup.html).
-  // Register exactly this address as the redirect URI in your Google / Facebook app settings.
-  var REDIRECT_URI = new URL('login.html', window.location.href).href.split('#')[0].split('?')[0];
+  var googleClient = null;     // filled in once Google's script has loaded
+  var googlePending = null;    // the sign-in waiting for Google's answer
+  var facebookReady = false;   // true once Facebook's script has loaded
 
-  function randomState() {
-    var a = new Uint32Array(4);
-    (window.crypto || window.msCrypto).getRandomValues(a);
-    return Array.prototype.map.call(a, function (n) { return n.toString(16); }).join('');
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error('load')); };
+      document.head.appendChild(s);
+    });
   }
 
-  // Full-page redirect to the provider's own sign-in page
-  function redirectToProvider(provider) {
-    var state = randomState();
-    try {
-      sessionStorage.setItem(STATE_KEY, JSON.stringify({ state: state, provider: provider }));
-    } catch (e) {
-      return Promise.reject({ message: 'Could not start sign-in. Allow this site to store data and try again.' });
-    }
+  var onFile = window.location.protocol === 'file:';
 
-    var url;
-    if (provider === 'Google') {
-      url = 'https://accounts.google.com/o/oauth2/v2/auth' +
-        '?client_id=' + encodeURIComponent(SOCIAL.GOOGLE_CLIENT_ID) +
-        '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
-        '&response_type=token' +
-        '&scope=' + encodeURIComponent('openid email profile') +
-        '&prompt=select_account' +
-        '&state=' + state;
-    } else {
-      url = 'https://www.facebook.com/v19.0/dialog/oauth' +
-        '?client_id=' + encodeURIComponent(SOCIAL.FACEBOOK_APP_ID) +
-        '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
-        '&response_type=token' +
-        '&scope=' + encodeURIComponent('public_profile,email') +
-        '&state=' + state;
-    }
-    window.location.href = url;
-    return new Promise(function () { /* the page is leaving; never resolves */ });
+  /* ----- Google: load the sign-in library now, so the popup can open instantly on click ----- */
+  if (SOCIAL.GOOGLE_CLIENT_ID && !onFile) {
+    loadScript('https://accounts.google.com/gsi/client').then(function () {
+      googleClient = google.accounts.oauth2.initTokenClient({
+        client_id: SOCIAL.GOOGLE_CLIENT_ID,
+        scope: 'openid email profile',
+        prompt: 'select_account',
+        callback: function (resp) {
+          var p = googlePending;
+          googlePending = null;
+          if (!p) return;
+          if (resp.error || !resp.access_token) {
+            p.reject(resp.error === 'access_denied' ? null : { message: 'Google sign-in failed. Try again.' });
+            return;
+          }
+          fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: { Authorization: 'Bearer ' + resp.access_token }
+          }).then(function (r) { return r.json(); }).then(function (info) {
+            if (!info || info.error || !info.email) throw new Error('profile');
+            if (info.email_verified === false) {
+              p.reject({ message: 'Google did not share a verified email address.' });
+              return;
+            }
+            p.resolve(info);
+          }).then(null, function () {
+            p.reject({ message: 'Could not read your Google profile. Try again.' });
+          });
+        },
+        error_callback: function (err) {
+          var p = googlePending;
+          googlePending = null;
+          if (!p) return;
+          // Closing the popup is not an error
+          p.reject(err && err.type === 'popup_closed' ? null
+            : { message: 'Google sign-in could not open. Allow pop-ups for this site and try again.' });
+        }
+      });
+    }).then(null, function () { /* blocked or offline: the button explains it when clicked */ });
   }
 
-  // Runs when Google / Facebook send the person back with their result in the address
-  function handleSocialReturn() {
-    var raw = window.location.hash.replace(/^#/, '') || window.location.search.replace(/^\?/, '');
-    if (!raw || !/(access_token|error)=/.test(raw)) return;
+  // Must be called straight from the click so the browser allows the popup
+  function googlePopup() {
+    return new Promise(function (resolve, reject) {
+      googlePending = { resolve: resolve, reject: reject };
+      googleClient.requestAccessToken();
+    });
+  }
 
-    var params = new URLSearchParams(raw);
-    var saved = read('sessionStorage', STATE_KEY);
-    remove('sessionStorage', STATE_KEY);
-    // Remove the token / error from the address bar right away
-    try { history.replaceState(null, '', window.location.pathname); } catch (e) { /* ignore */ }
+  /* ----- Facebook ----- */
+  if (SOCIAL.FACEBOOK_APP_ID && !onFile) {
+    window.fbAsyncInit = function () {
+      FB.init({ appId: SOCIAL.FACEBOOK_APP_ID, cookie: false, xfbml: false, version: 'v19.0' });
+      facebookReady = true;
+    };
+    loadScript('https://connect.facebook.net/en_US/sdk.js').then(null, function () { /* blocked or offline */ });
+  }
 
-    if (!saved || !params.get('state') || params.get('state') !== saved.state) {
-      return; // not one of our sign-ins (or it was tampered with)
-    }
-    var provider = saved.provider;
-
-    if (params.get('error') || !params.get('access_token')) {
-      showError(provider + ' sign-in was cancelled.');
-      return;
-    }
-
-    var token = params.get('access_token');
-    var url = provider === 'Google'
-      ? 'https://www.googleapis.com/oauth2/v3/userinfo'
-      : 'https://graph.facebook.com/me?fields=name,email&access_token=' + encodeURIComponent(token);
-    var opts = provider === 'Google' ? { headers: { Authorization: 'Bearer ' + token } } : {};
-
-    clearError();
-    if (googleBtn) googleBtn.disabled = true;
-    if (facebookBtn) facebookBtn.disabled = true;
-
-    fetch(url, opts).then(function (r) { return r.json(); }).then(function (info) {
-      if (!info || info.error) throw new Error('profile');
-      if (provider === 'Google' && info.email_verified === false) {
-        throw { message: 'Google did not share a verified email address.' };
-      }
-      return socialFinish(provider, info, true);
-    }).then(null, function (err) {
-      if (googleBtn) googleBtn.disabled = false;
-      if (facebookBtn) facebookBtn.disabled = false;
-      showError(err && err.message ? err.message : 'Could not read your ' + provider + ' profile. Try again.');
+  function facebookPopup() {
+    return new Promise(function (resolve, reject) {
+      FB.login(function (resp) {
+        if (!resp || !resp.authResponse) { reject(null); return; }   // popup closed / declined
+        FB.api('/me', { fields: 'name,email' }, function (info) {
+          if (!info || info.error) {
+            reject({ message: 'Could not read your Facebook profile. Try again.' });
+            return;
+          }
+          resolve(info);
+        });
+      }, { scope: 'public_profile,email' });
     });
   }
 
@@ -743,6 +756,7 @@
   }
 
   /* ----- Turn a Google / Facebook profile into a logged-in customer ----- */
+  // Works for both pages: a new email gets an account (sign up), a known one just logs in.
   function socialFinish(provider, info, verified) {
     return new Promise(function (resolve, reject) {
       var email = String((info && info.email) || '').trim().toLowerCase();
@@ -789,37 +803,38 @@
   function startSocial(provider, btn) {
     if (!btn || btn.disabled) return;
     clearError();
+
+    var real = provider === 'Google' ? !!SOCIAL.GOOGLE_CLIENT_ID : !!SOCIAL.FACEBOOK_APP_ID;
+    var getInfo;
+
+    if (real) {
+      if (onFile) {
+        showError('Real ' + provider + ' sign-in does not work when the page is opened as a file. Open it through http://localhost or your https website.');
+        return;
+      }
+      var ready = provider === 'Google' ? !!googleClient : facebookReady;
+      if (!ready) {
+        showError(provider + ' sign-in is still loading or was blocked. Wait a moment and try again.');
+        return;
+      }
+      getInfo = provider === 'Google' ? googlePopup : facebookPopup;
+    } else {
+      getInfo = demoDialog;
+    }
+
     btn.disabled = true;
     btn.classList.add('busy');
 
-    var real = provider === 'Google' ? !!SOCIAL.GOOGLE_CLIENT_ID : !!SOCIAL.FACEBOOK_APP_ID;
-
-    // Real: redirect to Google / Facebook.  Demo: small window.
-    var getInfo = real
-      ? function () { return redirectToProvider(provider); }
-      : function () { return demoDialog(provider); };
-
-    getInfo().then(function (info) {
-      return socialFinish(provider, info, false);
+    // getInfo() runs right here inside the click, so the popup is not blocked
+    getInfo(provider).then(function (info) {
+      return socialFinish(provider, info, real);
     }).then(null, function (err) {
       btn.disabled = false;
       btn.classList.remove('busy');
-      if (err && err.message) showError(err.message);   // a cancelled demo window stays silent
+      if (err && err.message) showError(err.message);   // a closed popup / cancelled demo stays silent
     });
   }
 
-  var googleBtn = document.getElementById('googleBtn');
-  var facebookBtn = document.getElementById('facebookBtn');
-
   if (googleBtn) googleBtn.addEventListener('click', function () { startSocial('Google', googleBtn); });
   if (facebookBtn) facebookBtn.addEventListener('click', function () { startSocial('Facebook', facebookBtn); });
-
-  // Coming back with the browser's Back button from Google / Facebook: unlock the buttons again
-  window.addEventListener('pageshow', function (e) {
-    if (!e.persisted) return;
-    [googleBtn, facebookBtn].forEach(function (b) { if (b) { b.disabled = false; b.classList.remove('busy'); } });
-  });
-
-  // Google / Facebook just sent the person back here
-  handleSocialReturn();
 })();

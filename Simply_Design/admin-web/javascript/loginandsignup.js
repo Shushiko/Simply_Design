@@ -617,7 +617,7 @@
   //           (http://localhost is fine while testing).
   var SOCIAL = {
     GOOGLE_CLIENT_ID: '581925785874-56hna5nkhkl7al40cm8u4v66jismjhhd.apps.googleusercontent.com',
-    FACEBOOK_APP_ID: '1654147319348313' 
+    FACEBOOK_APP_ID: '2027840961224696' 
   };
 
   var googleBtn = document.getElementById('googleBtn');

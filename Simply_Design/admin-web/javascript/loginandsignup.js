@@ -691,7 +691,7 @@
   /* ----- Facebook ----- */
   if (SOCIAL.FACEBOOK_APP_ID && !onFile) {
     window.fbAsyncInit = function () {
-      FB.init({ appId: SOCIAL.FACEBOOK_APP_ID, cookie: false, xfbml: false, version: 'v19.0' });
+      FB.init({ appId: SOCIAL.FACEBOOK_APP_ID, cookie: false, xfbml: false, version: 'v25.0' });
       facebookReady = true;
     };
     loadScript('https://connect.facebook.net/en_US/sdk.js').then(null, function () { /* blocked or offline */ });

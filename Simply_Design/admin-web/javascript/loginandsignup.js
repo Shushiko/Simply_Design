@@ -339,9 +339,15 @@
 
   // Built-in accounts. Demo only: a real site must check passwords on a server.
   var DEMO_ACCOUNTS = [
-    { email: 'admin@simplydesign.com', password: 'admin123', role: 'admin', name: 'Admin' },
+    // Admin: logs in with "Continue with Google" using this exact Google account (no password stored here).
+    // A password login only works after the admin sets one in Settings. Keep the email lowercase.
+    { email: 'admin.shushuko@gmail.com', password: null, role: 'admin', name: 'Admin' },
     { email: 'user@simplydesign.com', password: 'user123', role: 'user', name: 'User' }
   ];
+
+  // Same EmailJS values you put in profile.js (used to email the login code when Two-Factor is ON)
+  var EMAILJS = { publicKey: 'Ul8HraSWP2sp0-PZt', serviceId: 'service_14aknet', templateId: 'template_clxdxb8' };
+  var OTP_MINUTES = 5, OTP_MAX_TRIES = 5, OTP_RESEND_SECONDS = 30;
 
   var REMEMBER_KEY = 'rememberedEmail';  // remembered email (never the password)
   var ACCOUNTS_KEY = 'simplyAccounts';   // accounts created on the sign-up page
@@ -349,6 +355,7 @@
   var SESSION_KEY = 'simplyUser';
   var PROFILES_KEY = 'simplyProfiles';
   var WELCOME_KEY = 'simplyWelcome';
+  var ADMIN_PW_KEY = 'simplyAdminPassword';   // shared with the admin Settings page
 
   /* ---------- Storage helpers (never throw) ---------- */
 
@@ -366,7 +373,12 @@
 
   function findAccount(email) {
     for (var i = 0; i < DEMO_ACCOUNTS.length; i++) {
-      if (DEMO_ACCOUNTS[i].email === email) return DEMO_ACCOUNTS[i];
+      if (DEMO_ACCOUNTS[i].email === email) {
+        var acc = DEMO_ACCOUNTS[i];
+        // the admin can change this password from Settings (saved in this browser)
+        var changed = acc.role === 'admin' ? read('localStorage', ADMIN_PW_KEY) : null;
+        return changed ? { email: acc.email, password: changed, role: acc.role, name: acc.name } : acc;
+      }
     }
     var saved = (read('localStorage', ACCOUNTS_KEY) || {})[email];
     return saved
@@ -394,6 +406,202 @@
     setTimeout(function () {
       window.location.href = new URL(account.role === 'admin' ? ADMIN_URL : USER_URL, window.location.href).href;
     }, 500);
+  }
+
+  /* ---------- Two-Factor Authentication (code sent by email at login) ---------- */
+
+  // True when this person turned on Two-Factor in Settings (profile.js saves it as prefs.twofa)
+  function needsTwoFactor(email) {
+    var p = (read('localStorage', PROFILES_KEY) || {})[String(email).toLowerCase()];
+    return !!(p && p.prefs && p.prefs.twofa);
+  }
+
+  function otpTarget(account) {
+    var p = (read('localStorage', PROFILES_KEY) || {})[String(account.email).toLowerCase()];
+    return (p && p.otpEmail) || account.email;
+  }
+
+  function ensureEmailJs() {
+    if (window.emailjs) return Promise.resolve();
+    return loadScript('https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js');
+  }
+
+  // Emails a fresh 6-digit code. Resolves { code, note } where note is only filled in demo mode.
+  function mailLoginCode(email, name) {
+    var code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, '0');
+    if (EMAILJS.publicKey === 'YOUR_PUBLIC_KEY') {
+      console.info('[Demo] Login code for ' + email + ': ' + code);
+      return Promise.resolve({ code: code, note: 'NO EMAIL SENT (EmailJS keys not set in loginandsignup.js). Demo code: ' + code });
+    }
+    return ensureEmailJs().then(function () {
+      return emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, {
+        to_email: email,
+        to_name: name || 'there',
+        otp_code: code,
+        expires_in: OTP_MINUTES + ' minutes'
+      }, { publicKey: EMAILJS.publicKey });
+    }).then(function () {
+      return { code: code, note: '' };
+    }, function (err) {
+      console.error('EmailJS error:', err);
+      throw { message: "Couldn't send the verification email: " + ((err && (err.text || err.message)) || 'unknown error') };
+    });
+  }
+
+  // Shows the "Verify it's you" window. Resolves when the code is right; rejects if cancelled / too many tries.
+  function verifyLoginCode(account) {
+    var target = otpTarget(account);
+    return mailLoginCode(target, account.name).then(function (sent) {
+      return new Promise(function (resolve, reject) {
+        var current = { code: sent.code, expires: Date.now() + OTP_MINUTES * 60000, tries: 0, sentAt: Date.now() };
+
+        var boxes = '';
+        for (var n = 0; n < 6; n++) {
+          boxes += '<input class="tf-digit" type="text" inputmode="numeric" maxlength="1" autocomplete="' +
+            (n === 0 ? 'one-time-code' : 'off') + '" aria-label="Digit ' + (n + 1) + ' of 6">';
+        }
+
+        var overlay = document.createElement('div');
+        overlay.className = 'so-overlay';
+        overlay.innerHTML =
+          '<form class="so-dialog tf-dialog" role="dialog" aria-modal="true" aria-labelledby="tfTitle" novalidate>' +
+            '<span class="tf-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l7.5 3v5.5c0 4.6-3.1 8-7.5 9.5-4.4-1.5-7.5-4.9-7.5-9.5V6L12 3z"/><rect x="9" y="11" width="6" height="4.5" rx="1"/><path d="M10.2 11V9.8a1.8 1.8 0 0 1 3.6 0V11"/></svg></span>' +
+            '<h2 id="tfTitle">Verify it\'s you</h2>' +
+            '<p class="tf-sub">Enter the 6-digit code we sent to<br><strong class="tf-mail"></strong></p>' +
+            '<p class="so-note tf-demo" hidden></p>' +
+            '<div class="tf-code" role="group" aria-label="Verification code">' + boxes + '</div>' +
+            '<p class="tf-timer" aria-live="polite"></p>' +
+            '<p class="so-err" role="alert" hidden></p>' +
+            '<button type="submit" class="tf-verify">Verify</button>' +
+            '<p class="tf-resend">Didn\'t get it? <button type="button" class="tf-link"></button></p>' +
+            '<div class="tf-foot"><button type="button" class="tf-cancel">Cancel</button></div>' +
+          '</form>';
+        document.body.appendChild(overlay);
+
+        var dlg = overlay.querySelector('.tf-dialog');
+        var inputs = Array.prototype.slice.call(overlay.querySelectorAll('.tf-digit'));
+        var row = overlay.querySelector('.tf-code');
+        var timerEl = overlay.querySelector('.tf-timer');
+        var errEl = overlay.querySelector('.so-err');
+        var demoEl = overlay.querySelector('.tf-demo');
+        var resendBtn = overlay.querySelector('.tf-link');
+        var lastFocus = document.activeElement;
+        overlay.querySelector('.tf-mail').textContent = target;
+
+        function mmss(ms) {
+          var t = Math.max(0, Math.ceil(ms / 1000));
+          return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0');
+        }
+        function getCode() { return inputs.map(function (i) { return i.value; }).join(''); }
+        function oops(msg) { errEl.textContent = msg; errEl.hidden = false; }
+        function shake() {
+          row.classList.remove('shake');
+          void row.offsetWidth;
+          row.classList.add('shake');
+        }
+        function clearBoxes() {
+          inputs.forEach(function (i) { i.value = ''; i.classList.remove('filled'); });
+          inputs[0].focus();
+        }
+        function setDemo(note) { demoEl.textContent = note || ''; demoEl.hidden = !note; }
+
+        // live countdowns: code expiry + resend wait
+        function tick() {
+          var left = current.expires - Date.now();
+          if (left <= 0) {
+            timerEl.textContent = 'Code expired. Request a new one.';
+            timerEl.classList.add('expired');
+          } else {
+            timerEl.textContent = 'Code expires in ' + mmss(left);
+            timerEl.classList.remove('expired');
+          }
+          var wait = current.sentAt + OTP_RESEND_SECONDS * 1000 - Date.now();
+          if (wait > 0) { resendBtn.disabled = true; resendBtn.textContent = 'Resend code in ' + mmss(wait); }
+          else { resendBtn.disabled = false; resendBtn.textContent = 'Resend code'; }
+        }
+        var timer = setInterval(tick, 1000);
+        tick();
+        setDemo(sent.note);
+
+        function close() {
+          clearInterval(timer);
+          document.removeEventListener('keydown', onKey);
+          overlay.remove();
+          if (lastFocus && lastFocus.focus) lastFocus.focus();
+        }
+        function cancel() { close(); reject({ message: 'Verification cancelled. Please log in again.' }); }
+        function onKey(e) { if (e.key === 'Escape') cancel(); }
+        document.addEventListener('keydown', onKey);
+        overlay.addEventListener('mousedown', function (e) { if (e.target === overlay) cancel(); });
+        overlay.querySelector('.tf-cancel').addEventListener('click', cancel);
+
+        // spread digits across the boxes (typing, paste and autofill all end up here)
+        function fill(from, text) {
+          var d = String(text).replace(/\D/g, '').split('');
+          for (var k = 0; k < d.length && from + k < 6; k++) {
+            inputs[from + k].value = d[k];
+            inputs[from + k].classList.add('filled');
+          }
+          inputs[Math.min(from + d.length, 5)].focus();
+        }
+        inputs.forEach(function (box, idx) {
+          box.addEventListener('input', function () {
+            errEl.hidden = true;
+            var v = box.value.replace(/\D/g, '');
+            box.value = '';
+            box.classList.remove('filled');
+            if (v) fill(idx, v);
+          });
+          box.addEventListener('keydown', function (e) {
+            if (e.key === 'Backspace' && !box.value && idx > 0) {
+              inputs[idx - 1].value = ''; inputs[idx - 1].classList.remove('filled'); inputs[idx - 1].focus();
+              e.preventDefault();
+            } else if (e.key === 'ArrowLeft' && idx > 0) { inputs[idx - 1].focus(); e.preventDefault(); }
+            else if (e.key === 'ArrowRight' && idx < 5) { inputs[idx + 1].focus(); e.preventDefault(); }
+          });
+          box.addEventListener('paste', function (e) {
+            var text = (e.clipboardData || window.clipboardData).getData('text');
+            e.preventDefault();
+            errEl.hidden = true;
+            fill(idx, text);
+          });
+          box.addEventListener('focus', function () { box.select(); });
+        });
+        inputs[0].focus();
+
+        resendBtn.addEventListener('click', function () {
+          if (resendBtn.disabled) return;
+          resendBtn.disabled = true;
+          mailLoginCode(target, account.name).then(function (again) {
+            current = { code: again.code, expires: Date.now() + OTP_MINUTES * 60000, tries: 0, sentAt: Date.now() };
+            setDemo(again.note);
+            errEl.hidden = true;
+            clearBoxes();
+            tick();
+          }, function (err) {
+            oops(err && err.message ? err.message : "Couldn't send the email. Try again.");
+            tick();
+          });
+        });
+
+        dlg.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var entered = getCode();
+          if (entered.length < 6) { oops('Enter all 6 digits.'); shake(); return; }
+          if (Date.now() > current.expires) { oops('That code has expired. Request a new one.'); shake(); return; }
+          if (entered !== current.code) {
+            current.tries++;
+            if (current.tries >= OTP_MAX_TRIES) { close(); reject({ message: 'Too many wrong codes. Please log in again.' }); return; }
+            oops('That code is incorrect. ' + (OTP_MAX_TRIES - current.tries) + ' tries left.');
+            shake();
+            clearBoxes();
+            return;
+          }
+          close();
+          resolve();
+        });
+      });
+    });
   }
 
   /* ---------- Show / hide password ---------- */
@@ -518,6 +726,10 @@
     var logIn = function (email, password) {
       return new Promise(function (resolve, reject) {
         var account = findAccount(email.toLowerCase());
+        if (account && account.role === 'admin' && account.password == null) {
+          reject({ message: 'The admin logs in with Google. Click "Continue with Google" and choose that Google account.' });
+          return;
+        }
         if (account && account.password === password) {
           resolve(account);
         } else {
@@ -536,7 +748,10 @@
       }
 
       run(function () {
-        return logIn(emailInput.value.trim(), passwordInput.value);
+        return logIn(emailInput.value.trim(), passwordInput.value).then(function (account) {
+          if (!needsTwoFactor(account.email)) return account;
+          return verifyLoginCode(account).then(function () { return account; });
+        });
       }, 'Logged in', function (account) {
         saveRemembered();
         // Customers are logged in for this tab only (closing the tab logs them out).
@@ -769,12 +984,21 @@
         reject({ message: provider + ' did not share an email address. Allow email access, or log in another way.' });
         return;
       }
-      // The built-in admin / user accounts can only be used with their password
+      // Built-in accounts: the admin can only come in through a real, verified Google sign-in
       for (var i = 0; i < DEMO_ACCOUNTS.length; i++) {
-        if (DEMO_ACCOUNTS[i].email === email) {
-          reject({ message: 'This email can only log in with its password.' });
+        var demo = DEMO_ACCOUNTS[i];
+        if (demo.email !== email) continue;
+        if (demo.role === 'admin' && provider === 'Google' && verified) {
+          var adminAcc = { email: email, name: demo.name, role: 'admin', since: new Date().toISOString() };
+          var enterAdmin = function () { startSession(adminAcc, false); goTo(adminAcc, 'back'); resolve(adminAcc); };
+          if (needsTwoFactor(email)) verifyLoginCode(adminAcc).then(enterAdmin, reject);
+          else enterAdmin();
           return;
         }
+        reject({ message: demo.role === 'admin'
+          ? 'This is the admin email. Use Continue with Google and choose that Google account.'
+          : 'This email can only log in with its password.' });
+        return;
       }
 
       var accounts = read('localStorage', ACCOUNTS_KEY) || {};
@@ -797,9 +1021,13 @@
       }
 
       var account = { email: email, name: existing ? existing.name : name, role: 'user', since: since };
-      startSession(account, false);
-      goTo(account, isNew ? 'new' : 'back');
-      resolve(account);
+      var finish = function () {
+        startSession(account, false);
+        goTo(account, isNew ? 'new' : 'back');
+        resolve(account);
+      };
+      if (needsTwoFactor(email)) verifyLoginCode(account).then(finish, reject);
+      else finish();
     });
   }
 

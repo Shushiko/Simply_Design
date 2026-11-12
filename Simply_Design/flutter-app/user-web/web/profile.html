@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js" defer></script>
   <script src="../javascript/auth.js" defer></script>
   <script src="../javascript/profile.js" defer></script>
 </head>
@@ -136,13 +137,28 @@
           <button type="button" class="btn btn-primary" id="pfPwBtn">Change Password</button>
           <button type="button" class="btn btn-primary" id="pf2fa">Enable Two-Factor Authentication</button>
         </div>
+        <div class="pf-otp" id="tfaBox" hidden>
+          <p id="tfaMsg"></p>
+          <label class="pf-field">Verification code<input type="text" id="tfaOtp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="6-digit code"></label>
+          <p class="pf-err" id="tfaErr" role="alert"></p>
+          <div class="pf-sec">
+            <button type="button" class="btn btn-primary" id="tfaVerify">Verify Code</button>
+            <button type="button" class="btn btn-outline" id="tfaCancel">Cancel</button>
+            <button type="button" class="pf-link" id="tfaResend">Resend code</button>
+          </div>
+        </div>
         <form class="pf-pw" id="pwForm" hidden novalidate>
           <label class="pf-field">Current password<input type="password" id="pwCur" autocomplete="current-password"></label>
           <label class="pf-field">New password<input type="password" id="pwNew" autocomplete="new-password" placeholder="At least 8 characters"></label>
           <label class="pf-field">Confirm new password<input type="password" id="pwConf" autocomplete="new-password"></label>
+          <div class="pf-otp" id="pwOtpBox" hidden>
+            <p id="pwOtpMsg"></p>
+            <label class="pf-field">Verification code<input type="text" id="pwOtp" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="6-digit code"></label>
+            <button type="button" class="pf-link" id="pwResend">Resend code</button>
+          </div>
           <p class="pf-err" id="pwErr" role="alert"></p>
           <div class="pf-sec">
-            <button type="submit" class="btn btn-primary">Update Password</button>
+            <button type="submit" class="btn btn-primary" id="pwSubmit">Update Password</button>
             <button type="button" class="btn btn-outline" id="pwCancel">Cancel</button>
           </div>
         </form>

@@ -678,3 +678,108 @@ html[data-theme="dark"] .so-cancel:hover { background: #332e1f; }
 html[data-theme="dark"] .so-overlay { background: rgba(0, 0, 0, 0.7); }
 html[data-theme="dark"] .form-error,
 html[data-theme="dark"] .noscript-note { background: rgba(255, 133, 133, 0.12); }
+
+
+/* ---------- Two-factor code window ("Verify it's you") ---------- */
+
+.tf-dialog { max-width: 400px; padding: 30px 28px 22px; text-align: center; }
+
+.tf-badge {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 14px;
+  color: var(--brown);
+  background: rgba(154, 85, 25, 0.14);
+  border-radius: 50%;
+}
+.tf-badge svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tf-dialog h2 { margin: 0 0 6px; font-size: 1.3rem; }
+.tf-sub { margin: 0 0 20px; font-size: 0.92rem; line-height: 1.5; color: var(--muted); }
+.tf-sub strong { font-weight: 500; color: var(--ink); word-break: break-all; }
+.tf-demo { text-align: left; }
+
+.tf-code { display: flex; justify-content: center; gap: 8px; margin-bottom: 14px; }
+.tf-dialog .tf-digit {
+  width: 46px;
+  height: 56px;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 500;
+  border-radius: 10px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.tf-dialog .tf-digit.filled { border-color: var(--brown); }
+
+.tf-timer { margin: 0 0 18px; font-size: 0.85rem; color: var(--muted); }
+.tf-timer.expired { color: var(--error); }
+.tf-dialog .so-err { margin: 0 0 14px; text-align: left; }
+
+.tf-verify {
+  display: block;
+  width: 100%;
+  height: 50px;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background: var(--brown);
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s;
+}
+.tf-verify:hover { background: var(--brown-dark); }
+.tf-verify:active { transform: scale(0.98); }
+
+.tf-resend { margin: 16px 0 0; font-size: 0.88rem; color: var(--muted); }
+.tf-link {
+  padding: 0;
+  font: inherit;
+  color: var(--brown);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.tf-link:hover:not(:disabled) { text-decoration: underline; }
+.tf-link:disabled { color: var(--muted); cursor: default; }
+
+.tf-foot { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--field-border); }
+.tf-cancel {
+  padding: 4px 12px;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.tf-cancel:hover { color: var(--ink); }
+
+.tf-verify:focus-visible,
+.tf-link:focus-visible,
+.tf-cancel:focus-visible { outline: 3px solid rgba(154, 85, 25, 0.45); outline-offset: 2px; }
+
+@media (max-width: 400px) {
+  .tf-dialog { padding: 26px 20px 20px; }
+  .tf-code { gap: 6px; }
+  .tf-dialog .tf-digit { width: 40px; height: 50px; }
+}
+
+html[data-theme="dark"] .tf-badge { color: #e3a862; background: rgba(227, 168, 98, 0.14); }
+html[data-theme="dark"] .tf-link { color: #e3a862; }
+html[data-theme="dark"] .tf-link:disabled { color: var(--muted); }

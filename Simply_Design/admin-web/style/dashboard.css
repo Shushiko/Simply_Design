@@ -1815,3 +1815,125 @@ html[data-theme="dark"] .chart .bar-col::before { background: rgba(255, 255, 255
 html[data-theme="dark"] .chart-tip { background: #26231b; border-color: #332f23; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); }
 html[data-theme="dark"] .chart-tip strong { color: #e4e0d2; }
 html[data-theme="dark"] .chart-tip span { color: #7aa7ff; }
+
+/* ---------- Email verification window ("Verify it's you") ---------- */
+
+.modal.tf-modal { width: min(400px, 100%); padding: 30px 28px 22px; text-align: center; }
+.tf-modal h2 { margin: 0 0 6px; font-size: 21px; }
+
+.tf-badge {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 14px;
+  color: var(--brown);
+  background: rgba(168, 98, 31, 0.14);
+  border-radius: 50%;
+}
+.tf-badge svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tf-sub { margin: 0 0 20px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.tf-sub strong { font-weight: 600; color: var(--ink); word-break: break-all; }
+.tf-demo {
+  margin: 0 0 14px;
+  padding: 9px 12px;
+  text-align: left;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #8a5a12;
+  background: #fdeee0;
+  border-radius: 6px;
+}
+
+.tf-code { display: flex; justify-content: center; gap: 8px; margin-bottom: 14px; }
+.tf-digit {
+  width: 46px;
+  height: 56px;
+  padding: 0;
+  text-align: center;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid #cfcfcf;
+  border-radius: 8px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.tf-digit:focus { outline: none; border-color: var(--brown); box-shadow: 0 0 0 3px rgba(168, 98, 31, 0.25); }
+.tf-digit.filled { border-color: var(--brown); }
+.tf-code.shake { animation: tfShake 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+@keyframes tfShake {
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+.tf-timer { margin: 0 0 18px; font-size: 13px; color: var(--muted); }
+.tf-timer.expired { color: #c62828; }
+.tf-err { margin: 0 0 14px; text-align: left; }
+
+.tf-verify {
+  display: block;
+  width: 100%;
+  height: 46px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: #9c5a1f;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s;
+}
+.tf-verify:hover { background: #864b16; }
+.tf-verify:active { transform: scale(0.98); }
+
+.tf-resend { margin: 16px 0 0; font-size: 13px; color: var(--muted); }
+.tf-link { padding: 0; font: inherit; color: var(--brown); background: none; border: 0; cursor: pointer; }
+.tf-link:hover:not(:disabled) { text-decoration: underline; }
+.tf-link:disabled { color: var(--muted); cursor: default; }
+
+.tf-foot { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.tf-cancel {
+  padding: 4px 12px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.tf-cancel:hover { color: var(--ink); }
+
+.tf-verify:focus-visible,
+.tf-link:focus-visible,
+.tf-cancel:focus-visible { outline: 2px solid var(--brown); outline-offset: 2px; }
+
+@media (max-width: 400px) {
+  .modal.tf-modal { padding: 26px 20px 20px; }
+  .tf-code { gap: 6px; }
+  .tf-digit { width: 40px; height: 50px; }
+}
+
+html[data-theme="dark"] .tf-badge { color: #e3a862; background: rgba(227, 168, 98, 0.14); }
+html[data-theme="dark"] .tf-sub strong { color: #f1f1f1; }
+html[data-theme="dark"] .tf-demo { color: #f0c288; background: rgba(227, 168, 98, 0.12); }
+html[data-theme="dark"] .tf-digit { color: #f1f1f1; background: #2a2619; border-color: #433e2e; }
+html[data-theme="dark"] .tf-digit:focus,
+html[data-theme="dark"] .tf-digit.filled { border-color: #b8702a; }
+html[data-theme="dark"] .tf-timer.expired { color: #ff8585; }
+html[data-theme="dark"] .tf-foot { border-top-color: #433e2e; }
+html[data-theme="dark"] .tf-link { color: #e3a862; }
+html[data-theme="dark"] .tf-link:disabled { color: var(--muted); }

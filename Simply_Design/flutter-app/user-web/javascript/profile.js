@@ -111,6 +111,7 @@
 
     renderOrders();
     renderNotifications();
+    applyPwMode();
   }
 
   function renderOrders() {
@@ -217,14 +218,76 @@
     renderNotifications();
   });
 
-  $('#pf2fa').addEventListener('click', () => {
-    const on = !prefsOf().twofa;
+  /* ---------- two-factor authentication (confirmed with an emailed code) ---------- */
+
+  let tfa = null;   // { code, expires, tries, sentAt, turnOn }
+  const tfaError = (msg) => { $('#tfaErr').textContent = msg || ''; return false; };
+  const tfaLabel = () => (prefsOf().twofa ? 'Disable Two-Factor Authentication' : 'Enable Two-Factor Authentication');
+
+  function closeTfa() {
+    tfa = null; tfaError('');
+    $('#tfaBox').hidden = true;
+    $('#tfaOtp').value = '';
+    $('#pf2fa').disabled = false;
+  }
+
+  async function sendTfaCode() {
+    const turnOn = tfa ? tfa.turnOn : !prefsOf().twofa;
+    const code = await mailCode();
+    if (!code) return false;
+    tfa = { code, turnOn, expires: Date.now() + OTP_MINUTES * 60000, tries: 0, sentAt: Date.now() };
+    $('#tfaMsg').textContent = `We sent a 6-digit code to ${user.email} to ${turnOn ? 'turn on' : 'turn off'} two-factor authentication. It expires in ${OTP_MINUTES} minutes.` + demoNote;
+    $('#tfaBox').hidden = false;
+    $('#tfaOtp').value = '';
+    $('#tfaOtp').focus();
+    return true;
+  }
+
+  $('#pf2fa').addEventListener('click', async () => {
+    if (!user) return;
+    tfaError('');
+    const btn = $('#pf2fa');
+    btn.disabled = true;
+    btn.textContent = 'Sending code...';
+    const ok = await sendTfaCode();
+    btn.textContent = tfaLabel();
+    if (!ok) {
+      btn.disabled = false;
+      $('#tfaBox').hidden = false;
+      $('#tfaMsg').textContent = '';
+      return tfaError("Couldn't send the email: " + lastSendError);
+    }
+  });
+
+  $('#tfaResend').addEventListener('click', async () => {
+    if (!tfa) return;
+    const wait = Math.ceil((tfa.sentAt + OTP_RESEND_SECONDS * 1000 - Date.now()) / 1000);
+    if (wait > 0) return tfaError(`Please wait ${wait}s before requesting a new code.`);
+    const ok = await sendTfaCode();
+    if (!ok) return tfaError("Couldn't send the email: " + lastSendError);
+    tfaError(''); authToast('A new code was sent');
+  });
+
+  $('#tfaCancel').addEventListener('click', closeTfa);
+
+  $('#tfaOtp').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, ''); tfaError(''); });
+
+  $('#tfaVerify').addEventListener('click', () => {
+    if (!tfa) return tfaError('Click the button above to get a code first.');
+    if (Date.now() > tfa.expires) return tfaError('That code has expired. Click "Resend code".');
+    if ($('#tfaOtp').value.trim() !== tfa.code) {
+      tfa.tries++;
+      if (tfa.tries >= OTP_MAX_TRIES) { closeTfa(); return authToast('Too many wrong codes. Please start again.'); }
+      return tfaError(`Incorrect code. ${OTP_MAX_TRIES - tfa.tries} tries left.`);
+    }
+    const on = tfa.turnOn;
     // only change twofa: merging prefsOf() here would also save the default "dark: false"
     // and quietly switch dark mode off on the next page
     saveProfile(user.email, { prefs: Object.assign({}, profile.prefs, { twofa: on }) });
     profile = getProfile(user.email);
-    $('#pf2fa').textContent = on ? 'Disable Two-Factor Authentication' : 'Enable Two-Factor Authentication';
-    authToast(on ? 'Two-factor authentication turned on (demo)' : 'Two-factor authentication turned off');
+    closeTfa();
+    $('#pf2fa').textContent = tfaLabel();
+    authToast(on ? 'Two-factor authentication turned on' : 'Two-factor authentication turned off');
   });
 
   /* ---------- change photo ---------- */
@@ -263,29 +326,129 @@
   const pwForm = $('#pwForm');
   const pwError = (msg) => { $('#pwErr').textContent = msg || ''; return false; };
 
+  // ---- EmailJS settings: create a free account at emailjs.com, then paste your own values ----
+  // Template variables to use in the EmailJS template: {{to_email}}, {{to_name}}, {{otp_code}}, {{expires_in}}
+  const EMAILJS = { publicKey: 'Ul8HraSWP2sp0-PZt', serviceId: 'service_14aknet', templateId: 'template_clxdxb8' };
+  const OTP_MINUTES = 5, OTP_MAX_TRIES = 5, OTP_RESEND_SECONDS = 30;
+
+  let lastSendError = '', demoNote = '';
+  let otp = null;   // { code, expires, tries, newPw, sentAt } - lives in memory only
+
+  // Google / Facebook accounts have no password yet (password === null): they verify by email code and SET one
+  function isSocial() {
+    const a = getAccounts()[(user.email || '').toLowerCase()];
+    return !!a && a.password == null;
+  }
+  function applyPwMode() {
+    const social = isSocial();
+    $('#pwCur').closest('label').hidden = social;
+    $('#pfPwBtn').textContent = social ? 'Set a Password' : 'Change Password';
+    $('#pwSubmit').textContent = 'Update Password';
+  }
+
+  function resetPwForm() {
+    pwForm.reset(); pwError(''); otp = null;
+    $('#pwOtpBox').hidden = true;
+    ['#pwCur', '#pwNew', '#pwConf'].forEach((s) => { $(s).disabled = false; });
+    applyPwMode();
+  }
+
+  // Makes a 6-digit code and emails it to the logged-in user. Returns the code, or null if sending failed.
+  async function mailCode() {
+    const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, '0');
+    demoNote = '';
+    const configured = window.emailjs && EMAILJS.publicKey !== 'YOUR_PUBLIC_KEY';
+    if (!configured) {
+      // Demo fallback so the flow can be tested before EmailJS is set up
+      console.info('[Demo] OTP for ' + user.email + ': ' + code);
+      const why = !window.emailjs ? 'EmailJS library did not load' : 'EmailJS keys not set in profile.js';
+      demoNote = ' [NO EMAIL SENT: ' + why + '. Demo code: ' + code + ']';
+      return code;
+    }
+    try {
+      await emailjs.send(EMAILJS.serviceId, EMAILJS.templateId, {
+        to_email: user.email,
+        to_name: (profile.name || user.name || 'there'),
+        otp_code: code,
+        expires_in: OTP_MINUTES + ' minutes',
+      }, { publicKey: EMAILJS.publicKey });
+      return code;
+    } catch (err) {
+      console.error('EmailJS error:', err);
+      lastSendError = (err && (err.text || err.message)) || 'Unknown error';
+      return null;
+    }
+  }
+
+  async function sendOtp() {
+    const newPw = $('#pwNew').value;
+    const code = await mailCode();
+    if (!code) { otp = null; return false; }
+    otp = { code, expires: Date.now() + OTP_MINUTES * 60000, tries: 0, newPw, sentAt: Date.now() };
+    return true;
+  }
+
+  function showOtpStep() {
+    $('#pwOtpBox').hidden = false;
+    $('#pwOtpMsg').textContent = `We sent a 6-digit code to ${user.email}. It expires in ${OTP_MINUTES} minutes.` + demoNote;
+    $('#pwSubmit').textContent = 'Verify & Update Password';
+    ['#pwCur', '#pwNew', '#pwConf'].forEach((s) => { $(s).disabled = true; });
+    $('#pwOtp').value = '';
+    $('#pwOtp').focus();
+  }
+
   $('#pfPwBtn').addEventListener('click', () => {
     pwForm.hidden = !pwForm.hidden;
-    pwError('');
+    resetPwForm();
     if (!pwForm.hidden) $('#pwCur').focus();
   });
-  $('#pwCancel').addEventListener('click', () => { pwForm.reset(); pwError(''); pwForm.hidden = true; });
+  $('#pwCancel').addEventListener('click', () => { resetPwForm(); pwForm.hidden = true; });
 
-  pwForm.addEventListener('submit', (e) => {
+  $('#pwResend').addEventListener('click', async () => {
+    if (!otp) return;
+    const wait = Math.ceil((otp.sentAt + OTP_RESEND_SECONDS * 1000 - Date.now()) / 1000);
+    if (wait > 0) return pwError(`Please wait ${wait}s before requesting a new code.`);
+    const btn = $('#pwResend'); btn.disabled = true;
+    const ok = await sendOtp();
+    btn.disabled = false;
+    if (!ok) return pwError("Couldn't send the email: " + lastSendError);
+    pwError(''); showOtpStep(); authToast('A new code was sent');
+  });
+
+  pwForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const accounts = getAccounts();
     const account = accounts[(user.email || '').toLowerCase()];
+
+    /* Step 2: check the code, then change the password */
+    if (otp) {
+      if (Date.now() > otp.expires) { otp = null; return pwError('That code has expired. Click "Resend code".'); }
+      if ($('#pwOtp').value.trim() !== otp.code) {
+        otp.tries++;
+        if (otp.tries >= OTP_MAX_TRIES) { resetPwForm(); pwForm.hidden = true; return authToast('Too many wrong codes. Please start again.'); }
+        return pwError(`Incorrect code. ${OTP_MAX_TRIES - otp.tries} tries left.`);
+      }
+      account.password = otp.newPw;
+      saveAccounts(accounts);
+      resetPwForm();
+      pwForm.hidden = true;
+      authToast('Password updated');
+      return;
+    }
+
+    /* Step 1: validate the form, then email the code */
     if (!account) return pwError("This built-in demo account's password can't be changed here.");
-    if (account.password == null) return pwError(`This account signs in with ${account.provider || 'a social login'}, so it has no password to change.`);
-    if ($('#pwCur').value !== account.password) return pwError('Your current password is incorrect.');
+    const social = account.password == null;   // Google / Facebook account: no current password to check
+    if (!social && $('#pwCur').value !== account.password) return pwError('Your current password is incorrect.');
     if ($('#pwNew').value.length < 8) return pwError('New password must be at least 8 characters.');
     if ($('#pwNew').value !== $('#pwConf').value) return pwError('The new passwords do not match.');
 
-    account.password = $('#pwNew').value;
-    saveAccounts(accounts);
-    pwForm.reset();
+    const btn = $('#pwSubmit'); btn.disabled = true; btn.textContent = 'Sending code...';
+    const ok = await sendOtp(account);
+    btn.disabled = false;
+    if (!ok) { applyPwMode(); return pwError("Couldn't send the email: " + lastSendError); }
     pwError('');
-    pwForm.hidden = true;
-    authToast('Password updated');
+    showOtpStep();
   });
 
   // clear the error text as soon as the person types again
@@ -298,6 +461,8 @@
   ['#fPhone', '#fGcash'].forEach((s) => $(s).addEventListener('input', (e) => {
     e.target.value = e.target.value.replace(/[^\d+ ]/g, '');
   }));
+
+  $('#pwOtp').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, ''); });
 
   render();
 })();
